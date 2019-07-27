@@ -1,0 +1,1 @@
+module.exports = lang => require('@/i18n/lang/' + lang + '.js').default
