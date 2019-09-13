@@ -1,20 +1,25 @@
 <template>
   <!-- lock.png -->
-  <ul class="book_item">
-    <li
-      v-for="(item,idx) in catalogue"
-      :class="{lock:item.is_free}"
-      :key="idx"
-      @click="book_view(item.id)"
-    >
-      <a href="javascript:;">
-        <!-- <span class="cont_num">{{item.seqNum}}话</span> -->
-        <span class="cont_num">{{$t('column.chapter')}} {{item.order_no}}</span>
-        <!-- <span class="cont_money" v-if="!item.hasBuy">{{item.price}}书币</span> -->
-        <span class="cont_lock" v-if="item.is_free"></span>
-      </a>
-    </li>
-  </ul>
+  <div class="chapterList">
+    <span class="prompt_txt" v-if="catalogue.length == 0">{{$t('detl.emptyChapter')}}</span>
+    <template v-else>
+      <ul class="book_item">
+        <li
+          v-for="(item,idx) in catalogue"
+          :class="{lock:item.is_free}"
+          :key="idx"
+          @click="book_view(item,idx)"
+        >
+          <a href="javascript:;">
+            <!-- <span class="cont_num">{{item.seqNum}}话</span> -->
+            <span class="cont_num">{{$t('column.chapter')}} {{item.order_no}}</span>
+            <!-- <span class="cont_money" v-if="!item.hasBuy">{{item.price}}书币</span> -->
+            <span class="cont_lock" v-if="item.is_free||item.hasBuy"></span>
+          </a>
+        </li>
+      </ul>
+    </template>
+  </div>
 </template>
 
 <script>
@@ -24,11 +29,50 @@ export default {
   },
   props: {
     catalogue: Array,
-    id: String
+    bookList: Object
   },
-  mounted() {},
+  mounted() {
+    this.getMsg();
+    // console.log(this.catalogue);
+    // this.$bus.$emit("recharge", 1);
+  },
   methods: {
-    book_view(id) {
+    getMsg() {
+      this.$bus.$on("chapter", data => {
+        if (data.chapterId) {
+          // this.catalogue
+          this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);
+        }
+        console.log(data);
+      });
+    },
+    book_view(opt, idx) {
+      var id = opt.id;
+      //1付费 0免费
+      if (opt.is_free) {
+        this.$bus.$emit("comic", {
+          bookId: this.bookList.id,
+          chapterId: opt.id,
+          chapterIdx: idx,
+          title: opt.title,
+          orderNo: opt.order_no,
+          price: this.bookList.price
+        });
+        //已登录
+        if (localStorage.getItem("isLogin")) {
+          // this.$bus.$emit("isLogin", {
+          //   state: 1,
+          //   price: this.bookList.price
+          // });
+          // console.log("isLogin", 1);
+          this.$bus.$emit("isLogin", 1);
+        } else {
+          // console.log("isLogin", 0);
+          this.$bus.$emit("isLogin", 0);
+        }
+        this.$bus.$emit("recharge", 1);
+        return;
+      }
       this.$router.push({ name: "view", params: { id } });
       console.log("查看图书");
     }
@@ -37,6 +81,12 @@ export default {
 </script>
 
 <style scoped>
+.prompt_txt {
+  text-align: center;
+  display: block;
+  font-size: 16px; /*no*/
+}
+
 .book_item {
   display: flex;
   flex-wrap: wrap;
@@ -44,24 +94,21 @@ export default {
 }
 
 .cont_book_list .book_item li {
-  height: 60px;
-  line-height: 60px;
+  height: 55px;
+  line-height: 55px;
   width: 33.3%;
   margin-bottom: 3%;
-  display: flex;
-  align-items: center;
+  padding: 0 15px;
   position: relative;
 }
 
 .cont_book_list .book_item li a {
   width: 100%;
-  margin: 0 10px;
   border: 2px solid #ccc;
   border-radius: 30px;
   text-align: center;
-  display: flex;
   cursor: pointer;
-  align-items: center;
+  display: inline-block;
 }
 
 .cont_book_list .book_item li.lock .cont_lock {
@@ -79,17 +126,11 @@ export default {
 
 .cont_book_list .book_item .cont_num {
   font-size: 30px;
-  flex: 1;
 }
 
 .cont_book_list .book_item .cont_money {
   color: #ffa500;
-  /* padding-right: 35px; */
 }
-
-/* .cont_book_list .book_item .lock .cont_money {
-  padding-right: 15px;
-} */
 </style>
 
 

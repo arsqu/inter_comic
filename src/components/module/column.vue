@@ -19,7 +19,9 @@
               @click="tar_href(detl.id,detl.title)"
             >
               <div class="book_pto">
-                <img :src="detl.show_img" alt />
+                <!-- v-lazy="item" :key="item" -->
+                <!-- <img :src="detl.show_img" alt /> -->
+                <img v-lazy="detl.show_img" alt />
               </div>
               <div class="book_desc">
                 <span class="book_txt over_ellipsis">{{detl.title}}</span>
@@ -29,9 +31,9 @@
           </template>
           <div
             class="prompt_txt"
-            v-if="item.List.length<3&&item.List.length>0"
-          >{{$t('tips.nomore')}}</div>
-          <div class="prompt_txt" v-else>{{$t('tips.notHave')}}</div>
+            v-if="item.List.length<6&&item.List.length>0"
+          >{{$t('tips.notHave')}}</div>
+          <!-- <div class="prompt_txt" v-else></div> -->
         </ul>
       </div>
     </div>
@@ -75,7 +77,7 @@ export default {
 .push_column {
   font-size: 30px;
   padding: 25px;
-  margin: 25px 0;
+  margin-bottom:10px;
   background: #fff;
 }
 

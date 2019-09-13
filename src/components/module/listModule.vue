@@ -9,7 +9,7 @@
           @click="tar_detail(item.id,item.title)"
         >
           <div class="com_img">
-            <img v-lazy="item.show_img" />
+            <img v-lazy="item.show_img" :key="idx" />
           </div>
           <div class="com_desc">
             <p class="com_tit">{{item.title}}</p>
@@ -92,7 +92,9 @@ export default {
 .com_lists .com_tit {
   overflow: hidden;
   display: -webkit-box;
+  /*! autoprefixer: off */
   -webkit-box-orient: vertical;
+  /* autoprefixer: on */
   -webkit-line-clamp: 2;
   word-break: break-all;
   color: #4b566a;

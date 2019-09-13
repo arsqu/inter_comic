@@ -1,5 +1,6 @@
 <template>
   <!-- $route.params.type -->
+  <!-- more comic -->
   <div class="groupItem" :key="Math.random()">
     <!-- 列表模板 -->
     <div class="push_column">
@@ -7,10 +8,11 @@
       <ul
         class="book_list scroll_tab"
         v-infinite-scroll="loadMore"
-        infinite-scroll-disabled="loading"
-        infinite-scroll-immediate-check="check"
+        infinite-scroll-disabled="isScroll"
         infinite-scroll-distance="15"
       >
+        <!-- infinite-scroll-immediate-check="true" -->
+        <!-- infinite-scroll-immediate-check="check" -->
         <template v-if="bookList.length>0">
           <li
             class="book_detl"
@@ -43,13 +45,16 @@
 </template>
 
 <script>
+import Qs from "qs";
 export default {
   data() {
     return {
-      id: null,
-      loading: false,
-      check: false,
-      loadState: false,
+      // check: false,
+      groupId: null,
+      check: true,
+      isScroll: false, //是否停止滚动
+      loadState: false, //加载状态
+      isUpdate: true, //是否更新
       page: {
         offset: 0,
         limit: 10,
@@ -58,35 +63,47 @@ export default {
       bookList: []
     };
   },
-  beforeRouterEnter(to, from, next) {
-    console.log(from, to);
-    next();
-  },
-  beforeRouterLeave(to, from, next) {
-    next();
-  },
-  //缓存页
+  // beforeRouteEnter(to, from, next) {
+  //   console.log(from, to);
+  //   this.$route.meta.keepAlive = true;
+  //   next();
+  // },
+  // beforeRouteLeave(to, from, next) {
+  //   this.$route.meta.keepAlive = true;
+  //   next();
+  // },
   activated() {
-    this.def();
-    console.log("activated");
+    var param = this.$route.params;
+    this.isUpdate = false;
+    // console.log("groupId", this.groupId);
+    // console.log("paramId", param.id);
+    if (this.groupId != param.id) {
+      this.def();
+      this.init();
+      this.isScroll = false;
+      this.isUpdate = true;
+      // this.loadMore();
+      console.log("update");
+    } else {
+      this.sendMsg("navBar", this.type); //切换header状态
+    }
+    // console.log("activated");
   },
   mounted() {
-    console.log("mounted");
+    // console.log("mounted");
     this.def();
     this.init();
   },
   methods: {
     def() {
       var param = this.$route.params;
-      this.id = param.id;
+      this.groupId = param.id;
       this.type = param.type;
-      // console.log(this.bookList);
       this.sendMsg("navBar", this.type);
+      // console.log(this.bookList);
     },
     init() {
-      // if (!this.$route.meta.isBack) {
-      this.loadItem();
-      // }
+      this.getBook();
     },
     //组件通信
     sendMsg(key, data) {
@@ -101,23 +118,55 @@ export default {
     loadMore() {
       // console.log("滚动到底部");
       console.log("滚动");
-      this.loadItem();
+      this.getBook();
     },
-    //加载内容详情
-    loadItem() {
+    //加载漫画
+    getBook() {
       if (this.loadState) {
-        console.log("异步请求中...禁止操作");
+        // console.log("异步请求中...禁止操作");
+        // this.$toast("please wait...");
         return;
       }
-      // if (this.page.idx == "1") {
-      //   console.log("最后一页");
-      //   return;
-      // }
-      var opt = Object.assign(this.page);
-      opt.groupId = this.id;
+      var opt = Object.assign({}, this.page);
+      opt.groupId = this.groupId;
       this.loadState = true;
       //测试数据
-      console.log("请求数据");
+      // console.log("请求数据");
+      this.$api
+        .getData("getMore", opt)
+        .then(res => {
+          console.log(res);
+          if (res.code != 0) {
+            var data = res.data;
+            // console.log(this.bookList, this.bookList.length);
+            if (this.bookList.length == 0 || this.isUpdate) {
+              // console.log(data.length);
+              this.$set(this, "bookList", data.list);
+              this.isUpdate = false;
+              if (data.list.length < 10) {
+                // console.log("暂无更多数据");
+                this.isScroll = true;
+                this.loadState = false;
+                return;
+              }
+            } else {
+              // console.log("拼接");
+              this.bookList = this.bookList.concat(data.list);
+            }
+          } else {
+            if (this.isUpdate) this.$set(this, "bookList", []);
+            console.log("停止滚动");
+            this.isScroll = true; //停止滚动
+          }
+          this.loadState = false;
+        })
+        .catch(err => {
+          // console.log(err);
+          if (this.isUpdate) this.$set(this, "bookList", []);
+          this.isScroll = true;
+          this.loadState = false;
+        });
+
       // this.$axios.post("/test/comicMore").then(res => {
       //   var data = res.data;
       //   data = data.data ? data.data : data;
@@ -133,15 +182,15 @@ export default {
       //   // console.log(page);
       // });
       //api接口
-      this.$api.getGroupItem(opt).then(res => {
-        if (res.code == 1) {
-          var data = res.data;
-          if (data.list && data.list.length > 0) {
-            this.bookList = data.list;
-          }
-        }
-        this.loadState = false;
-      });
+      // this.$api.getGroupItem(opt).then(res => {
+      //   if (res.code == 1) {
+      //     var data = res.data;
+      //     if (data.list && data.list.length > 0) {
+      //       this.bookList = data.list;
+      //     }
+      //   }
+      //   this.loadState = false;
+      // });
     }
   },
   watch: {
@@ -149,6 +198,7 @@ export default {
       //监听当前路由下的变化
       handler(to, from) {
         // console.log(to, from);
+        //跳转详情页的laoding效果
         if (to.name == "new_detl") {
           this.$bus.$emit("loading", true); //loading加载效果
         }
@@ -161,8 +211,7 @@ export default {
 <style scoped>
 .push_column {
   font-size: 30px;
-  padding: 25px;
-  margin: 25px 0;
+  padding: 15px;
   background: #fff;
 }
 
@@ -211,12 +260,16 @@ export default {
 }
 
 .prompt_txt {
-  display: flex;
+  color: #555;
+  font-size: 0.373333rem;
+  padding: 0.266667rem;
+  text-align: center;
+  /* display: flex;
   align-items: center;
   justify-content: center;
   padding: 10px 0;
   width: 100%;
   font-size: 26px;
-  color: #666;
+  color: #666; */
 }
 </style>

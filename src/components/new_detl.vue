@@ -23,13 +23,17 @@
             <span class="c_auth">{{bookList.artist||$t('show.unknown')}}</span>
           </p>
           <p class="c_mar">
+            <span>{{$t('index.update')}} :</span>
+            <span class="c_read">{{$t('index.date')[bookList.week_no-1]||''}}</span>
+          </p>
+          <p class="c_mar">
             <span>{{$t('detl.country')}} :</span>
             <span class="c_auth">{{bookList.area||$t('show.unknown')}}</span>
           </p>
-          <p class="c_mar">
+          <!-- <p class="c_mar">
             <span>{{$t('detl.read')}} :</span>
             <span class="c_read">{{bookList.read||'0'}}</span>
-          </p>
+          </p>-->
         </div>
       </div>
     </div>
@@ -61,19 +65,16 @@
         <!-- 目录 -->
         <div class="cont" v-show="isCur == 2">
           <div class="cont_book_list">
-            <category :catalogue="catalogue" />
+            <category :bookList="bookList" :catalogue="catalogue" />
           </div>
         </div>
       </div>
     </div>
     <!-- 底部功能栏 -->
     <div class="book_fixed">
-      <span class="book_txt">{{$t('column.chapter')}}1 {{readTxt||$t('column.noTitle')}}</span>
+      <span class="book_txt">{{$t('column.chapter')+''+orderNo}} {{readTxt||$t('column.noTitle')}}</span>
       <span class="book_tool">
-        <router-link
-          v-if="params.id"
-          :to="{name:'view',params:{id:this.params.id}}"
-        >{{$t('column.footer')}}</router-link>
+        <span v-if="params.id" @click="viewDetl">{{$t('column.footer')}}</span>
       </span>
     </div>
   </div>
@@ -83,32 +84,30 @@
 const column = () => import("./module/column");
 const gaussian = () => import("./module/gaussian");
 const category = () => import("./module/category");
+import Qs from "qs";
 
 export default {
   data() {
     return {
       isCur: 1,
+      defView: 1,
+      id: null,
       params: {
         //路由参数
         id: null,
         title: ""
       },
+      orderNo: "",
+      price: "", //章节价格
       readTxt: "",
       //目录
       catalogue: [],
       //模糊框尺寸
       autoSize: {},
-      tabList: [
-        // {
-        //   title: "详情"
-        // },
-        // {
-        //   title: "目录"
-        // }
-      ],
+      tabList: [],
       page: {
         offset: 0,
-        limit: 10,
+        limit: 200,
         total: 0
       },
       //图书详情
@@ -180,55 +179,84 @@ export default {
     ];
     // console.log("detl_created");
   },
-  beforeRouteEnter(to, from, next) {
-    // console.log("进入");
-    // console.log(from);
-    // if (from.name == "groupItem") {
-    //   from.meta.keepAlive = true;
-    // }
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    // console.log("离开");
-    console.log(to);
-    // if (to.name == "groupItem") {
-    //   to.meta.keepAlive = true;
-    // }
-    // console.log(from);
-    // console.log(from.meta.keepAlive);
-    next();
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   // if (from.name == "groupItem") {
+  //   //   from.meta.keepAlive = true;
+  //   // }
+  //   console.log("进入");
+  //   // console.log(from);
+  //   if (localStorage.getItem("isLogin")) {
+  //     console.log(this);
+  //     // this.$bus.$emit("isLogin", 1); //关闭loading
+  //   }
+  //   next();
+  // },
+  // beforeRouteLeave(to, from, next) {
+  // console.log("离开");
+  // console.log(to);
+  // if (to.name == "groupItem") {
+  //   to.meta.keepAlive = true;
+  // }
+  // console.log(from);
+  // console.log(from.meta.keepAlive);
+  // next();
+  // },
   //缓存页
   activated() {
-    this.params = this.$route.params;
-    this.sendMsg("navBar", this.params.title); //同步书名
-    this.$bus.$emit("loading", false); //关闭loading加载效果
+    var params = this.$route.params;
     console.log("activated");
-  },
-  mounted() {
-    console.log("detl_mounted");
-    this.start();
-  },
-  methods: {
-    //相同操作
-    start() {
+    this.isCur = this.from == "view" ? 2 : 1;
+    if (params.id != this.bookId) {
       this.def();
       this.init();
+      // console.log("update");
+    } else {
+      // this.checkLogin();
+      this.$bus.$emit("loading", false); //关闭loading加载效果
+    }
+    this.$bus.$emit("navBar", params.title); //同步漫画名
+    // console.log("activated");
+  },
+  mounted() {
+    // console.log("mounted");
+    this.def();
+    this.init();
+  },
+  destroyed() {
+    // console.log(1);
+    this.$bus.$off("loading");
+    this.$bus.$off("navBar");
+    // this.$bus.$off("isLogin"); //同步漫画名
+  },
+  methods: {
+    //查看漫画详情
+    viewDetl() {
+      // console.log(this.defView);
+      if (!this.defView) {
+        this.$router.push({ name: "view" });
+      }
     },
+    checkLogin() {
+      if (localStorage.getItem("isLogin")) {
+        this.$bus.$emit("isLogin", 1); //同步漫画名
+      } else {
+        console.log("未登录");
+        this.$bus.$emit("isLogin", 0); //同步漫画名
+        // console.log(this.$route);
+        localStorage.setItem("loginUrl", this.$route.fullPath);
+      }
+    },
+    //默认操作
     def() {
-      this.params = this.$route.params;
-      this.sendMsg("navBar", this.params.title); //同步书名
+      var params = (this.params = this.$route.params);
+      this.bookId = params.id;
+      // this.checkLogin();
     },
     //初始化
     init() {
       this.getSize(); //设置模糊层尺寸
       this.getAllChapter(); //获取图书目录
-      this.getBook(); //获取图书详情
-    },
-    //向app发送数据
-    sendMsg(key, data) {
-      //开启loading加载
-      this.$bus.$emit(key, data);
+      this.getBookDetl(); //获取图书详情
     },
     //切换tab
     toggleTab(idx) {
@@ -241,82 +269,123 @@ export default {
       this.$set(this.autoSize, "wid", oWid);
       this.$set(this.autoSize, "het", oHet);
     },
-    getAllChapter() {
-      var opt = Object.assign({}, this.page);
-      opt.mediaId = this.params.id;
-      //测试数据
-      // this.$axios.post("/test/category").then(res => {
-      //   // console.log(res);
-      //   var data = res.data;
-      //   data = data.data ? data.data : data;
-      //   this.catalogue = data;
-      //   this.readTxt = data[0].title;
-      // });
-      this.$api.getAllChapter(opt).then(res => {
-        if (res.code == 1) {
-          // console.log(res);
-          var data = res.data;
-          if (this.catalogue.length == 0) {
-            this.catalogue = data.list;
-            if (data.list.length > 0) {
-              this.readTxt = data.list[0].title;
+    getChapter(opt) {
+      return new Promise((resolve, reject) => {
+        this.$api
+          .getDataN("getAllChapter", opt)
+          // .postData("getAllChapter", opt)
+          .then(res => {
+            // if (res.code == 1) {
+            // var data = res.data;
+            // console.log(data.list);
+            res.map(data => {
+              data.is_free = data.isFree;
+              data.order_no = data.orderNo;
+            });
+            this.$set(this, "catalogue", res);
+            // this.$set(this, "catalogue", data.list);
+            if (res.length > 0) {
+              // if (data.list.length > 0) {
+              var def = res[0];
+              // var def = data.list[0];
+              this.readTxt = def.title;
+              this.orderNo = def.order_no;
+              this.price = def.price;
+              this.defView = def.is_free;
             }
-            // console.log(this.catalogue);
-          } else {
-            this.catalogue = [];
-          }
-        }
+            this.$bus.$emit("loading", false); //关闭loading
+            resolve(res);
+            // resolve(data);
+            // return;
+            // }
+            // this.$bus.$emit("loading", false); //关闭loading
+            // resolve(false);
+          })
+          .catch(err => {
+            console.log("server error");
+            this.$bus.$emit("loading", false); //关闭loading
+            reject(err);
+          });
       });
     },
-    getBook() {
+    getAllChapter() {
+      var opt = Object.assign({}, this.page);
+      var mediaId = (opt.mediaId = this.params.id);
+      this.getChapter(opt)
+        .then(res => {
+          //没章节则不查询购买记录
+          if (res.length == 0) {
+            return;
+          }
+          if (res) {
+            //已购买章节
+            this.$api.getDataN("hasRecord", { mediaId }).then(buy => {
+              if (buy.code == 1) {
+                var buy = buy.data;
+                if (buy.length > 0) {
+                  this.catalogue.map((chapter, idx) => {
+                    buy.map(has => {
+                      if (chapter.id == has.chaperId) {
+                        console.log(this.catalogue[idx]);
+                        this.$set(this.catalogue[idx], "is_free", 0);
+                      }
+                    });
+                  });
+                }
+              }
+            });
+          }
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      // this.$api.getAllChapter(opt).then(res => {
+      //   if (res.code == 1) {
+      //     // console.log(res);
+      //     var data = res.data;
+      //     if (this.catalogue.length == 0) {
+      //       this.catalogue = data.list;
+      //       if (data.list.length > 0) {
+      //         this.readTxt = data.list[0].title;
+      //       }
+      //       // console.log(this.catalogue);
+      //     } else {
+      //       this.catalogue = [];
+      //     }
+      //   }
+      // });
+    },
+    getBookDetl() {
       var params = this.params,
         id = params.id;
       if (!id) {
         return;
       }
-      //测试数据
-      // this.$axios.post("/test/detail").then(res => {
-      //   this.$bus.$emit("loading", false); //关闭loading加载效果
-      //   var data = res.data;
-      //   data = data.data ? data.data : data;
-      //   this.bookList = data;
-      //   this.$set(this.autoSize, "src", data.show_img);
-      // });
+      // console.log("请求数据");
       this.$api
-        .getDetail({ id })
+        .getData("getDetail", { id })
         .then(res => {
-          if (res.code != 1) {
-            this.$bus.$emit("loading", false); //关闭loading加载效果
-            return;
-          }
-          var data = res.data;
-          if (JSON.stringify(data.detail) != "{}") {
-            this.bookList = data.detail;
+          // console.log(res);
+          if (res.code == 1) {
+            var data = res.data;
             // console.log(this.bookList);
+            this.$set(this, "bookList", data.detail);
             //设置模糊框尺寸
             this.$set(this.autoSize, "src", data.detail.show_img);
           }
-          this.$bus.$emit("loading", false); //关闭loading加载效果
+          this.$bus.$emit("loading", false); //关闭loading
         })
         .catch(err => {
-          console.log(err);
+          console.log("server error");
+          this.$bus.$emit("loading", false); //关闭loading
         });
     }
   },
   watch: {
     $route: {
       handler(to, from) {
-        //this.$bus.$emit("loading", true); //loading加载效果
-        console.log(to, from);
-        //详情页切换时刷新数据
-        if (to.name == "new_detl") {
-          //视图页返回不刷新数据
-          if (from.name != "view") {
-            this.start(); //初始化
-          } else {
-            console.log(from);
-          }
-        }
+        if (from.name == "view") this.from = "view";
+        else this.from = "";
       },
       deep: true
     }
@@ -330,7 +399,9 @@ export default {
 }
 
 .cont_detl > p:first-child {
-  font-size: 30px;
+  font-weight: bold;
+  color: #666;
+  font-size: 18px; /*no*/
 }
 
 /* 图片信息 */
@@ -361,11 +432,11 @@ export default {
   width: 260px;
   height: 350px;
   margin: 0 0.75rem 0 1rem;
-  background-image: url(data:image/png;base64,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);
+  background: #ccc
+    url(data:image/png;base64,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)
+    no-repeat 50% 50%;
   background-position: center center;
-  background-repeat: no-repeat;
-  background-size: 50% 50%;
-  background-color: #ccc;
+  /* background-size: 50% 50%; */
 }
 
 .comic_box .comic_info_list {
@@ -399,6 +470,11 @@ export default {
   font-size: 35px;
   margin-bottom: 20px;
   font-weight: bold;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  word-break: break-all;
 }
 
 .comic_box .c_mar {
@@ -412,6 +488,8 @@ export default {
 /* tab栏 */
 .comic_desc {
   font-size: 25px;
+  background: #fbf5f5;
+  padding-bottom: 10px;
 }
 
 .comic_desc .tabBar {
@@ -442,6 +520,7 @@ export default {
 /* tab详情栏 */
 .container_item {
   color: #555;
+  /* border-bottom:5px solid #f8f8f8; */
 }
 
 .container_item .cont {
@@ -472,7 +551,7 @@ export default {
   border-top: 2px solid #eee;
   bottom: 0;
   left: 0;
-  z-index: 10;
+  z-index: 100;
   display: flex;
 }
 
@@ -496,6 +575,7 @@ export default {
   font-size: 30px;
   cursor: pointer;
   background: #ffa500;
+  color: #fff;
 }
 
 .book_fixed .book_tool a {

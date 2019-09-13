@@ -12,9 +12,14 @@ function getData(url, params) {
 }
 
 // post
-function postData(url, data) {
+function postData(url, data, config) {
   return new Promise((resolve, reject) => {
-    axios.post(url, data).then(response => {
+    config = config || {
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+      }
+    }
+    axios.post(url, data, config).then(response => {
       resolve(response.data);
     }).catch(err => {
       reject(err);

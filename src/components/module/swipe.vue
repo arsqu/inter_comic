@@ -9,7 +9,8 @@
     <mt-swipe :auto="3000">
       <mt-swipe-item class="slide" v-for="(item,idx) in bannerList" :key="idx">
         <div class="def_view">
-          <img :src="item.show_img||''" @click="tar_href(item.id,item.title)" />
+          <!-- <img v-lazy="item.show_img" @click="tar_href(item.id,item.title)" /> -->
+          <img :src="item.group_img||''" @click="tar_href(item.id,item.title)" />
         </div>
       </mt-swipe-item>
     </mt-swipe>
@@ -34,7 +35,9 @@ export default {
   methods: {
     tar_href(id, title) {
       console.log("跳转详情页");
-      this.$router.push({ name: "new_detl", params: { id, title } });
+      if (id) {
+        this.$router.push({ name: "new_detl", params: { id, title } });
+      }
     }
   }
 };
@@ -63,11 +66,6 @@ export default {
   height: 435px;
   color: #fff;
   font-size: 30px;
-  text-align: center;
-}
-.page-swipe-desc {
-  text-align: center;
-  color: #666;
 }
 </style>
 

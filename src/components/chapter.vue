@@ -63,10 +63,6 @@ export default {
   background: #f5f5ee;
 }
 
-.bookCate >>> .cont_book_list .book_item .lock .cont_money {
-  /* padding-right: 0; */
-}
-
 .bookCate >>> .cont_book_list .book_item li {
   margin-bottom: 4%;
 }

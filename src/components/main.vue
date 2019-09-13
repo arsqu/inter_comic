@@ -50,98 +50,80 @@ export default {
     this.init(); //初始化
   },
   activated() {
-    console.log("缓存触发");
-    if (!this.$route.meta.isBack) {
-      return;
-    }
-    this.sendMsg();
+    // console.log("缓存触发");
+    // if (!this.$route.meta.isBack) {
+    //   return;
+    // }
+    this.$bus.$emit("navBar", false); //关闭loading加载效果
+    this.$bus.$emit("loading", false); //关闭loading加载效果
   },
-  beforeRouteEnter(to, from, next) {
-    console.log("进入路由");
-    next();
-  },
-  beforeRouteLeave(to, from, next) {
-    next();
-  },
+  // beforeRouteEnter(to, from, next) {
+  //   console.log("进入路由");
+  //   next();
+  // },
+  // beforeRouteLeave(to, from, next) {
+  //   next();
+  // },
   methods: {
     init() {
-      // this.getBanner(); //获取广告
       this.getData(); //首页媒体类目
-    },
-    sendMsg() {
-      this.$bus.$emit("loading", false); //关闭loading加载效果
-    },
-    //轮播图
-    getBanner() {
-      // var pic = localStorage.getItem("bannerPic"); //获取轮播图的缓存数据
-      // if (!pic) {
-      //轮播图缓存
-      this.$api.getBanner().then(res => {
-        var arr = res;
-        console.log(res);
-        if (res.List && res.List.length > 0) {
-          this.bannerList = res.List;
-        }
-        setTimeout(() => {
-          //模拟1s延迟请求
-          if (this.bannerList.length == 0) {
-            this.bannerList = arr; //没有则填充
-          }
-          localStorage.setItem("bannerPic", JSON.stringify(arr)); //缓存轮播图
-        }, 1000);
-      });
-      // } else {
-      //   //读取轮播图缓存
-      //   me.bannerList = JSON.parse(pic);
-      // }
     },
     //图书数据
     getData() {
-      //测试banner图数据
-      /*
-      this.$axios.post("/test/getCateGory").then(res => {
-        var data = res.data;
-        data = data.data ? data.data : data;
-        //测试数据
-        data.unshift({
-          GroupName: "banner",
-          GroupId: 0,
-          List: [
-            { group_img: "http://dummyimage.com/102" },
-            { group_img: "http://dummyimage.com/103" },
-            { group_img: "http://dummyimage.com/104" },
-            { group_img: "http://dummyimage.com/105" },
-            { group_img: "http://dummyimage.com/106" },
-            { group_img: "http://dummyimage.com/107" }
-          ]
-        });
-        this.bannerList =
-          data.slice(0, 1)[0].List.length > 0 ? data.slice(0, 1)[0].List : [];
-        if (data[1]) {
-          this.bookList = data.slice(1);
-        }
-        //图书栏
-        this.loadState = false; //关闭loading效果
-      });
-      */
-      this.$api.getCateGory().then(res => {
-        console.log(res);
-        if (res.code == 1) {
-          var data = res.data;
-          if (data.length > 0) {
+      this.$api
+        .getData("getBookList")
+        .then(res => {
+          // console.log(res);
+          if (res.code == 1) {
+            var data = res.data;
+            data = data.data ? data.data : data;
             // console.log(data);
-            this.bannerList = data[0].List.length > 0 ? data[0].List : [];
-            // console.log(this.bannerList);
-            if (data[1]) {
-              var bookList = data.slice(1);
-              this.bookList = this.exchangeName(bookList);
-              // this.bookList = data.slice(1);
-              console.log(this.bookList);
+            // data.unshift({
+            //   GroupName: "banner",
+            //   GroupId: 0,
+            //   List: [
+            //     { show_img: "http://dummyimage.com/102" },
+            //     { show_img: "http://dummyimage.com/103" },
+            //     { show_img: "http://dummyimage.com/104" },
+            //     { show_img: "http://dummyimage.com/105" },
+            //     { show_img: "http://dummyimage.com/106" },
+            //     { show_img: "http://dummyimage.com/107" }
+            //   ]
+            // });
+            if (data.length > 0) {
+              var list = data[0].List;
+              this.bannerList = list.length > 0 ? list : [];
+              if (data[1]) {
+                var bookList = data.slice(1);
+                this.bookList = this.exchangeName(bookList);
+                // console.log(this.bookList);
+              }
             }
+            this.loadState = false;
           }
-        }
-        this.loadState = false; //关闭loading效果
-      });
+        })
+        .catch(err => {
+          console.log(err);
+        });
+      // this.$api.getCateGory().then(res => {
+      //   console.log(res);
+      //   if (res.code == 1) {
+      //     var data = res.data;
+      //     if (data.length > 0) {
+      //       // console.log(data);
+      //       var list = data[0].List;
+      //       this.bannerList = list.length > 0 ? list : [];
+      //       // console.log(this.bannerList);
+      //       if (data[1]) {
+      //         var bookList = data.slice(1);
+      //         this.bookList = this.exchangeName(bookList);
+      //         // this.bookList = data.slice(1);
+      //         console.log(this.bookList);
+      //       }
+      //     }
+      //   }
+      //   this.loadState = false; //关闭loading效果
+      // });
     },
     exchangeName(book) {
       var opt = {
@@ -170,34 +152,27 @@ export default {
 .nav_list {
   background: url("/static/img/banner_bottom.png") no-repeat;
   position: relative;
-  z-index: 2;
+  z-index: 10;
   width: 100%;
-  height: 1rem;
-  margin-top: -1rem;
-  background-size: 100% 1rem;
+  height: 80px;
+  margin-top: -80px;
+  background-size: 100% 80px;
   display: flex;
   text-align: center;
-}
-
-.nav_list > li {
-  display: flex;
-}
-
-.nav_list a {
-  display: flex;
-  cursor: pointer;
-  align-items: center;
 }
 
 .nav_list li {
   width: 50%;
   height: 80px;
+  line-height: 80px;
   font-size: 28px;
-  justify-content: center;
-  align-items: center;
   background: #fff;
   outline: 0 none;
-  margin-top: 0.5rem;
+  margin-top: 40px;
+}
+
+.nav_list .nav_icon {
+  vertical-align: middle;
 }
 
 .nav_list .nav_icon,
@@ -209,6 +184,7 @@ export default {
 
 .nav_list .nav_txt {
   margin: 0 20px;
+  vertical-align: middle;
 }
 
 .push_box .push_column {
@@ -218,7 +194,9 @@ export default {
 
 /* 推荐栏 */
 .push_item {
-  margin-top: 1rem;
+  background: #fbf5f5;
+  padding-top: 45px;
+  /* margin-top: 15px; */
 }
 </style>
 

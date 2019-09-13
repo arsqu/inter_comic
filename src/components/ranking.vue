@@ -20,7 +20,7 @@
       <div
         class="scroll_tab"
         v-infinite-scroll="loadMore"
-        infinite-scroll-disabled="loading"
+        infinite-scroll-disabled="isScroll"
         infinite-scroll-distance="15"
       >
         <template v-for="(item,key) in group">
@@ -31,8 +31,8 @@
               v-show="isHover[0]+ isHover[1] == key+i"
               :key="key+i"
             >
-              <!-- rankState为序号 -->
-              <app-list :boxList="boxT[key+i]" :rankState="true" :loadState="loading" />
+              <!-- rankState为排序序号 -->
+              <app-list :boxList="boxT[key+i]" :rankState="true" />
             </div>
           </template>
         </template>
@@ -55,16 +55,17 @@ const listModule = () => import("./module/listModule");
 export default {
   data() {
     return {
-      loading: false,
+      // isScroll: false,
       group: {
         flag: [],
         isOver: [],
         payTyp: []
       },
-      isHover: "", //当前点击项
-      boxT: {}, //排行数据存放区
-      page: [], //排行分页
       cache: [], //缓存
+      boxT: {}, //排行数据存放区
+      scrollState: {}, //滚动状态
+      page: {}, //分页
+      isHover: "", //当前点击项
       loadState: false //加载状态
     };
   },
@@ -72,34 +73,48 @@ export default {
     "app-list": listModule
   },
   created() {
-    this.group = {
-      flag: this.$t("index.rankList.flag"),
-      isOver: this.$t("index.rankList.isOver"),
-      payTyp: this.$t("index.rankList.payTyp")
-    };
+    this.init();
     // console.log("rank_created");
   },
   mounted() {
     // console.log($t);
-    this.isHover = ["flag", "1"]; //默认选中第一条
-    this.init();
+    // this.isHover = ["flag", "1"]; //默认选中第一条
+    // this.init();
     // console.log("rank_mounted");
+  },
+  activated() {
+    console.log("activated");
+    this.scrollState[this.isHover.join("")] = false;
+    this.sendMsg("navBar", this.$t("index.updateHead"));
+  },
+  beforeRouteLeave(to, from, next) {
+    this.scrollState[this.isHover.join("")] = true;
+    next();
+  },
+  computed: {
+    isScroll: function() {
+      return this.scrollState[this.isHover.join("")];
+    }
   },
   methods: {
     init() {
-      this.sendMsg("navBar", this.$t("index.rankHead"));
+      this.isHover = ["flag", "1"]; //默认选中第一条
+      this.group = {
+        flag: this.$t("index.rankList.flag"),
+        isOver: this.$t("index.rankList.isOver"),
+        payTyp: this.$t("index.rankList.payTyp")
+      };
       this.defData(); //数据初始化
-      // this.getRank(); //请求数据
-      // console.log("初始化数据");
+      this.sendMsg("navBar", this.$t("index.rankHead"));
+      // this.loadMore();
     },
     //初始值
     defData() {
       for (var k in this.group) {
         this.group[k].forEach((res, idx) => {
           if (res) {
-            //内容框
             this.$set(this.boxT, [k + idx], []);
-            //分页初始参数
+            this.$set(this.scrollState, [k + idx], false);
             this.$set(this.page, [k + idx], {
               offset: 0,
               limit: 10,
@@ -122,23 +137,18 @@ export default {
     },
     loadMore() {
       console.log("测试滚动");
-      this.getRank();
+      this.getRank(1);
     },
     //获取排行
-    getRank() {
+    getRank(isScroll) {
       var state = this.isHover,
         k = state[0],
         idx = state[1],
         key = k + idx;
-      var group = this.group;
-      var cache = this.cache;
-      // console.log(k + idx);
-      // if (this.page[key].total < this.page[key]) {
-      //   console.log("最后一页");
-      //   return;
-      // }
+      var cache = this.cache,
+        group = this.group;
       //缓存记录
-      if (!state && cache.indexOf(k + idx) != -1) {
+      if (!isScroll && cache.indexOf(key) != -1) {
         return;
       }
       if (this.loadState) {
@@ -147,32 +157,46 @@ export default {
       }
       cache.push(k + idx);
       // console.log(cache);
-      var page = this.page[key]; //当前项分页参数
-      var opt = Object.assign({}, page);
+      var page = this.page[key],
+        opt = Object.assign({}, page);
       opt[k] = idx;
       this.loadState = true; //loading加载效果
       // console.log("请求数据");
-      this.$api.getCusRank(k, opt).then(res => {
-        // console.log(res);
-        if (res.code == 1) {
-          var data = res.data;
-          if (this.boxT[key].length == 0) {
-            this.$set(this.boxT, [key], data.list);
-          } else {
-            if (res.length > this.boxT[key].length) {
-              this.boxT[key] = this.boxT[key].concat(data.list);
-              this.$set(this.page, [key], {
-                limit: 10,
-                offset: page.offset + 1,
-                total: res.total
-              });
-              // console.log(this.page[key]);
+      this.$api
+        .getCusRank(k, opt)
+        .then(res => {
+          // console.log(res);
+          if (res.code == 1) {
+            var data = res.data;
+            if (this.boxT[key].length == 0) {
+              this.$set(this.boxT, [key], data.list);
+            } else {
+              if (this.boxT[key].length < data.total) {
+                this.boxT[key] = this.boxT[key].concat(data.list);
+              } else {
+                this.$set(this.scrollState, [key], true);
+                this.loadState = false;
+                return;
+              }
             }
+            this.$set(this.page, [key], {
+              limit: 10,
+              offset: data.offset + data.limit,
+              total: data.total
+            });
+          } else {
+            this.$set(this.scrollState, [key], true); //停止滚动
           }
-        }
-        this.loadState = false;
-        // console.log(this.boxT, page);
-      });
+          this.loadState = false;
+          // console.log(this.boxT, page);
+        })
+        .catch(err => {
+          this.loadState = false;
+          this.$set(this.scrollState, [key], true);
+          console.log(err);
+          console.log("server error");
+          // console.log("关闭滚动");
+        });
       // //测试mock
       // this.$axios.post("/test/ranking", page).then(res => {
       //   // console.log(page);

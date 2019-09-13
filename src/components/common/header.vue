@@ -14,11 +14,14 @@
     </div>
     <!-- <div>{{$route.name}}</div> -->
     <div class="top_tools">
-      <router-link :to="{name:'search'}">
+      <!-- <router-link :to="{name:'search'}">
         <img src="/static/img/icon/search.png" alt="search" />
-      </router-link>
-      <router-link :to="{name:'main'}">
+      </router-link>-->
+      <router-link :to="{name:'main'}" v-show="!showHome">
         <img src="/static/img/icon/home.png" alt="home" />
+      </router-link>
+      <router-link :to="{name:'userInfo'}" v-show="showHome">
+        <img src="/static/img/icon/user.png" alt="home" />
       </router-link>
     </div>
   </div>
@@ -31,8 +34,10 @@ export default {
   },
   props: {
     loader: Boolean,
+    showHome: Boolean,
     comicTxt: String
   },
+  created() {},
   methods: {
     reBack() {
       this.$router.go(-1);
@@ -53,13 +58,14 @@ export default {
   width: 100%;
   background: #fff;
   font-size: 30px;
-  padding: 0 15px;
+  padding: 0 25px;
   display: flex;
   align-items: center;
 }
 
 .top_title {
-  flex: 1;
+  /* flex: 1; */
+  width: 90%;
 }
 
 .top_logo,
@@ -76,6 +82,8 @@ export default {
 .top_detl_txt {
   color: #555;
   padding-left: 10px;
+  display: flex;
+  align-items: center;
 }
 
 .top_tools a {
@@ -96,24 +104,22 @@ export default {
 
 .icon_back {
   z-index: 100;
-}
-
-.icon_back:after {
   border-top: 4px solid transparent;
   border-right: 4px solid transparent;
   border-color: orange;
   height: 30px;
   width: 30px;
-  content: "";
+  vertical-align: middle;
   transform: rotate(-135deg);
   display: inline-block;
 }
 
 .comicTxt {
-  width: 70%;
+  width: 75%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  vertical-align: middle;
   display: inline-block;
 }
 </style>

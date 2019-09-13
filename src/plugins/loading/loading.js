@@ -1,6 +1,5 @@
 const loading = () => import('./loading.vue');
-
-export default (Vue) => {
-  Vue.component('loading', loading);
-}
+// export default (Vue) => {
+Vue.component('loading', loading);
+// }
 

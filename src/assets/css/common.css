@@ -72,13 +72,15 @@ video {
     background:transparent;
 }
 
+html{
+  height:100%;
+}
+
 body {
     font-size: 14px;
-    /* height: 100vh; */
+    /* height: calc(100% - 100px); */
     -webkit-text-size-adjust: 100%;
-    /* background: #f9f9f9; */
     font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-    background-color: #f8f8f8;
 }
 
 * {
@@ -179,11 +181,10 @@ input {
     background: #3478F6;
 }
 
-
 /* swipe 组件样式*/
 
 .mint-swipe-indicators {
-    bottom: .55rem;
+    bottom: 45px;
 }
 
 .mint-swipe-indicator {
@@ -204,7 +205,6 @@ input {
 
 
 /* spinner 组件 */
-
 .page-infinite-loading {
     text-align: center;
     height: 80px;
@@ -223,5 +223,6 @@ input {
 .prompt_week {
   color: #555;
   font-size: 28px;
+  padding:20px;
   text-align: center;
 }

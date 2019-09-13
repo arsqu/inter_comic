@@ -10,11 +10,18 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/api': {
+      '/go': {
         target: 'http://192.168.1.103:86',//后端接口地址
         changeOrigin: true,//是否允许跨越
         pathRewrite: {
-          '^/api': '',//重写,
+          '^/go': '',//重写,
+        }
+      },
+      '/java': {
+        target: 'http://localhost:8873',//后端接口地址
+        changeOrigin: true,//是否允许跨越
+        pathRewrite: {
+          '^/java': '',//重写,
         }
       }
     },
