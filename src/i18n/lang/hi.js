@@ -54,13 +54,22 @@ export default {
     more: 'adhik'
   },
   tips: {
-    notlogin:'krpaya login karen',
-    tiplogin:'adhik dekhane ke lie login karen',
+    404: 'vaapas ghar aa gaya',
+    toLogin: 'krpaya pahale login karen',
+    notlogin: 'krpaya login karen',
+    tiplogin: 'adhik dekhane ke lie login karen',
     loading: 'lod ho raha hai',
     notHave: 'vartamaan kolam ke lie koee kaartoon nahin',
     nomore: 'abhee aur kaartoon nahin',
     notupdate: 'aaj ke lie koee komik apadet nahin',
     end: 'aur koee saamagree nahin'
+  },
+  view: {
+    tips: {
+      pay: 'vartamaan mein bhugataan kiya gaya adhyaay',
+      first: "pahale se hee pahala prshth",
+      last: 'pahale se hee antim prshth'
+    }
   },
   userInfo: {
     tabs: ['itihaas', 'anshadaan']

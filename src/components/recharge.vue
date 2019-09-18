@@ -35,10 +35,14 @@ export default {
       isComplete: false
     };
   },
-  created() {},
   created() {
-    // this.$t("index.updateHead")
-    this.$bus.$emit("navBar", "recharge");
+    this.$bus.$emit("navBar", this.$t("recharge.recharge"));
+    var isLogin = localStorage.getItem("isLogin");
+    if (!isLogin) {
+      this.$toast(this.$t("tips.toLogin"));
+      this.$router.push({ name: "login" });
+      return;
+    }
   },
   activated() {
     // console.log("app_activated");

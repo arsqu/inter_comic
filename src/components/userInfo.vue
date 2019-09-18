@@ -5,8 +5,11 @@
         <img src="/static/img/icon/default_head.png" alt />
       </div>
       <div class="infoList">
-        <div>{{uname}}</div>
-        <div class="balance">{{$t('detl.hasMoney')}}：{{money}}</div>
+        <div class="toLogin" v-if="!isLogin" @click="toLogin">{{$t('login.login')}}</div>
+        <template v-else>
+          <div class="login_name">{{uname}}</div>
+          <div class="balance">{{$t('detl.hasMoney')}}：{{money}}</div>
+        </template>
       </div>
       <div class="rechargeBtn">
         <span @click="recharge">{{$t('recharge.recharge')}}</span>
@@ -29,6 +32,7 @@ export default {
   data() {
     return {
       isCur: 1,
+      isLogin: false,
       tabList: [],
       //用户信息
       uname: "",
@@ -40,7 +44,6 @@ export default {
   created() {
     // console.log("created");
     this.tabList = this.$t("userInfo.tabList");
-    console.log(this.$t("userInfo.tabList"));
     this.init();
   },
   mounted() {
@@ -49,11 +52,24 @@ export default {
   },
   computed: {},
   methods: {
+    checkLogin() {
+      this.isLogin = false;
+      if (localStorage.getItem("isLogin")) {
+        this.isLogin = true;
+      } else {
+        console.log("未登录");
+        localStorage.setItem("loginUrl", this.$route.fullPath);
+      }
+    },
+    toLogin() {
+      this.$router.push({ name: "login" });
+    },
     recharge() {
       this.$router.push({ name: "recharge" });
     },
     init() {
       this.sendMsg("navBar", this.tabList[this.isCur]);
+      this.checkLogin();
       this.loadData();
     },
     toggle(idx) {
@@ -89,8 +105,8 @@ export default {
 .rechargeBtn > span {
   background: #ee7676;
   padding: 15px 15px;
-  font-size: 16px; /*no*/
-  border-radius: 20px;
+  font-size: 28px;
+  border-radius: 10px;
   color: #fff;
 }
 
@@ -103,7 +119,7 @@ export default {
 
 .info_box .balance {
   color: #e55c3f;
-  font-size: 15px; /*no*/
+  font-size: 30px;
 }
 
 .info_box .info_img {
@@ -113,12 +129,20 @@ export default {
 }
 
 .info_box .infoList {
-  font-size: 16px; /*no*/
+  font-size: 30px;
   color: #333;
   margin-right: 30px;
 }
 
-.info_box .infoList > div:first-child {
+.info_box .infoList > .toLogin {
+  color: #fff;
+  padding: 15px 25px;
+  background: #ee7676;
+  font-size: 28px;
+  border-radius: 10px;
+}
+
+.info_box .infoList > .login_name {
   margin-bottom: 15px;
 }
 
@@ -129,7 +153,7 @@ export default {
 }
 
 .tabTurn {
-  font-size: 16px; /*no*/
+  font-size: 30px;
   color: #333;
 }
 

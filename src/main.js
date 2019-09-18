@@ -3,6 +3,7 @@ import axios from 'axios'
 // import mintUiCom from './mintUiCom' //局部引入mintUi
 import './assets/css/common.css' //公共样式
 import 'amfe-flexible' //自适应
+import 'babel-polyfill'
 // import 'default-passive-events'
 // import './util/mock' //模拟数据
 import api from './util/api'

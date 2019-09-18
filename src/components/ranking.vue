@@ -136,7 +136,7 @@ export default {
       this.getRank();
     },
     loadMore() {
-      console.log("测试滚动");
+      // console.log("测试滚动");
       this.getRank(1);
     },
     //获取排行

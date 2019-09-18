@@ -50,10 +50,7 @@ export default {
     this.init(); //初始化
   },
   activated() {
-    // console.log("缓存触发");
-    // if (!this.$route.meta.isBack) {
-    //   return;
-    // }
+    console.log("缓存触发");
     this.$bus.$emit("navBar", false); //关闭loading加载效果
     this.$bus.$emit("loading", false); //关闭loading加载效果
   },
@@ -78,18 +75,6 @@ export default {
             var data = res.data;
             data = data.data ? data.data : data;
             // console.log(data);
-            // data.unshift({
-            //   GroupName: "banner",
-            //   GroupId: 0,
-            //   List: [
-            //     { show_img: "http://dummyimage.com/102" },
-            //     { show_img: "http://dummyimage.com/103" },
-            //     { show_img: "http://dummyimage.com/104" },
-            //     { show_img: "http://dummyimage.com/105" },
-            //     { show_img: "http://dummyimage.com/106" },
-            //     { show_img: "http://dummyimage.com/107" }
-            //   ]
-            // });
             if (data.length > 0) {
               var list = data[0].List;
               this.bannerList = list.length > 0 ? list : [];
@@ -105,25 +90,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      // this.$api.getCateGory().then(res => {
-      //   console.log(res);
-      //   if (res.code == 1) {
-      //     var data = res.data;
-      //     if (data.length > 0) {
-      //       // console.log(data);
-      //       var list = data[0].List;
-      //       this.bannerList = list.length > 0 ? list : [];
-      //       // console.log(this.bannerList);
-      //       if (data[1]) {
-      //         var bookList = data.slice(1);
-      //         this.bookList = this.exchangeName(bookList);
-      //         // this.bookList = data.slice(1);
-      //         console.log(this.bookList);
-      //       }
-      //     }
-      //   }
-      //   this.loadState = false; //关闭loading效果
-      // });
     },
     exchangeName(book) {
       var opt = {

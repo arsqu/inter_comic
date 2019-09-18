@@ -54,13 +54,22 @@ export default {
     more: 'more'
   },
   tips: {
-    notlogin:'please sign in',
-    tiplogin:'Login to see more',
+    404: 'back to the homepage',
+    toLogin: 'please log in first',
+    notlogin: 'please sign in',
+    tiplogin: 'Login to see more',
     loading: 'Loading',
     notHave: 'No more cartoon for current column',
     nomore: 'No more cartooons',
     notupdate: 'No more updated cartoons today',
     end: 'Already to the end'
+  },
+  view: {
+    'tips': {
+      'pay': 'Currently paid chapter',
+      'first':'Already the first page',
+      'last':'Already the last page'
+    }
   },
   userInfo: {
     tabList: ['history', 'subscription']

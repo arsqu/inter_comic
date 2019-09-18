@@ -45,7 +45,7 @@ export default {
         //请求完成
         if (resolve.errorCode == 0) {
           this.chapterList = result.list;
-          console.log(resolve.viewName);
+          // console.log(resolve.viewName);
           this.sendMsg("navBar", resolve.viewName);
         }
       });

@@ -2,14 +2,13 @@
 // import Router from 'vue-router'
 // const list = () => import('@/components/cache/list')
 // const recommend = () => import('@/components/cache/recommend')
-// const downFile = () => import('@/components/cache/downFile') //下载
 // const detail = () => import('@/components/cache/detail') //详情页
 // const ebook = () => import('@/components/cache/ebook') //电子书
 
 // Vue.use(Router)
 
 // export default new Router({
-  export default new VueRouter({
+export default new VueRouter({
   routes: [{
     path: '/',
     name: 'main',
@@ -60,7 +59,7 @@
       title: '详情页'
     }
   }, {
-    path: '/view/:id',
+    path: '/view/:id/:bookId',
     name: 'view',
     component: () => import('@/components/view'),
     meta: {
@@ -106,6 +105,14 @@
     path: '/search',
     name: 'search',
     component: () => import('@/components/search'), //搜索
+  },
+  {
+    path: "/404",
+    name: "notFound",
+    component: () => import('@/components/common/404')
+  }, {
+    path: "*", // 此处需特别注意置于最底部
+    redirect: "/404"
   }
     // , {
     //   path: '/list/:key/:url',
@@ -115,11 +122,6 @@
     //   path: '/recommend/:key/:url',
     //   name: 'recommend',
     //   component: recommend
-    // },
-    // {
-    //   path: '/downFile/:key/:url',
-    //   name: 'downFile',
-    //   component: downFile
     // },
     // {
     //   path: '/detail',

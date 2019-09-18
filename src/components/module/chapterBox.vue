@@ -1,11 +1,7 @@
 <template>
   <!-- 弹出框 -->
   <div v-show="isRecharge" :class="['recharge',isRecharge?'show':'']">
-    <img
-      class="close"
-      @click="closeModal"
-      src="http://css99tel.cdndm5.com/v201909042046/blue/images/mobile/win-cross.png"
-    />
+    <img class="close" @click="closeModal" src="/static/img/icon/win-cross.png" />
     <div class="rechargeDetl">
       <div>
         <span>

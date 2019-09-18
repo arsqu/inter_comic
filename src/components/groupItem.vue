@@ -12,7 +12,6 @@
         infinite-scroll-distance="15"
       >
         <!-- infinite-scroll-immediate-check="true" -->
-        <!-- infinite-scroll-immediate-check="check" -->
         <template v-if="bookList.length>0">
           <li
             class="book_detl"

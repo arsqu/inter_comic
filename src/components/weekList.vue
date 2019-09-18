@@ -66,7 +66,7 @@ export default {
     // this.getUpdate();
   },
   activated() {
-    // console.log("activated");
+    console.log("activated");
     this.scrollState["d" + this.isDay] = false;
     this.sendMsg("navBar", this.$t("index.updateHead"));
   },
@@ -204,7 +204,6 @@ export default {
 
 .update_time li {
   position: relative;
-  /* padding: 25px 0; */
   flex: 1;
   background: #fff;
   text-align: center;

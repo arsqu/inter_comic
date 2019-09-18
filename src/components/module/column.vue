@@ -19,21 +19,21 @@
               @click="tar_href(detl.id,detl.title)"
             >
               <div class="book_pto">
-                <!-- v-lazy="item" :key="item" -->
-                <!-- <img :src="detl.show_img" alt /> -->
-                <img v-lazy="detl.show_img" alt />
+                <img v-lazy="detl.show_img" :key="idx" alt />
               </div>
               <div class="book_desc">
                 <span class="book_txt over_ellipsis">{{detl.title}}</span>
-                <span class="book_update over_ellipsis">{{$t('column.chapter')}} {{detl.update}}</span>
+                <!-- <span class="book_update over_ellipsis">{{$t('column.chapter')}} {{detl.week_no}}</span> -->
+                <span
+                  class="book_update over_ellipsis"
+                >{{$t('index.update')}} {{$t('index.week')[detl.week_no]}}</span>
               </div>
             </li>
           </template>
           <div
             class="prompt_txt"
-            v-if="item.List.length<6&&item.List.length>0"
+            v-if="item.List.length<6&&item.List.length>=0"
           >{{$t('tips.notHave')}}</div>
-          <!-- <div class="prompt_txt" v-else></div> -->
         </ul>
       </div>
     </div>
@@ -50,7 +50,7 @@ export default {
   },
   methods: {
     tar_href(id, title) {
-      console.log("跳转详情页");
+      // console.log("跳转详情页");
       this.$router.push({ name: "new_detl", params: { id, title } });
     },
     loadGroupItem(id, groupName) {
@@ -77,7 +77,7 @@ export default {
 .push_column {
   font-size: 30px;
   padding: 25px;
-  margin-bottom:10px;
+  margin-bottom: 10px;
   background: #fff;
 }
 

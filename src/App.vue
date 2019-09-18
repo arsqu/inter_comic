@@ -89,11 +89,12 @@ export default {
         var opt = {
           chaperId: this.chapterId,
           mediaId: this.bookId,
-          money: this.price
+          money: this.chapterInfo.price
         };
+        console.log(this.chapterInfo.price);
         //购买章节
         this.$api.postDataN("buyChapter", Qs.stringify(opt)).then(res => {
-          // console.log(res);
+          console.log(res);
           var msg = "";
           var data = res.data;
           if (res.code == 1) {
@@ -104,9 +105,7 @@ export default {
             this.unlock();
             // msg = "购买成功";
             msg = this.$t("detl.payStatus.success");
-            if (data.shortUrl) {
-              window.open(data.shortUrl);
-            }
+            console.log("购买成功");
           } else if (res.code == 103) {
             //余额不足
             this.$router.push({ name: "recharge" });
@@ -176,7 +175,7 @@ export default {
       var me = this;
       // 页头
       this.$bus.$on("navBar", data => {
-        // console.log(data);
+        // console.log("onnavBar", data);
         //view组件浏览时隐藏header
         if (typeof data == "object" && data.hasOwnProperty("show")) {
           me.headShow = data.show;
@@ -201,7 +200,7 @@ export default {
         me.isRecharge = true;
       });
       this.$bus.$on("comic", data => {
-        // console.log("oncomic", data);
+        console.log("oncomic", data);
         me.bookId = data.bookId;
         me.chapterId = data.chapterId;
         me.chapterIdx = data.chapterIdx;

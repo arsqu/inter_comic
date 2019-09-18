@@ -4,7 +4,7 @@
     <div class="top_title">
       <div class="top_logo">
         <div>
-          <span class="icon_logo" v-show="loader">Manga</span>
+          <span class="icon_logo" v-show="loader">Mangaline</span>
         </div>
         <div class="top_detl_txt" v-show="!loader">
           <span class="icon_back" @click="reBack"></span>

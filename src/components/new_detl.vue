@@ -65,7 +65,10 @@
         <!-- 目录 -->
         <div class="cont" v-show="isCur == 2">
           <div class="cont_book_list">
-            <category :bookList="bookList" :catalogue="catalogue" />
+            <loading :loadState="loadState" />
+            <template v-if="!loadState">
+              <category :bookList="bookList" :catalogue="catalogue" />
+            </template>
           </div>
         </div>
       </div>
@@ -90,8 +93,8 @@ export default {
   data() {
     return {
       isCur: 1,
-      defView: 1,
       id: null,
+      loadState: false,
       params: {
         //路由参数
         id: null,
@@ -107,7 +110,7 @@ export default {
       tabList: [],
       page: {
         offset: 0,
-        limit: 200,
+        limit: 500,
         total: 0
       },
       //图书详情
@@ -177,6 +180,7 @@ export default {
         title: this.$t("column.catalog")
       }
     ];
+    localStorage.setItem("detl", this.$route.fullPath);
     // console.log("detl_created");
   },
   // beforeRouteEnter(to, from, next) {
@@ -204,14 +208,14 @@ export default {
   //缓存页
   activated() {
     var params = this.$route.params;
-    console.log("activated");
+    // console.log("activated");
     this.isCur = this.from == "view" ? 2 : 1;
     if (params.id != this.bookId) {
       this.def();
       this.init();
       // console.log("update");
     } else {
-      // this.checkLogin();
+      this.checkLogin();
       this.$bus.$emit("loading", false); //关闭loading加载效果
     }
     this.$bus.$emit("navBar", params.title); //同步漫画名
@@ -223,26 +227,44 @@ export default {
     this.init();
   },
   destroyed() {
-    // console.log(1);
-    this.$bus.$off("loading");
-    this.$bus.$off("navBar");
+    // console.log('done');
+    // this.$bus.$off("loading");
+    // this.$bus.$off("navBar");
     // this.$bus.$off("isLogin"); //同步漫画名
   },
   methods: {
     //查看漫画详情
     viewDetl() {
-      // console.log(this.defView);
-      if (!this.defView) {
-        this.$router.push({ name: "view" });
+      var opt = this.catalogue[0];
+      // console.log(opt);
+      var id = opt.id;
+      if (opt && opt.is_free) {
+        this.$bus.$emit("comic", {
+          bookId: this.id,
+          chapterId: opt.id,
+          chapterIdx: 1,
+          title: opt.title,
+          orderNo: opt.order_no,
+          price: this.price
+        });
+        //已登录
+        if (localStorage.getItem("isLogin")) {
+          this.$bus.$emit("isLogin", 1);
+        } else {
+          // console.log("isLogin", 0);
+          this.$bus.$emit("isLogin", 0);
+        }
+        this.$bus.$emit("recharge", 1);
+        return;
       }
+      localStorage.setItem("bookId", this.id);
+      this.$router.push({
+        name: "view",
+        params: { id, bookId: this.id }
+      });
     },
     checkLogin() {
-      if (localStorage.getItem("isLogin")) {
-        this.$bus.$emit("isLogin", 1); //同步漫画名
-      } else {
-        console.log("未登录");
-        this.$bus.$emit("isLogin", 0); //同步漫画名
-        // console.log(this.$route);
+      if (!localStorage.getItem("isLogin")) {
         localStorage.setItem("loginUrl", this.$route.fullPath);
       }
     },
@@ -250,7 +272,7 @@ export default {
     def() {
       var params = (this.params = this.$route.params);
       this.bookId = params.id;
-      // this.checkLogin();
+      this.checkLogin();
     },
     //初始化
     init() {
@@ -270,38 +292,42 @@ export default {
       this.$set(this.autoSize, "het", oHet);
     },
     getChapter(opt) {
+      this.loadState = true;
       return new Promise((resolve, reject) => {
+        localStorage.setItem("cache_chapter", []);
         this.$api
-          .getDataN("getAllChapter", opt)
+          // .getDataN("getAllChapter", opt)
+          .getData("getAllChapter", opt)
           // .postData("getAllChapter", opt)
           .then(res => {
-            // if (res.code == 1) {
-            // var data = res.data;
-            // console.log(data.list);
-            res.map(data => {
-              data.is_free = data.isFree;
-              data.order_no = data.orderNo;
-            });
-            this.$set(this, "catalogue", res);
-            // this.$set(this, "catalogue", data.list);
-            if (res.length > 0) {
-              // if (data.list.length > 0) {
-              var def = res[0];
-              // var def = data.list[0];
-              this.readTxt = def.title;
-              this.orderNo = def.order_no;
-              this.price = def.price;
-              this.defView = def.is_free;
+            if (res.code == 1) {
+              var data = res.data;
+              // console.log(data.list);
+              this.catalogue = [];
+              this.loadState = false;
+              // res.map(data => {
+              //   data.is_free = data.isFree;
+              //   data.order_no = data.orderNo;
+              // });
+              // this.$set(this, "catalogue", res);
+              this.$set(this, "catalogue", data.list);
+              localStorage.setItem("cache_chapter", JSON.stringify(data.list));
+              // if (res.length > 0) {
+              if (data.list.length > 0) {
+                // var def = res[0];
+                var def = data.list[0];
+                this.readTxt = def.title;
+                this.orderNo = def.order_no;
+              }
+              this.$bus.$emit("loading", false); //关闭loading
+              resolve(res);
+              return;
             }
             this.$bus.$emit("loading", false); //关闭loading
-            resolve(res);
-            // resolve(data);
-            // return;
-            // }
-            // this.$bus.$emit("loading", false); //关闭loading
-            // resolve(false);
+            resolve(false);
           })
           .catch(err => {
+            this.loadState = false;
             console.log("server error");
             this.$bus.$emit("loading", false); //关闭loading
             reject(err);
@@ -326,7 +352,7 @@ export default {
                   this.catalogue.map((chapter, idx) => {
                     buy.map(has => {
                       if (chapter.id == has.chaperId) {
-                        console.log(this.catalogue[idx]);
+                        //已购买章节置为免费
                         this.$set(this.catalogue[idx], "is_free", 0);
                       }
                     });
@@ -370,6 +396,8 @@ export default {
             var data = res.data;
             // console.log(this.bookList);
             this.$set(this, "bookList", data.detail);
+            this.price = data.detail.price;
+            localStorage.setItem("price", this.price);
             //设置模糊框尺寸
             this.$set(this.autoSize, "src", data.detail.show_img);
           }

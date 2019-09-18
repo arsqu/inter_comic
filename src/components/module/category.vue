@@ -11,9 +11,7 @@
           @click="book_view(item,idx)"
         >
           <a href="javascript:;">
-            <!-- <span class="cont_num">{{item.seqNum}}话</span> -->
             <span class="cont_num">{{$t('column.chapter')}} {{item.order_no}}</span>
-            <!-- <span class="cont_money" v-if="!item.hasBuy">{{item.price}}书币</span> -->
             <span class="cont_lock" v-if="item.is_free||item.hasBuy"></span>
           </a>
         </li>
@@ -60,11 +58,6 @@ export default {
         });
         //已登录
         if (localStorage.getItem("isLogin")) {
-          // this.$bus.$emit("isLogin", {
-          //   state: 1,
-          //   price: this.bookList.price
-          // });
-          // console.log("isLogin", 1);
           this.$bus.$emit("isLogin", 1);
         } else {
           // console.log("isLogin", 0);
@@ -73,8 +66,12 @@ export default {
         this.$bus.$emit("recharge", 1);
         return;
       }
-      this.$router.push({ name: "view", params: { id } });
-      console.log("查看图书");
+      localStorage.setItem("bookId", this.bookList.id);
+      this.$router.push({
+        name: "view",
+        params: { id, bookId: this.bookList.id }
+      });
+      // console.log("查看图书");
     }
   }
 };
