@@ -51,9 +51,11 @@ export default {
       prevChapter: {},
       prevIdx: null,
       next: null,
+      body: null,
       nextChapter: {},
       nextIdx: null,
-      now: null,
+      current: null,
+      currentIdx: null,
       timer: null,
       comicDetl: {},
       imgList: [],
@@ -71,20 +73,21 @@ export default {
     // 隐藏导航栏
     if (to.name != "view") {
       this.$bus.$emit("navBar", { show: true });
-      window.removeEventListener("click", this.showTools); //点击展示工具栏
+      this.body.removeEventListener("click", this.showTools); //点击展示工具栏
     }
     next();
   },
   created() {
     var route = this.$route.params; //路由参数
     this.id = route.id;
+    this.body = document.getElementsByTagName("body")[0];
     this.bookId = route.bookId; //路由下的漫画id
     this.review();
   },
   mounted() {
-    console.log("view_mounted");
+    // console.log("view_mounted");
     // console.log(route);
-    window.addEventListener("click", this.showTools); //点击展示工具栏
+    this.body.addEventListener("click", this.showTools); //点击展示工具栏
   },
   methods: {
     review() {
@@ -147,21 +150,23 @@ export default {
           if (i - 1 > -1) {
             this.$set(this, "prevChapter", list[i - 1]);
             this.prev = list[i - 1].is_free ? false : list[i - 1].id;
-            this.prevIdx = i;
+            this.prevIdx = i - 1;
           }
           if (i + 1 < list.length) {
             this.$set(this, "nextChapter", list[i + 1]);
             this.next = list[i + 1].is_free ? false : list[i + 1].id;
-            this.nextIdx = i;
+            this.nextIdx = i + 1;
           }
-          this.now = list[i].id;
-          console.log(this.prev, this.next);
+          this.current = list[i].id;
+          this.currentIdx = i;
+          // console.log(this.prev, this.next);
           break;
         }
       }
     },
     //点击出现工具栏
     showTools(e) {
+      // alert(1);
       e = e || event;
       this.headShow = true;
       clearTimeout(this.timer);
@@ -171,15 +176,6 @@ export default {
     },
     //返回上一层
     reBack() {
-      // this.$router.push({
-      //   name: "new_detl",
-      //   params: { id: this.bookId, title: "1" }
-      // });
-      // var path = localStorage.getItem("loginUrl");
-      // if (path.indexOf("new_detl") != -1) {
-      //   this.$router.push({ path });
-      //   return;
-      // }
       this.$router.history.go(-1);
     },
     showBox(opt, idx) {
@@ -211,14 +207,13 @@ export default {
         this.showBox(this.prevChapter, this.prevIdx);
         return;
       }
-      // console.log(this.prevIdx);
-      if (this.prev !== null && this.prev !== "" && this.prevIdx != 0) {
+      if (this.prev !== null && this.prev !== "" && this.currentIdx - 1 >= 0) {
         this.$router.push({
           name: "view",
           params: { id: this.prev, bookId }
         });
       } else {
-        this.$toast("view.tips.first");
+        this.$toast(this.$t("view.tips.first"));
       }
       console.log("prev");
     },
@@ -234,7 +229,7 @@ export default {
       if (
         this.next !== null &&
         this.next !== "" &&
-        this.nextIdx != this.chapterList.length
+        this.currentIdx + 1 < this.chapterList.length
       ) {
         // console.log("查看下一章", id, bookId);
         this.$router.push({
@@ -242,6 +237,8 @@ export default {
           params: { id: this.next, bookId }
         });
       } else {
+        // console.log(this.chapterList.length);
+        // console.log(this.currentIdx);
         this.$toast(this.$t("view.tips.last"));
       }
       console.log("next");
@@ -290,7 +287,6 @@ export default {
 <style scoped>
 .imgLayout {
   margin-top: -100px;
-  cursor: pointer;
 }
 
 /* 页头 */
@@ -374,15 +370,14 @@ export default {
 }
 
 .top_tools a {
-  /* margin: 0 10px;
-  width: 45px;
-  height: 45px;
-  display: inline-block; */
   margin: 0 10px;
   width: 100px;
   height: 100%;
   display: flex;
   align-items: center;
+}
+
+.bottom_bar a {
   justify-content: center;
 }
 
@@ -431,6 +426,10 @@ export default {
 /* 漫画容器 */
 .imgBox {
   position: relative;
+}
+
+.img_item {
+  cursor: pointer;
 }
 
 .img_item img[lazy="loading"],

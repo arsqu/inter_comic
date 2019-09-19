@@ -80,6 +80,9 @@ export default {
               this.bannerList = list.length > 0 ? list : [];
               if (data[1]) {
                 var bookList = data.slice(1);
+                bookList.map(res => {
+                  res.List = res.List.slice(0, 9);
+                });
                 this.bookList = this.exchangeName(bookList);
                 // console.log(this.bookList);
               }

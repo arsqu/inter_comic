@@ -73,15 +73,14 @@ export default {
   // },
   activated() {
     var param = this.$route.params;
-    this.isUpdate = false;
     // console.log("groupId", this.groupId);
     // console.log("paramId", param.id);
     if (this.groupId != param.id) {
       this.def();
-      this.init();
+      this.bookList = [];
       this.isScroll = false;
-      this.isUpdate = true;
-      // this.loadMore();
+      this.$set(this.page, "offset", 0);
+      this.getBook();
       console.log("update");
     } else {
       this.sendMsg("navBar", this.type); //切换header状态
@@ -91,7 +90,6 @@ export default {
   mounted() {
     // console.log("mounted");
     this.def();
-    this.init();
   },
   methods: {
     def() {
@@ -99,10 +97,6 @@ export default {
       this.groupId = param.id;
       this.type = param.type;
       this.sendMsg("navBar", this.type);
-      // console.log(this.bookList);
-    },
-    init() {
-      this.getBook();
     },
     //组件通信
     sendMsg(key, data) {
@@ -110,13 +104,12 @@ export default {
     },
     //跳转详情页
     tar_href(id, title) {
-      console.log("跳转详情页");
+      // console.log("跳转详情页");
       this.$router.push({ name: "new_detl", params: { id, title } });
     },
     //加载更多漫画
     loadMore() {
-      // console.log("滚动到底部");
-      console.log("滚动");
+      // console.log("滚动");
       this.getBook();
     },
     //加载漫画
@@ -134,26 +127,33 @@ export default {
       this.$api
         .getData("getMore", opt)
         .then(res => {
-          console.log(res);
-          if (res.code != 0) {
+          if (res.code == 1) {
             var data = res.data;
-            // console.log(this.bookList, this.bookList.length);
-            if (this.bookList.length == 0 || this.isUpdate) {
-              // console.log(data.length);
+            if (this.bookList.length == 0) {
               this.$set(this, "bookList", data.list);
-              this.isUpdate = false;
               if (data.list.length < 10) {
-                // console.log("暂无更多数据");
+                console.log("暂无更多数据");
                 this.isScroll = true;
                 this.loadState = false;
                 return;
               }
             } else {
               // console.log("拼接");
-              this.bookList = this.bookList.concat(data.list);
+              // console.log(this.bookList.length);
+              if (this.bookList.length < data.total) {
+                this.bookList = this.bookList.concat(data.list);
+              } else {
+                this.isScroll = true; //停止滚动
+                this.loadState = false;
+                return;
+              }
             }
+            this.$set(this, "page", {
+              limit: 10,
+              offset: data.offset + data.limit,
+              total: data.total
+            });
           } else {
-            if (this.isUpdate) this.$set(this, "bookList", []);
             console.log("停止滚动");
             this.isScroll = true; //停止滚动
           }
@@ -161,11 +161,9 @@ export default {
         })
         .catch(err => {
           // console.log(err);
-          if (this.isUpdate) this.$set(this, "bookList", []);
           this.isScroll = true;
           this.loadState = false;
         });
-
       // this.$axios.post("/test/comicMore").then(res => {
       //   var data = res.data;
       //   data = data.data ? data.data : data;
@@ -179,16 +177,6 @@ export default {
       //   this.$set(page, "offset", page.idx * page.limit);
       //   this.loadState = false;
       //   // console.log(page);
-      // });
-      //api接口
-      // this.$api.getGroupItem(opt).then(res => {
-      //   if (res.code == 1) {
-      //     var data = res.data;
-      //     if (data.list && data.list.length > 0) {
-      //       this.bookList = data.list;
-      //     }
-      //   }
-      //   this.loadState = false;
       // });
     }
   },

@@ -11,11 +11,13 @@ import router from './router'
 import plugin from './plugins' //自定义组件
 import i18n from './i18n' //国际化
 import App from './App'
-import Lazyload from 'mint-ui'
-
-Vue.use(Lazyload, {
+// import Lazyload from 'mint-ui'
+// Vue.use(Lazyload, {
+//   attempt: 1
+// });
+Vue.use(Vue.prototype.$Lazyload, {
   attempt: 1
-});
+})
 
 //'x-oss-process=style/imageZoom' //移动端显示漫画
 Vue.config.productionTip = false
@@ -34,8 +36,8 @@ var idx = 0;
 axios.interceptors.response.use(function (response) {
   if (response.data.code == 401) {
     console.log('未登录');
-    local.setItem('loginTips',++idx);
-    if(idx < 4){
+    local.setItem('loginTips', ++idx);
+    if (idx < 4) {
       Vue.$toast(i18n.t('tips.tiplogin'));
     }
     local.removeItem("isLogin");

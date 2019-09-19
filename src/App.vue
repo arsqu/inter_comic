@@ -69,6 +69,7 @@ export default {
   mounted() {
     this.init();
     // console.log("app_mounted");
+    window.removeEventListener("scroll", this.showBtn); //监听滚动显示按钮
     window.addEventListener("scroll", this.showBtn); //监听滚动显示按钮
   },
   methods: {
@@ -91,7 +92,7 @@ export default {
           mediaId: this.bookId,
           money: this.chapterInfo.price
         };
-        console.log(this.chapterInfo.price);
+        // console.log(this.chapterInfo.price);
         //购买章节
         this.$api.postDataN("buyChapter", Qs.stringify(opt)).then(res => {
           console.log(res);
@@ -200,7 +201,7 @@ export default {
         me.isRecharge = true;
       });
       this.$bus.$on("comic", data => {
-        console.log("oncomic", data);
+        // console.log("oncomic", data);
         me.bookId = data.bookId;
         me.chapterId = data.chapterId;
         me.chapterIdx = data.chapterIdx;
