@@ -1,16 +1,16 @@
 import fetch from './fetch'
 
 /*** 生产环境 ***/
-var comUrl = '';
-var nextUrl = 'http://161.117.178.26:8080';
+// var comUrl = '';
+// var nextUrl = 'http://161.117.178.26:8080';
 
 /***  mock测试数据 ***/
 // var comUrl = '/test'; //mock数据
 // var nextUrl = '/test'; //mock数据
 
 /***  测试环境 ***/
-// var comUrl = '/go'; //go
-// var nextUrl = '/java'; //java
+var comUrl = '/go'; //go
+var nextUrl = '/java'; //java
 var base = '/api/v1';
 //chapter/chapterList
 

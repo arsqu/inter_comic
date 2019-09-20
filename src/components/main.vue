@@ -151,8 +151,17 @@ export default {
   height: 50px;
 }
 
+.nav_list a {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+}
+
 .nav_list .nav_txt {
   margin: 0 20px;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
   vertical-align: middle;
 }
 

@@ -3,7 +3,7 @@ import axios from 'axios'
 // import mintUiCom from './mintUiCom' //局部引入mintUi
 import './assets/css/common.css' //公共样式
 import 'amfe-flexible' //自适应
-import 'babel-polyfill'
+// import 'babel-polyfill'
 // import 'default-passive-events'
 // import './util/mock' //模拟数据
 import api from './util/api'
@@ -11,13 +11,14 @@ import router from './router'
 import plugin from './plugins' //自定义组件
 import i18n from './i18n' //国际化
 import App from './App'
+
 // import Lazyload from 'mint-ui'
-// Vue.use(Lazyload, {
-//   attempt: 1
-// });
-Vue.use(Vue.prototype.$Lazyload, {
-  attempt: 1
-})
+import Lazyload from 'vue-lazyload'
+Vue.use(Lazyload, {
+  attempt: 1,
+  // error: '/static/img/404.png',
+  // loading: '/static/img/404.png'
+});
 
 //'x-oss-process=style/imageZoom' //移动端显示漫画
 Vue.config.productionTip = false
@@ -37,7 +38,7 @@ axios.interceptors.response.use(function (response) {
   if (response.data.code == 401) {
     console.log('未登录');
     local.setItem('loginTips', ++idx);
-    if (idx < 4) {
+    if (idx < 3) {
       Vue.$toast(i18n.t('tips.tiplogin'));
     }
     local.removeItem("isLogin");

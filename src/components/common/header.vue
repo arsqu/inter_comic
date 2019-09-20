@@ -20,27 +20,39 @@
       <router-link :to="{name:'main'}" v-show="!showHome">
         <img src="/static/img/icon/home.png" alt="home" />
       </router-link>
+      <span v-show="showHome" @click="changeWords">
+        <img src="/static/img/icon/1.png" alt="language" />
+      </span>
       <router-link :to="{name:'userInfo'}" v-show="showHome">
-        <img src="/static/img/icon/user.png" alt="home" />
+        <img src="/static/img/icon/user.png" alt="userInfo" />
       </router-link>
     </div>
   </div>
 </template>
 
 <script>
+import config from "../../util/config";
 export default {
   data() {
-    return {};
+    return {
+      lang: {}
+    };
   },
   props: {
     loader: Boolean,
     showHome: Boolean,
     comicTxt: String
   },
-  created() {},
+  created() {
+    this.lang = config.lang;
+  },
   methods: {
     reBack() {
       this.$router.go(-1);
+    },
+    //切换语言
+    changeWords() {
+      this.$bus.$emit("isLanguage", 1);
     }
   }
 };
@@ -86,8 +98,14 @@ export default {
   align-items: center;
 }
 
-.top_tools a {
-  margin: 0 10px;
+.top_tools {
+  display: flex;
+  position: relative;
+}
+
+.top_tools a,
+.top_tools span {
+  margin: 0 15px;
   width: 45px;
   height: 45px;
   display: inline-block;

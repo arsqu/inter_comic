@@ -19,7 +19,7 @@
               @click="tar_href(detl.id,detl.title)"
             >
               <div class="book_pto">
-                <img v-lazy="detl.show_img" :key="idx" alt />
+                <img v-lazy="detl.show_img" :key="detl.show_img" alt />
               </div>
               <div class="book_desc">
                 <span class="book_txt over_ellipsis">{{detl.title}}</span>

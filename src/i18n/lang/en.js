@@ -55,6 +55,7 @@ export default {
   },
   tips: {
     404: 'back to the homepage',
+    lang: 'switch successful',
     toLogin: 'please log in first',
     notlogin: 'please sign in',
     tiplogin: 'Login to see more',
@@ -67,8 +68,8 @@ export default {
   view: {
     'tips': {
       'pay': 'Currently paid chapter',
-      'first':'Already the first page',
-      'last':'Already the last page'
+      'first': 'Already the first page',
+      'last': 'Already the last page'
     }
   },
   userInfo: {

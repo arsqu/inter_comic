@@ -38,10 +38,12 @@ export default {
   created() {
     this.$bus.$emit("navBar", this.$t("recharge.recharge"));
     var isLogin = localStorage.getItem("isLogin");
+    this.post = true;
     if (!isLogin) {
+      this.post = false;
       this.$toast(this.$t("tips.toLogin"));
-      this.$router.push({ name: "login" });
-      return;
+      //   this.$router.push({ name: "login" });
+      // return;
     }
   },
   activated() {
@@ -72,6 +74,11 @@ export default {
       // console.log("充值");
       var money = +this.money,
         reg = /\d+/; //校验数字格式
+      if (!this.post) {
+        this.$toast(this.$t("tips.toLogin"));
+        this.$router.push({ name: "login" });
+        return;
+      }
       if (money && reg.test(money)) {
         this.$api
           .postDataN("recharge", Qs.stringify({ money }))

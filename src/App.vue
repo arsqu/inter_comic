@@ -3,14 +3,16 @@
     <!-- v-if 会导致页面重绘 -->
     <template v-if="$route.name!='login'&&$route.name!='register'">
       <Header v-show="headShow" :showHome="showHome" :loader="loader" :comicTxt="comicTxt" />
-      <!-- 渲染内容 -->
+      <!-- inner -->
       <div class="page_layout" :class="{opac:loading}">
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" />
         </keep-alive>
         <router-view v-if="!$route.meta.keepAlive" />
       </div>
-      <div class="page_modal" v-show="isModal" @click="closeModal"></div>
+      <!-- modal -->
+      <div :class="['page_modal',isLanguage?'lang':'']" v-show="isModal" @click="closeModal"></div>
+      <!-- chapterBox -->
       <chapterBox
         :isLogin="isLogin"
         :isRecharge="isRecharge"
@@ -19,8 +21,14 @@
         @closeModal="closeModal"
         @btnFunc="btnFunc"
       />
+      <!-- language Box -->
+      <div class="langList" v-show="isLanguage">
+        <ul>
+          <li v-for="(item,key,idx) in lang" :key="idx" @click="changeWords(key)">{{item}}</li>
+        </ul>
+      </div>
       <!-- <app-tabbar/> -->
-      <!-- 返回顶部 -->
+      <!-- backTop -->
       <div class="backTop" @click="scrollTop"></div>
     </template>
     <router-view v-else />
@@ -29,6 +37,7 @@
 
 <script>
 // import TabBar from "./components/tabbar";
+import config from "./util/config";
 import Qs from "qs";
 const Header = () => import("@/components/common/header");
 const chapterBox = () => import("@/components/module/chapterBox");
@@ -44,8 +53,10 @@ export default {
       bookId: null,
       showHome: false,
       chaperId: null,
+      lang: {},
       chapterIdx: null,
       hasMoney: 0, //余额
+      isLanguage: false, //语言框
       isLogin: false, //是否登录
       isModal: false, //遮罩
       isRecharge: false, //弹出框
@@ -62,6 +73,7 @@ export default {
   },
   created() {
     // console.log("app_created");
+    this.lang = config.lang;
   },
   activated() {
     // console.log("app_activated");
@@ -73,6 +85,14 @@ export default {
     window.addEventListener("scroll", this.showBtn); //监听滚动显示按钮
   },
   methods: {
+    //切换语言
+    changeWords(lang) {
+      if (lang) {
+        this.$i18n.locale = lang;
+        this.$toast(this.$t("tips.lang"));
+      }
+      this.closeModal();
+    },
     //功能按钮
     btnFunc() {
       var txtIdx = this.chapterInfo.txtIdx,
@@ -100,8 +120,6 @@ export default {
           var data = res.data;
           if (res.code == 1) {
             // this.$toast(res.msg);
-            // var money = +localStorage.getItem("money");
-            // localStorage.setItem("money", money - this.price);
             this.getMoney(); //查看余额
             this.unlock();
             // msg = "购买成功";
@@ -140,6 +158,7 @@ export default {
     //关闭重置
     closeModal() {
       this.isModal = false;
+      this.isLanguage = false;
       this.isRecharge = false;
     },
     //返回顶部
@@ -214,6 +233,13 @@ export default {
       this.$bus.$on("showModal", data => {
         this.isModal = true;
       });
+      this.$bus.$on("isLanguage", data => {
+        // console.log(data);
+        if (data) {
+          this.isLanguage = true;
+          this.isModal = true;
+        } else this.isLanguage = false;
+      });
       this.$bus.$on("isLogin", data => {
         // console.log("onisLogin", data);
         if (data) {
@@ -277,7 +303,33 @@ export default {
   background-color: rgba(0, 0, 0, 0.65);
 }
 
-/* 回到顶部 */
+.page_modal.lang {
+  top: 100px;
+}
+
+/* language box*/
+.langList {
+  position: absolute;
+  top: 100px;
+  z-index: 100;
+  width: 100%;
+  background: #fff;
+  font-size: 28px;
+  padding: 0px 10px;
+  border-bottom: 5px solid #ff8300;
+}
+
+.langList li {
+  padding: 15px 10px;
+  color: #555;
+  border-top: 1px solid #ddd;
+}
+
+.langList li:first-child {
+  border-top: 0 none;
+}
+
+/* backTop */
 .backTop {
   border: 1px solid #ddd;
   position: fixed;

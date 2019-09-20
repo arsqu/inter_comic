@@ -55,6 +55,7 @@ export default {
   },
   tips: {
     404: 'vaapas ghar aa gaya',
+    lang: 'saphal svich karen',
     toLogin: 'krpaya pahale login karen',
     notlogin: 'krpaya login karen',
     tiplogin: 'adhik dekhane ke lie login karen',
