@@ -9,7 +9,7 @@
           @click="tar_detail(item.id,item.title)"
         >
           <div class="com_img">
-            <img v-lazy="item.show_img" :key="item.show_img" />
+            <img v-lazy="item.show_img+'?' + autoImg" :key="item.show_img" />
           </div>
           <div class="com_desc">
             <p class="com_tit">{{item.title}}</p>
@@ -37,6 +37,7 @@ export default {
   },
   props: {
     boxList: Array,
+    autoImg: String,
     loadState: Boolean,
     rankState: Boolean
   },
@@ -61,92 +62,65 @@ export default {
 };
 </script>
 
-<style scoped>
-.com_lists {
-  display: flex;
-  align-items: center;
-  background: #fff;
-  margin: 10px 0;
-  padding: 10px;
-  border-bottom: 1px solid #eee;
-  position: relative;
-}
+<style lang="stylus" scoped>
+.com_lists 
+  display flex
+  align-items center
+  background #fff
+  margin 10px 0
+  border-bottom 1px solid #eee
+  position relative
+  .com_img > img 
+      width 165px
+      height 210px
+      border 0 none
+      border-radius 4px
+  .com_desc 
+    padding 10px 30px
+    width auto
+    text-align left
+    align-items center
+    .com_tit 
+      overflow hidden
+      display -webkit-box
+      -webkit-box-orient vertical
+      -webkit-line-clamp 2
+      word-break break-all
+      color #4b566a
+      padding 5px 0
+      &:first-child 
+        font-size 32px
+        padding-right 35px
+        font-weight bold
+      &:last-child 
+        color #a2a2a2
+        font-size 30px
+    .com_week 
+      font-size 28px
+  .com_rank 
+    position absolute
+    color #999
+    z-index 10
+    right 10px
+    top 10px
+    font-size 30px
+    border-radius 30px
+    padding 10px
+    background #eee
+    &.spec 
+      background #ffc107
+      color #fff
+      border-radius 30px
+      padding 10px
+    &.spec_0 
+      background #fe7100
+    &.spec_1 
+      background #ff9900
+// .d_tit 
+//   font-size 12px
+//   color #999
+//   padding 5px 0
 
-.com_lists .com_desc {
-  padding: 10px 30px;
-  width: auto;
-}
-
-.com_img > img {
-  width: 155px;
-  height: 200px;
-  border: 0 none;
-  border-radius: 4px;
-}
-
-.com_lists .com_desc {
-  text-align: left;
-  align-items: center;
-}
-
-.com_lists .com_tit {
-  overflow: hidden;
-  display: -webkit-box;
-  /*! autoprefixer: off */
-  -webkit-box-orient: vertical;
-  /* autoprefixer: on */
-  -webkit-line-clamp: 2;
-  word-break: break-all;
-  color: #4b566a;
-  padding: 5px 0;
-}
-
-.com_lists .com_week {
-  font-size: 28px;
-}
-
-.com_lists .com_tit:first-child {
-  font-size: 32px;
-  padding-right: 35px;
-  font-weight: bold;
-}
-
-.com_lists .com_tit:last-child {
-  color: #a2a2a2;
-  font-size: 30px;
-}
-
-.d_tit {
-  font-size: 12px;
-  color: #999;
-  padding: 5px 0;
-}
-
-.com_lists .com_rank {
-  position: absolute;
-  color: #999;
-  z-index: 10;
-  right: 10px;
-  top: 10px;
-  font-size: 30px;
-  border-radius: 30px;
-  padding: 10px;
-  background: #eee;
-}
-
-.com_lists .com_rank.spec {
-  background: #ffc107;
-  color: #fff;
-  border-radius: 30px;
-  padding: 10px;
-}
-
-.com_lists .com_rank.spec_0 {
-  background: #fe7100;
-}
-.com_lists .com_rank.spec_1 {
-  background: #ff9900;
-}
 </style>
 
 

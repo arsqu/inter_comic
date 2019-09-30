@@ -16,7 +16,6 @@
       </div>
     </div>
     <div class="ranking_detl">
-      <!-- infinite-scroll-immediate-check="false" -->
       <div
         class="scroll_tab"
         v-infinite-scroll="loadMore"
@@ -31,8 +30,8 @@
               v-show="isHover[0]+ isHover[1] == key+i"
               :key="key+i"
             >
-              <!-- rankState为排序序号 -->
-              <app-list :boxList="boxT[key+i]" :rankState="true" />
+              <!-- rankState:排序时是否显示序号 -->
+              <app-list :autoImg="autoImg" :boxList="boxT[key+i]" :rankState="true" />
             </div>
           </template>
         </template>
@@ -55,16 +54,16 @@ const listModule = () => import("./module/listModule");
 export default {
   data() {
     return {
-      // isScroll: false,
       group: {
         flag: [],
         isOver: [],
         payTyp: []
       },
+      autoImg: "",
       cache: [], //缓存
-      boxT: {}, //排行数据存放区
+      boxT: {}, //排行数据
       scrollState: {}, //滚动状态
-      page: {}, //分页
+      page: {},
       isHover: "", //当前点击项
       loadState: false //加载状态
     };
@@ -74,18 +73,16 @@ export default {
   },
   created() {
     this.init();
+    this.autoImg = this.$config.autoImg.list;
     // console.log("rank_created");
   },
   mounted() {
-    // console.log($t);
-    // this.isHover = ["flag", "1"]; //默认选中第一条
-    // this.init();
     // console.log("rank_mounted");
   },
   activated() {
     console.log("activated");
     this.scrollState[this.isHover.join("")] = false;
-    this.sendMsg("navBar", this.$t("index.updateHead"));
+    this.$bus.$emit("navBar", this.$t("index.updateHead"));
   },
   beforeRouteLeave(to, from, next) {
     this.scrollState[this.isHover.join("")] = true;
@@ -99,14 +96,14 @@ export default {
   methods: {
     init() {
       this.isHover = ["flag", "1"]; //默认选中第一条
+      //翻译后的文本数据
       this.group = {
         flag: this.$t("index.rankList.flag"),
         isOver: this.$t("index.rankList.isOver"),
         payTyp: this.$t("index.rankList.payTyp")
       };
       this.defData(); //数据初始化
-      this.sendMsg("navBar", this.$t("index.rankHead"));
-      // this.loadMore();
+      this.$bus.$emit("navBar", this.$t("index.rankHead"));
     },
     //初始值
     defData() {
@@ -124,15 +121,10 @@ export default {
         });
       }
     },
-    //组件通信
-    sendMsg(key, data) {
-      this.$bus.$emit(key, data);
-    },
     //选择标签
     rankBook(key, i) {
       //console.log(item);
       this.isHover = [key, i];
-      //判断是否已请求
       this.getRank();
     },
     loadMore() {
@@ -148,20 +140,25 @@ export default {
       var cache = this.cache,
         group = this.group;
       //缓存记录
-      if (!isScroll && cache.indexOf(key) != -1) {
+      if (cache.indexOf(key) != -1 && !isScroll) {
+        // console.log("点击tab时有缓存不更新数据");
         return;
       }
       if (this.loadState) {
-        console.log("异步请求中...禁止操作");
+        // console.log("请求频繁");
         return;
       }
-      cache.push(k + idx);
-      // console.log(cache);
+      cache.push(key);
       var page = this.page[key],
         opt = Object.assign({}, page);
-      opt[k] = idx;
+      opt[k] = idx; //查询参数
       this.loadState = true; //loading加载效果
-      // console.log("请求数据");
+      if (this.boxT[key].length != 0 && this.boxT[key].length >= page.total) {
+        console.log("禁止滚动");
+        this.$set(this.scrollState, [key], true);
+        this.loadState = false;
+        return;
+      }
       this.$api
         .getCusRank(k, opt)
         .then(res => {
@@ -171,12 +168,13 @@ export default {
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
             } else {
+              console.log("拼接");
               if (this.boxT[key].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
               } else {
-                this.$set(this.scrollState, [key], true);
-                this.loadState = false;
-                return;
+                // this.$set(this.scrollState, [key], true);
+                // this.loadState = false;
+                // return;
               }
             }
             this.$set(this.page, [key], {
@@ -223,36 +221,27 @@ export default {
 };
 </script>
 
-<style scoped>
-.ranking_type {
-  background: #fff;
-}
+<style lang="stylus" scoped>
+.ranking_type 
+  background #fff
 
-.ranking_detl {
-  padding: 20px;
-}
+.ranking_detl
+  padding 20px
 
-.ranking_type .rank_item {
-  font-size: 30px;
-  display: flex;
-  flex-wrap: wrap;
-  padding: 0 30px;
-}
-
-.ranking_type .rank_item span {
-  width: 33.3%;
-  text-align: center;
-  margin: 15px 0;
-  border-right: 1px solid #ddd;
-}
-
-.ranking_type .rank_item span.active {
-  color: orange;
-}
-
-.ranking_type .rank_item span:nth-child(3n) {
-  border-right: 0 none;
-}
+.ranking_type .rank_item 
+  display flex
+  flex-wrap wrap
+  font-size 30px
+  padding 0 10px
+  span
+    width 33.3%
+    text-align center
+    margin 15px 0
+    border-right 1px solid #ddd
+    &.active
+      color orange
+    &:nth-child(3n) 
+      border-right 0 none
 </style>
 
 

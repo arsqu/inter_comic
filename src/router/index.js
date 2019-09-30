@@ -1,119 +1,123 @@
-// import Vue from 'vue'
-// import Router from 'vue-router'
 // const list = () => import('@/components/cache/list')
 // const recommend = () => import('@/components/cache/recommend')
 // const detail = () => import('@/components/cache/detail') //详情页
 // const ebook = () => import('@/components/cache/ebook') //电子书
 
-// Vue.use(Router)
-
-// export default new Router({
 export default new VueRouter({
-  routes: [{
-    path: '/',
-    name: 'main',
-    component: () => import('@/components/main'), //首页
-    meta: {
-      keepAlive: true,
-      title: '首页'
+  routes: [
+    {
+      path: '/',
+      name: 'main',
+      component: () => import('@/components/main'), //首页
+      meta: {
+        keepAlive: true,
+        title: '首页'
+      }
+    },
+    {
+      path: '/login.html',
+      name: 'login',
+      component: () => import('@/login'), //首页
+      // component: login, //首页
+      meta: {
+        title: '登录'
+      }
+    },
+    {
+      path: '/register.html',
+      name: 'register',
+      // component: register,
+      component: () => import("@/register"), //首页
+      meta: {
+        title: '注册'
+      }
+    },
+    {
+      path: '/userInfo.html',
+      name: 'userInfo',
+      component: () => import('@/components/userInfo'), //首页
+      meta: {
+        title: '用户信息'
+      }
+    },
+    {
+      path: '/recharge.html',
+      name: 'recharge',
+      component: () => import('@/components/recharge'), //首页
+      meta: {
+        title: '充值'
+      }
+    },
+    {
+      path: '/new_detl.html/:id/:title',
+      name: 'new_detl',
+      component: () => import('@/components/new_detl'), //详情页
+      meta: {
+        keepAlive: true,
+        title: '详情页'
+      }
+    }, {
+      path: '/view.html/:bookId/:id',
+      name: 'view',
+      component: () => import('@/components/view'),
+      meta: {
+        title: '漫画章节'
+      }
+    },
+    {
+      path: '/chapter.html/:id',
+      name: 'chapter',
+      component: () => import('@/components/chapter'), //目录页,
+      meta: {
+        title: '目录页'
+      }
+    },
+    {
+      path: '/weekList.html',
+      name: 'weekList',
+      component: () => import('@/components/weekList'), //更新列表
+      meta: {
+        keepAlive: true,
+        title: "更新时间"
+      }
+    },
+    {
+      path: '/ranking.html',
+      name: 'ranking',
+      component: () => import('@/components/ranking'), //排行榜
+      meta: {
+        keepAlive: true,
+        title: "排行"
+      }
+    },
+    {
+      path: '/groupItem.html/:type/:id',
+      name: "groupItem",
+      component: () => import('@/components/groupItem'), //更多漫画
+      meta: {
+        title: "更多漫画",
+        keepAlive: true
+      }
+    },
+    {
+      path: '/suggest.html',
+      name: 'suggest',
+      component: () => import('@/components/suggest'), //搜索
+    },
+    {
+      path: '/search.html',
+      name: 'search',
+      component: () => import('@/components/search'), //搜索
+    },
+    {
+      path: "/404.html",
+      name: "notFound",
+      component: () => import('@/components/common/404')
+    },
+    {
+      path: "*", // 此处需特别注意置于最底部
+      redirect: "/404.html"
     }
-  },
-  {
-    path: '/login',
-    name: 'login',
-    component: () => import('@/login'), //首页
-    meta: {
-      title: '登录'
-    }
-  },
-  {
-    path: '/register',
-    name: 'register',
-    component: () => import('@/register'), //首页
-    meta: {
-      title: '注册'
-    }
-  },
-  {
-    path: '/userInfo',
-    name: 'userInfo',
-    component: () => import('@/components/userInfo'), //首页
-    meta: {
-      title: '用户信息'
-    }
-  },
-  {
-    path: '/recharge',
-    name: 'recharge',
-    component: () => import('@/components/recharge'), //首页
-    meta: {
-      title: '充值'
-    }
-  },
-  {
-    path: '/new_detl/:id/:title',
-    name: 'new_detl',
-    component: () => import('@/components/new_detl'), //详情页
-    meta: {
-      keepAlive: true,
-      title: '详情页'
-    }
-  }, {
-    path: '/view/:id/:bookId',
-    name: 'view',
-    component: () => import('@/components/view'),
-    meta: {
-      title: '漫画章节'
-    }
-  },
-  {
-    path: '/chapter/:id',
-    name: 'chapter',
-    component: () => import('@/components/chapter'), //目录页,
-    meta: {
-      title: '目录页'
-    }
-  },
-  {
-    path: '/weekList',
-    name: 'weekList',
-    component: () => import('@/components/weekList'), //更新列表
-    meta: {
-      keepAlive: true,
-      title: "更新时间"
-    }
-  },
-  {
-    path: '/ranking',
-    name: 'ranking',
-    component: () => import('@/components/ranking'), //排行榜
-    meta: {
-      keepAlive: true,
-      title: "排行"
-    }
-  },
-  {
-    path: '/groupItem/:type/:id',
-    name: "groupItem",
-    component: () => import('@/components/groupItem'), //更多漫画
-    meta: {
-      title: "更多漫画",
-      keepAlive: true
-    }
-  },
-  {
-    path: '/search',
-    name: 'search',
-    component: () => import('@/components/search'), //搜索
-  },
-  {
-    path: "/404",
-    name: "notFound",
-    component: () => import('@/components/common/404')
-  }, {
-    path: "*", // 此处需特别注意置于最底部
-    redirect: "/404"
-  }
     // , {
     //   path: '/list/:key/:url',
     //   name: 'list',

@@ -73,7 +73,8 @@ export default {
     }
   },
   userInfo: {
-    tabList: ['history', 'subscription']
+    tabList: ['history', 'subscription'],
+    suggestions: 'suggestions'
   },
   login: {
     notAllowed: 'Not logged in',
@@ -82,12 +83,27 @@ export default {
     register: 'Sign up',
     login: 'Sign in',
     tips: {
+      load: 'logging in',
       wait: 'Please wait',
       empty: 'Account or password cannot be empty'
     },
     status: {
       success: 'Login successful',
       err: 'Login failed'
+    }
+  },
+  suggest: {
+    txt: 'Feedback',
+    head: 'Feedback content',
+    phone: 'phone',
+    email: 'email',
+    tips: {
+      content: 'Please enter what you want to feedback',
+      info: ''
+    },
+    verify: {
+      require: 'Fill in at least one phone or email address',
+      content: 'Please describe in detail the problem content you want to feedback'
     }
   },
   register: {
@@ -104,6 +120,7 @@ export default {
     }
   },
   recharge: {
+    loading: 'In the recharge,Please wait...',
     recharge: 'recharge',
     rechargeMoney: 'top ap',
     tips: 'prompt',
@@ -120,5 +137,10 @@ export default {
   },
   response: {
     err: 'Request failed'
+  },
+  post: {
+    txt: 'submit',
+    success: 'Submitted successfully',
+    err: 'Submission Failed'
   }
 }

@@ -20,7 +20,7 @@
     <div class="imgBox">
       <div class="img_item" v-for="(item,idx) in imgList" :key="idx">
         <!-- lazyload组件 -->
-        <img v-lazy="item" :key="item" />
+        <img v-lazy="item+'?'+autoImg" :key="item" />
       </div>
     </div>
     <div class="bottom_bar" v-show="headShow">
@@ -47,17 +47,17 @@ export default {
     return {
       id: null,
       bookId: null,
-      prev: null,
-      prevChapter: {},
-      prevIdx: null,
-      next: null,
+      autoImg: "",
       body: null,
-      nextChapter: {},
+      prev: null, //id
+      prevIdx: null, //下标
+      prevChapter: {}, //当前章节
+      next: null,
       nextIdx: null,
+      nextChapter: {},
       current: null,
       currentIdx: null,
       timer: null,
-      comicDetl: {},
       imgList: [],
       page: {
         offset: 0,
@@ -80,8 +80,9 @@ export default {
   created() {
     var route = this.$route.params; //路由参数
     this.id = route.id;
+    this.autoImg = this.$config.autoImg.chapterView;
     this.body = document.getElementsByTagName("body")[0];
-    this.bookId = route.bookId; //路由下的漫画id
+    this.bookId = route.bookId; //漫画id
     this.review();
   },
   mounted() {
@@ -91,14 +92,13 @@ export default {
   },
   methods: {
     review() {
-      this.getBookDetl(); //更新漫画
-      var route = this.$route.params, //路由参数
+      this.getBookDetl();
+      var route = this.$route.params,
         local = localStorage,
-        bookId = local.getItem("bookId"); //漫画历史记录id
-      // console.log(this.bookId, bookId);
+        bookId = local.getItem("bookId"); //章节已缓存的漫画Id
       //漫画不同时更新章节
       if (this.bookId != bookId) {
-        this.getAllChapter();
+        this.getAllChapter(); //复制链接访问时刷新,防止读同一个缓存
       } else {
         var chapterList = local.getItem("cache_chapter");
         if (chapterList) {
@@ -112,54 +112,54 @@ export default {
         } else {
           this.chapterList = chapterList = [];
         }
-        this.matchChapter(this.chapterList);
+        this.matchChapter();
       }
     },
     //请求所有章节
     getAllChapter() {
-      console.log("当前所有章节");
+      // console.log("当前所有章节");
       var opt = Object.assign({}, this.page);
       var mediaId = (opt.mediaId = this.bookId);
       localStorage.setItem("bookId", this.bookId); //无论是否成功都视为更新漫画
+      //初始设定规则的的章节
       this.$api
         .getData("getAllChapter", opt)
         .then(res => {
+          // console.log(res);
           if (res.code == 1) {
             var data = res.data,
               list = data.list;
             this.chapterList = [];
             this.$set(this, "chapterList", list);
             localStorage.setItem("cache_chapter", JSON.stringify(list));
-            // this.loadState = false;
-            this.matchChapter(list); //匹配上下章
+            this.matchChapter(); //匹配上下章
           }
-          // this.$bus.$emit("loading", false); //关闭loading
         })
         .catch(err => {
-          // this.loadState = false;
           console.log("server error");
-          // this.$bus.$emit("loading", false); //关闭loading
         });
     },
     //匹配章节
-    matchChapter(list) {
-      // console.log(list);
+    matchChapter() {
+      var list = this.chapterList;
       for (var i = 0; i < list.length; i++) {
         //匹配相同章节
         if (list[i].id == this.id) {
           if (i - 1 > -1) {
             this.$set(this, "prevChapter", list[i - 1]);
-            this.prev = list[i - 1].is_free ? false : list[i - 1].id;
+            // list[i - 1].is_free && (this.prevView = false);
+            this.prev = list[i - 1].id;
             this.prevIdx = i - 1;
           }
           if (i + 1 < list.length) {
             this.$set(this, "nextChapter", list[i + 1]);
-            this.next = list[i + 1].is_free ? false : list[i + 1].id;
+            // list[i + 1].is_free && (this.nextView = false);
+            this.next = list[i + 1].id;
             this.nextIdx = i + 1;
           }
           this.current = list[i].id;
           this.currentIdx = i;
-          // console.log(this.prev, this.next);
+          console.log(this.prev, this.next);
           break;
         }
       }
@@ -202,7 +202,11 @@ export default {
     viewPrev() {
       var bookId = this.bookId,
         id = this.id;
-      if (this.prev == false) {
+      var chapterList = localStorage.getItem("cache_chapter");
+      this.chapterList =
+        typeof chapterList == "string" ? JSON.parse(chapterList) : chapterList;
+      // if (this.prevView == false) {
+      if (this.chapterList[this.prevIdx].is_free) {
         this.$toast(this.$t("view.tips.pay"));
         this.showBox(this.prevChapter, this.prevIdx);
         return;
@@ -221,7 +225,11 @@ export default {
     viewNext() {
       var bookId = this.bookId,
         id = this.id;
-      if (this.next == false) {
+      var chapterList = localStorage.getItem("cache_chapter");
+      this.chapterList =
+        typeof chapterList == "string" ? JSON.parse(chapterList) : chapterList;
+      if (this.chapterList[this.nextIdx].is_free) {
+        // if (this.nextView == false) {
         this.$toast(this.$t("view.tips.pay"));
         this.showBox(this.nextChapter, this.nextIdx);
         return;
@@ -237,7 +245,6 @@ export default {
           params: { id: this.next, bookId }
         });
       } else {
-        // console.log(this.chapterList.length);
         // console.log(this.currentIdx);
         this.$toast(this.$t("view.tips.last"));
       }
@@ -249,11 +256,10 @@ export default {
       if (this.id) {
         this.$api.getChapter({ id: this.id }).then(res => {
           // console.log(res);
-          console.log(this.prev, this.next);
+          // console.log(this.prev, this.next);
           if (res.code == 1) {
             var data = res.data.detail;
             var imgList = data.content.split(",");
-            this.$set(this, "comicDetl", data);
             this.$set(this, "imgList", imgList);
             this.chapter = this.$t("column.chapter") + " " + data.order_no;
             // console.log(data);
@@ -264,7 +270,7 @@ export default {
     },
     //返回章节页
     toDetl() {
-      var path = localStorage.getItem("detl");
+      var path = localStorage.getItem("new_detl");
       this.$router.push({ path });
     }
   },
@@ -284,170 +290,117 @@ export default {
 };
 </script>
 
-<style scoped>
-.imgLayout {
-  margin-top: -100px;
+<style lang="stylus" scoped>
+modal(){
+  position fixed
+  z-index 20
+  width 100%
+  left 0
+  right 0
+  background rgba(11, 11, 11, 0.85)
+  font-size 30px
+  padding 0 25px
+  align-items center
+  display flex
 }
 
-/* 页头 */
-.top_bar {
-  height: 120px;
-  position: fixed;
-  z-index: 20;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background: rgba(11, 11, 11, 0.85);
-  font-size: 30px;
-  padding: 0 25px;
-  align-items: center;
-  display: flex;
-}
-
-.bottom_bar {
-  height: 100px;
-  position: fixed;
-  z-index: 20;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background: rgba(11, 11, 11, 0.85);
-  font-size: 30px;
-  padding: 0 25px;
-  align-items: center;
-  display: flex;
-}
-
-.bottom_bar .top_tools {
-  display: flex;
-  flex: 1;
-  justify-content: space-around;
-  height: 100%;
-  align-items: center;
-}
-
-.chapter {
-  font-size: 35px;
-  padding-left: 45px;
-  color: #999;
-}
-
-.top_icon {
-  margin: 0 10px;
-  width: 45px;
-  cursor: pointer;
-  height: 45px;
-  display: inline-block;
-}
-
-.top_icon img {
-  vertical-align: bottom;
-}
-
-.top_title {
-  width: 90%;
-}
-
-.top_tools {
-  width: 10%;
-}
-
+.top_bar 
+  height 120px
+  top 0
+  modal()
+.bottom_bar 
+  height 100px
+  bottom 0
+  modal()
+  .top_tools 
+    display flex
+    flex 1
+    justify-content space-around
+    height 100%
+    align-items center
+  a 
+    justify-content center
+.chapter 
+  font-size 35px
+  padding-left 45px
+  color #999
+.top_icon 
+  margin 0 10px
+  width 45px
+  cursor pointer
+  height 45px
+  display inline-block
+  img 
+    vertical-align bottom
+.top_title 
+  width 90%
+.top_tools 
+  width 10%
+  a 
+    margin 0 10px
+    width 100px
+    height 100%
+    display flex
+    align-items center
+  img 
+    width 55%
+    height 55%
+    cursor pointer
 .top_logo,
-.top_detl_txt {
-  font-weight: bold;
-  font-size: 35px;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-}
-
-.top_logo {
-  color: orange;
-}
-
-.top_detl_txt {
-  color: #555;
-}
-
-.top_tools a {
-  margin: 0 10px;
-  width: 100px;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.bottom_bar a {
-  justify-content: center;
-}
-
-.top_tools img {
-  width: 55%;
-  height: 55%;
-  cursor: pointer;
-}
-
-.icon_logo {
-  padding-left: 40px;
-}
-
-.icon_back {
-  z-index: 100;
-  width: 60px;
-  height: 60px;
-  position: absolute;
-  top: 50%;
-  margin-top: -30px;
-}
-
-.icon_back:after {
-  border-top: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-color: orange;
-  position: absolute;
-  height: 30px;
-  width: 30px;
-  margin-top: 15px;
-  content: "";
-  transform: rotate(-135deg);
-}
-
-.comicTxt {
-  padding-left: 55px;
-  width: 90%;
-  color: #999;
-  font-size: 30px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: inline-block;
-}
-
+.top_detl_txt 
+  font-weight bold
+  font-size 35px
+  font-family "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif
+.top_logo 
+  color orange
+.top_detl_txt 
+  color #555
+.icon_logo 
+  padding-left 40px
+.icon_back 
+  z-index 100
+  width 60px
+  height 60px
+  position absolute
+  top 50%
+  margin-top -30px
+  &:after 
+    border-top 4px solid transparent
+    border-right 4px solid transparent
+    border-color orange
+    position absolute
+    height 30px
+    width 30px
+    margin-top 15px
+    content ""
+    transform rotate(-135deg)
+.comicTxt 
+  padding-left 55px
+  width 90%
+  color #999
+  font-size 30px
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
+  display inline-block
 /* 漫画容器 */
-.imgBox {
-  position: relative;
-}
-
-.img_item {
-  cursor: pointer;
-}
-
+.imgBox 
+  position relative
+.img_item 
+  cursor pointer
+  text-align center
+  img 
+    width auto
+  img[lazy="loading"] 
+    background url(/static/img/loading_bicyle.gif) no-repeat center
+    background-size 6rem
+  img[lazy="error"] 
+    background url(/static/img/loading_bicyle.gif) no-repeat center
+    background-size 6rem
 .img_item img[lazy="loading"],
-.img_item img[lazy="error"] {
-  width: 100%;
-  height: 300px;
-}
+.img_item img[lazy="error"] 
+  height 300px
 
-.img_item img[lazy="loading"] {
-  /* background: url(http://static.u17i.com/m/mobile2017/images/loading.gif) */
-  background: url(/static/img/loading_bicyle.gif) no-repeat center;
-  background-size: 6rem;
-}
-
-.img_item img[lazy="error"] {
-  background: url(/static/img/loading_bicyle.gif) no-repeat center;
-  background-size: 6rem;
-}
 </style>
 
 

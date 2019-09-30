@@ -9,7 +9,9 @@
       <!-- 漫画详情 -->
       <div class="comic_box">
         <div class="comic_pic">
-          <img :src.sync="bookList.show_img||''" />
+          <!-- <img :src.sync="bookList.show_img?bookList.show_img+'?'+autoImg:''" /> -->
+          <!-- <img :src.sync="bookList.show_img||''" /> -->
+          <img :src="bookList.show_img?bookList.show_img+'?'+autoImg:''" />
         </div>
         <div class="comic_info_list">
           <p class="c_tit">{{bookList.title}}</p>
@@ -94,6 +96,8 @@ export default {
     return {
       isCur: 1,
       id: null,
+      bookId: null,
+      autoImg: "",
       loadState: false,
       params: {
         //路由参数
@@ -180,31 +184,13 @@ export default {
         title: this.$t("column.catalog")
       }
     ];
-    localStorage.setItem("detl", this.$route.fullPath);
+    this.autoImg = this.$config.autoImg.gaussian;
+    localStorage.setItem("new_detl", this.$route.fullPath); //章节页返回时的地址
     // console.log("detl_created");
   },
-  // beforeRouteEnter(to, from, next) {
-  //   // if (from.name == "groupItem") {
-  //   //   from.meta.keepAlive = true;
-  //   // }
-  //   console.log("进入");
-  //   // console.log(from);
-  //   if (localStorage.getItem("isLogin")) {
-  //     console.log(this);
-  //     // this.$bus.$emit("isLogin", 1); //关闭loading
-  //   }
-  //   next();
-  // },
-  // beforeRouteLeave(to, from, next) {
-  // console.log("离开");
-  // console.log(to);
-  // if (to.name == "groupItem") {
-  //   to.meta.keepAlive = true;
-  // }
-  // console.log(from);
-  // console.log(from.meta.keepAlive);
-  // next();
-  // },
+  beforeRouteLeave(to, from, next) {
+    next();
+  },
   //缓存页
   activated() {
     var params = this.$route.params;
@@ -213,36 +199,32 @@ export default {
     if (params.id != this.bookId) {
       this.def();
       this.init();
-      // console.log("update");
     } else {
       this.checkLogin();
+      // console.log("不同");
+      this.sendMsg();
       this.$bus.$emit("loading", false); //关闭loading加载效果
     }
+    localStorage.setItem("new_detl", this.$route.fullPath); //缓存时章节的返回地址
     this.$bus.$emit("navBar", params.title); //同步漫画名
-    // console.log("activated");
   },
   mounted() {
     // console.log("mounted");
     this.def();
     this.init();
   },
-  destroyed() {
-    // console.log('done');
-    // this.$bus.$off("loading");
-    // this.$bus.$off("navBar");
-    // this.$bus.$off("isLogin"); //同步漫画名
-  },
   methods: {
     //查看漫画详情
     viewDetl() {
       var opt = this.catalogue[0];
       // console.log(opt);
-      var id = opt.id;
+      var id = opt.id,
+        bookId = this.bookId;
       if (opt && opt.is_free) {
         this.$bus.$emit("comic", {
-          bookId: this.id,
-          chapterId: opt.id,
-          chapterIdx: 1,
+          bookId: bookId,
+          chapterId: id,
+          chapterIdx: 0,
           title: opt.title,
           orderNo: opt.order_no,
           price: this.price
@@ -251,16 +233,15 @@ export default {
         if (localStorage.getItem("isLogin")) {
           this.$bus.$emit("isLogin", 1);
         } else {
-          // console.log("isLogin", 0);
           this.$bus.$emit("isLogin", 0);
         }
         this.$bus.$emit("recharge", 1);
         return;
       }
-      localStorage.setItem("bookId", this.id);
+      localStorage.setItem("bookId", bookId);
       this.$router.push({
         name: "view",
-        params: { id, bookId: this.id }
+        params: { bookId, id }
       });
     },
     checkLogin() {
@@ -279,6 +260,7 @@ export default {
       this.getSize(); //设置模糊层尺寸
       this.getAllChapter(); //获取图书目录
       this.getBookDetl(); //获取图书详情
+      this.sendMsg();
     },
     //切换tab
     toggleTab(idx) {
@@ -291,6 +273,17 @@ export default {
       this.$set(this.autoSize, "wid", oWid);
       this.$set(this.autoSize, "het", oHet);
     },
+    sendMsg() {
+      this.$bus.$off("chapter");
+      //解锁
+      this.$bus.$on("chapter", data => {
+        // console.log("onchapter", data);
+        if (data.chapterId) {
+          this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);
+          localStorage.setItem("cache_chapter", JSON.stringify(this.catalogue));
+        }
+      });
+    },
     getChapter(opt) {
       this.loadState = true;
       return new Promise((resolve, reject) => {
@@ -298,7 +291,6 @@ export default {
         this.$api
           // .getDataN("getAllChapter", opt)
           .getData("getAllChapter", opt)
-          // .postData("getAllChapter", opt)
           .then(res => {
             if (res.code == 1) {
               var data = res.data;
@@ -357,6 +349,11 @@ export default {
                       }
                     });
                   });
+                  //付费章节
+                  localStorage.setItem(
+                    "cache_chapter",
+                    JSON.stringify(this.catalogue)
+                  );
                 }
               }
             });
@@ -421,193 +418,149 @@ export default {
 };
 </script>
 
-<style scoped>
-.comic_detl {
-  padding-bottom: 110px;
-}
-
-.cont_detl > p:first-child {
-  font-weight: bold;
-  color: #666;
-  font-size: 18px; /*no*/
-}
-
-/* 图片信息 */
-.comic_info {
-  height: 400px;
-  width: 100%;
-  position: relative;
-}
-
-.comic_gaussian:after {
-  content: "";
-  height: 400px;
-  width: 100%;
-  background-color: rgba(0, 0, 0, 0.2);
-  position: absolute;
-  top: 0;
-  left: 0;
-}
-
-.comic_box {
-  display: flex;
-  height: 100%;
-  align-items: flex-end;
-  position: relative;
-}
-
-.comic_pic {
-  width: 260px;
-  height: 350px;
-  margin: 0 0.75rem 0 1rem;
-  background: #ccc
-    url(data:image/png;base64,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)
-    no-repeat 50% 50%;
-  background-position: center center;
-  /* background-size: 50% 50%; */
-}
-
-.comic_box .comic_info_list {
-  font-size: 26px;
-  height: 350px;
-  padding-top: 40px;
-  color: #fff;
-  padding-right: 20px;
-  flex: 1;
-}
-
-.comic_info_list .c_state {
-  /* border: 2px solid #ddd; */
-  padding: 5px 15px;
-  border-radius: 10px;
-  display: inline-block;
-  background: #d5ae3f;
-  color: #fff;
-}
-
-.c_state.done {
-  background: #d37777;
-}
-
-.comic_pic img {
-  height: 100%;
-  width: 100%;
-}
-
-.comic_box .c_tit {
-  font-size: 35px;
-  margin-bottom: 20px;
-  font-weight: bold;
-  overflow: hidden;
-  display: -webkit-box;
-  -webkit-box-orient: vertical;
-  -webkit-line-clamp: 2;
-  word-break: break-all;
-}
-
-.comic_box .c_mar {
-  margin-bottom: 10px;
-}
-
-.comic_gaussian {
-  position: relative;
-}
-
+<style lang="stylus" scoped>
+.comic_detl
+  padding-bottom 110px
+  /* 图片信息 */
+  .comic_info 
+    height 400px
+    width 100%
+    position relative
+    
+    .comic_gaussian
+      position relative
+    .comic_gaussian:after
+      content ""
+      height 400px
+      width 100%
+      background-color rgba(0, 0, 0, 0.2)
+      position absolute
+      top 0
+      left 0
+    .comic_box
+      display flex
+      height 100%
+      align-items flex-end
+      position relative
+      .comic_pic
+        width 260px
+        height 350px
+        margin 0 0.75rem 0 1rem
+        background-color #ccc 
+        background-image url('data:image/png;base64,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') 
+        background-repeat no-repeat 
+        background-size 50% 50%
+        background-position center center
+        img
+          height 100%
+          width 100%
+      .comic_info_list
+        font-size 26px
+        height 350px
+        padding-top 40px
+        color #fff
+        padding-right 20px
+        flex 1
+        .c_mar
+          margin-bottom 10px
+        .c_tit
+          font-size 35px
+          margin-bottom 20px
+          font-weight bold
+          overflow hidden
+          /*! autoprefixer: off */
+          display -webkit-box
+          /* autoprefixer: on */
+          -webkit-box-orient vertical
+          -webkit-line-clamp 2
+          word-break break-all
+        .c_state 
+          padding 5px 15px
+          border-radius 10px
+          display inline-block
+          background #d5ae3f
+          color #fff
+          .done
+            background #d37777
+          
 /* tab栏 */
-.comic_desc {
-  font-size: 25px;
-  background: #fbf5f5;
-  padding-bottom: 10px;
-}
+.comic_desc
+  font-size 25px
+  background #fbf5f5
+  padding-bottom 10px
+  /* 漫画描述 */
+  .tabBar
+    display flex
+    background #fff
+    li
+      font-size 32px
+      width 50%
+      height 80px
+      cursor pointer
+      line-height 80px
+      border-bottom 3px solid #f6f1f1
+      text-align center
+      box-shadow 0 5px 15px 0 #f6f1f1
+    .active a
+      color #ffa500
+      height 100%
+      display inline-block
+      padding 0 25px
+      border-bottom 5px solid #ffa500
+      margin-top 2.5px
 
-.comic_desc .tabBar {
-  display: flex;
-  background: #fff;
-}
+  /* 章节详情 */
+  .container_item 
+    color #555
+    .cont
+      padding 30px 25px
+      background #fff
+      .cont_detl > p:first-child
+        font-weight bold
+        color #666
+        font-size 30px
+      .cont_desc 
+        font-size 30px
+        padding-top 15px
+    .detl > p:first-child
+      font-size 35px
 
-.navbar_list .tabBar .active a {
-  color: #ffa500;
-  height: 100%;
-  display: inline-block;
-  padding: 0 25px;
-  border-bottom: 5px solid #ffa500;
-  margin-top: 2.5px;
-}
+// 漫画推荐
+// .comic_recommend >>> .push_column {
+//   padding 0
+//   margin-top 50px
+// }
 
-.comic_desc .tabBar li {
-  font-size: 32px;
-  width: 50%;
-  height: 80px;
-  cursor: pointer;
-  line-height: 80px;
-  border-bottom: 3px solid #f6f1f1;
-  text-align: center;
-  box-shadow: 0 5px 15px 0 #f6f1f1;
-}
-
-/* tab详情栏 */
-.container_item {
-  color: #555;
-  /* border-bottom:5px solid #f8f8f8; */
-}
-
-.container_item .cont {
-  padding: 30px 25px;
-  background: #fff;
-}
-
-.container_item .detl > p:first-child {
-  font-size: 35px;
-}
-
-.container_item .cont_desc {
-  font-size: 30px;
-  padding-top: 15px;
-}
-
-.comic_recommend >>> .push_column {
-  padding: 0;
-  margin-top: 50px;
-}
-
-.book_fixed {
-  position: fixed;
-  height: 100px;
-  line-height: 100px;
-  width: 100%;
-  background: #f8f8f8;
-  border-top: 2px solid #eee;
-  bottom: 0;
-  left: 0;
-  z-index: 100;
-  display: flex;
-}
-
-.book_fixed span {
-  height: 100%;
-  display: block;
-}
-
-.book_fixed .book_txt {
-  font-size: 30px;
-  width: 60%;
-  padding-left: 30px;
-  text-align: left;
-  color: #555;
-  background: #fff;
-}
-
-.book_fixed .book_tool {
-  width: 40%;
-  text-align: center;
-  font-size: 30px;
-  cursor: pointer;
-  background: #ffa500;
-  color: #fff;
-}
-
-.book_fixed .book_tool a {
-  color: #fff;
-}
+// 底部阅读栏
+.book_fixed
+  position fixed
+  height 100px
+  line-height 100px
+  width 100%
+  background #f8f8f8
+  border-top 2px solid #eee
+  bottom 0
+  left 0
+  z-index 100
+  display flex
+  span 
+    height 100%
+    display block
+  .book_txt
+    font-size 30px
+    width 60%
+    padding-left 30px
+    text-align left
+    color #555
+    background #fff
+  .book_tool
+    width 40%
+    text-align center
+    font-size 30px
+    cursor pointer
+    background #ffa500
+    color #fff
+    a 
+      color #fff
 </style>
 

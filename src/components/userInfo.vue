@@ -1,19 +1,24 @@
 <template>
   <div class="userList">
-    <div class="info_box">
-      <div class="info_img">
-        <img src="/static/img/icon/default_head.png" alt />
+    <div class="info_bg">
+      <div class="info_box">
+        <div class="info_img">
+          <img src="/static/img/icon/default_head.png" />
+        </div>
+        <div class="infoList">
+          <div class="toLogin" v-if="!isLogin" @click="toLogin">{{$t('login.login')}}</div>
+          <template v-else>
+            <div class="login_name">{{uname}}</div>
+            <div class="balance">{{$t('detl.hasMoney')}}：{{money}}</div>
+          </template>
+        </div>
+        <div class="rechargeBtn">
+          <span @click="recharge">{{$t('recharge.recharge')}}</span>
+        </div>
       </div>
-      <div class="infoList">
-        <div class="toLogin" v-if="!isLogin" @click="toLogin">{{$t('login.login')}}</div>
-        <template v-else>
-          <div class="login_name">{{uname}}</div>
-          <div class="balance">{{$t('detl.hasMoney')}}：{{money}}</div>
-        </template>
-      </div>
-      <div class="rechargeBtn">
-        <span @click="recharge">{{$t('recharge.recharge')}}</span>
-      </div>
+      <!-- <div class="suggest" > -->
+      <router-link class="suggest" tag="div" :to="{name:'suggest'}">{{$t('userInfo.suggestions')}}</router-link>
+      <!-- </div> -->
     </div>
     <div class="tabTurn">
       <span
@@ -96,85 +101,74 @@ export default {
 };
 </script>
 
-<style scoped>
-.rechargeBtn {
-  text-align: right;
-  flex: 1;
-}
+<style lang="stylus" scoped>
+.info_bg 
+  padding 8% 25px
+  background #f5f5f5
+  .info_box 
+    display flex
+    align-items center
+    
+    .info_img
+      width 130px
+      height 130px
+      margin-right 30px
+      img 
+        width 100%
+        height 100%
+        border-radius 50%
+    .infoList
+      font-size 30px
+      color #333
+      margin-right 30px
+      &>div
+        margin-bottom 5px
 
-.rechargeBtn > span {
-  background: #ee7676;
-  padding: 15px 15px;
-  font-size: 28px;
-  border-radius: 10px;
-  color: #fff;
-}
+      .toLogin
+        color #fff
+        padding 15px 25px
+        background #ee7676
+        font-size 28px
+        border-radius 10px
+      .balance
+        color #e55c3f
+        font-size 30px
 
-.info_box {
-  display: flex;
-  padding: 8% 25px;
-  align-items: center;
-  background: #f5f5f5;
-}
+    .rechargeBtn 
+      text-align right
+      flex 1
+      span
+        background #ee7676
+        padding 15px
+        font-size 28px
+        border-radius 10px
+        color #fff
+  .suggest
+    font-size 32px
+    color #333
+    text-align right
+    text-decoration blink
+    color #db5f5f
+    font-weight bold
+    text-decoration underline
+  
+.tabTurn
+  font-size 30px
+  color #333
+  span
+    width 50%
+    color #666
+    transition all 0.3s ease
+    display inline-block
+    text-align center
+    padding 15px 0
+    border-bottom 3px solid #ddd
+    &:first-child
+      border-right 1px solid #ddd
+    &.active
+      border-bottom-color #e55c3f
+      color #e55c3f
 
-.info_box .balance {
-  color: #e55c3f;
-  font-size: 30px;
-}
-
-.info_box .info_img {
-  width: 130px;
-  height: 130px;
-  margin-right: 30px;
-}
-
-.info_box .infoList {
-  font-size: 30px;
-  color: #333;
-  margin-right: 30px;
-}
-
-.info_box .infoList > .toLogin {
-  color: #fff;
-  padding: 15px 25px;
-  background: #ee7676;
-  font-size: 28px;
-  border-radius: 10px;
-}
-
-.info_box .infoList > .login_name {
-  margin-bottom: 15px;
-}
-
-.info_box .info_img > img {
-  width: 100%;
-  height: 100%;
-  border-radius: 50%;
-}
-
-.tabTurn {
-  font-size: 30px;
-  color: #333;
-}
-
-.tabTurn > span:first-child {
-  border-right: 1px solid #ddd;
-}
-
-.tabTurn > span {
-  width: 50%;
-  color: #666;
-  transition: all 0.3s ease;
-  display: inline-block;
-  text-align: center;
-  padding: 15px 0;
-  border-bottom: 3px solid #ddd;
-}
-
-.tabTurn > span.active {
-  border-bottom-color: #e55c3f;
-  color: #e55c3f;
-}
 </style>
 
 

@@ -11,6 +11,7 @@
           <router-link :to="{name:'weekList'}">
             <span class="nav_icon">
               <img src="/static/img/icon/update.png" alt="update" />
+              <!-- <img src="/static/img/icon_cache/ic_update.png" alt="update" /> -->
             </span>
             <span class="nav_txt">{{$t('index.update')}}</span>
           </router-link>
@@ -28,7 +29,7 @@
 
     <!-- 推荐栏 -->
     <div class="push_item">
-      <app-column :bookList="bookList" />
+      <column :autoImg="autoImg" :bookList="bookList" />
       <loading :loadState="loadState"></loading>
     </div>
   </div>
@@ -43,24 +44,25 @@ export default {
     return {
       bannerList: [], //广告图
       bookList: [], //首页详情
+      autoImg: "",
       loadState: true //滚动加载提示
     };
   },
+  created() {
+    this.autoImg = this.$config.autoImg.column;
+  },
   mounted() {
+    var href = this.$route.fullPath,
+      idx = href.indexOf("?ch="),
+      ch = href.slice(idx + 4);
+    if (ch) localStorage.setItem("wap_ch", "ch" + ch); //渠道号
     this.init(); //初始化
   },
   activated() {
     console.log("缓存触发");
-    this.$bus.$emit("navBar", false); //关闭loading加载效果
+    this.$bus.$emit("navBar", false);
     this.$bus.$emit("loading", false); //关闭loading加载效果
   },
-  // beforeRouteEnter(to, from, next) {
-  //   console.log("进入路由");
-  //   next();
-  // },
-  // beforeRouteLeave(to, from, next) {
-  //   next();
-  // },
   methods: {
     init() {
       this.getData(); //首页媒体类目
@@ -77,14 +79,13 @@ export default {
             // console.log(data);
             if (data.length > 0) {
               var list = data[0].List;
-              this.bannerList = list.length > 0 ? list : [];
+              this.bannerList = list.length > 0 ? list : []; //第一条数据为banner
               if (data[1]) {
                 var bookList = data.slice(1);
                 bookList.map(res => {
-                  res.List = res.List.slice(0, 9);
+                  res.List = res.List.slice(0, 9); //栏目只显示9条数据
                 });
                 this.bookList = this.exchangeName(bookList);
-                // console.log(this.bookList);
               }
             }
             this.loadState = false;
@@ -94,6 +95,7 @@ export default {
           console.log(err);
         });
     },
+    //栏目文字顺序固定
     exchangeName(book) {
       var opt = {
         推荐: "recommend",
@@ -102,80 +104,55 @@ export default {
         热门: "hot",
         精选: "selected"
       };
-      for (var i = 0; i < book.length; i++) {
-        book[i].GroupName = this.$t("index.module." + opt[book[i].GroupName]);
-      }
+      for (var i = 0; i < book.length; i++)
+        book[i].GroupName = opt[book[i].GroupName];
       return book;
     }
   },
   components: {
     //轮播和类目组件
     "app-swiper": swiper,
-    "app-column": column
+    column
   }
 };
 </script>
 
-<style scoped>
+<style lang="stylus" scoped>
 /* 公共导航 */
-.nav_list {
-  background: url("/static/img/banner_bottom.png") no-repeat;
-  position: relative;
-  z-index: 10;
-  width: 100%;
-  height: 80px;
-  margin-top: -80px;
-  background-size: 100% 80px;
-  display: flex;
-  text-align: center;
-}
+.nav_list
+  background url('/static/img/banner_bottom.png') no-repeat
+  position relative
+  z-index 10
+  width 100%
+  height 80px
+  margin-top -80px
+  background-size 100% 80px
+  display flex
+  text-align center
+  li 
+    width 50%
+    height 80px
+    line-height 80px
+    font-size 28px
+    background #fff
+    outline 0 none
+    margin-top 40px
+    .nav_icon 
+      vertical-align middle
+    .nav_icon,.nav_icon img 
+      display inline-block
+      width 50px
+      height 50px
 
-.nav_list li {
-  width: 50%;
-  height: 80px;
-  line-height: 80px;
-  font-size: 28px;
-  background: #fff;
-  outline: 0 none;
-  margin-top: 40px;
-}
-
-.nav_list .nav_icon {
-  vertical-align: middle;
-}
-
-.nav_list .nav_icon,
-.nav_list .nav_icon img {
-  display: inline-block;
-  width: 50px;
-  height: 50px;
-}
-
-.nav_list a {
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-}
-
-.nav_list .nav_txt {
-  margin: 0 20px;
-  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  vertical-align: middle;
-}
-
-.push_box .push_column {
-  padding: 25px;
-  margin: 25px 0;
-}
+.push_box .push_column 
+  padding 25px
+  margin 25px 0
 
 /* 推荐栏 */
-.push_item {
-  background: #fbf5f5;
-  padding-top: 45px;
-  /* margin-top: 15px; */
-}
+.push_item 
+  background #fbf5f5
+  padding-top 45px
+
 </style>
 
 

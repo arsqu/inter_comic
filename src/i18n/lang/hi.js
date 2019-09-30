@@ -73,7 +73,8 @@ export default {
     }
   },
   userInfo: {
-    tabs: ['itihaas', 'anshadaan']
+    tabs: ['itihaas', 'anshadaan'],
+    suggestions: 'sujhaav'
   },
   login: {
     notAllowed: 'log in nahin kiya gaya',
@@ -82,12 +83,26 @@ export default {
     register: 'sain ap karen',
     login: 'daakhil karana',
     tips: {
+      load: 'mein pravesh karen',
       wait: 'krpaya prateeksha karen',
       empty: 'khaata ya paasavard khaalee nahin ho sakata'
     },
     status: {
       success: 'login saphal',
       err: 'login viphal'
+    }
+  },
+  suggest: {
+    txt: 'sujhaav pratikriya',
+    head: 'pratikriya saamagree',
+    phone: 'phon',
+    email: 'eemel',
+    tips: {
+      content: 'Please enter what you want to feedback'
+    },
+    verify: {
+      require: 'kam se kam ek phon ya eemel edres bharen',
+      content: 'krpaya us samasya saamagree ka vistaar se varnan karen jise aap pheedabaik dena chaahate hain'
     }
   },
   register: {
@@ -104,6 +119,7 @@ export default {
     }
   },
   recharge: {
+    loading: 'richaarj mein, krpaya prateeksha karen',
     recharge: 'oopar se',
     rechargeMoney: 'top ap raashi',
     tips: 'sheeghr',
@@ -120,5 +136,10 @@ export default {
     response: {
       err: 'anurodh viphal raha'
     }
+  },
+  post: {
+    txt: 'prastut karana',
+    success: 'saphalataapoorvak prastut kiya gaya',
+    err: 'sabamishan phel ho gaya'
   }
 }

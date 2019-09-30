@@ -30,20 +30,9 @@ export default {
     bookList: Object
   },
   mounted() {
-    this.getMsg();
-    // console.log(this.catalogue);
     // this.$bus.$emit("recharge", 1);
   },
   methods: {
-    getMsg() {
-      this.$bus.$on("chapter", data => {
-        if (data.chapterId) {
-          // this.catalogue
-          this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);
-        }
-        console.log(data);
-      });
-    },
     book_view(opt, idx) {
       var id = opt.id;
       //1付费 0免费
@@ -69,7 +58,7 @@ export default {
       localStorage.setItem("bookId", this.bookList.id);
       this.$router.push({
         name: "view",
-        params: { id, bookId: this.bookList.id }
+        params: { bookId: this.bookList.id, id }
       });
       // console.log("查看图书");
     }
@@ -77,57 +66,46 @@ export default {
 };
 </script>
 
-<style scoped>
-.prompt_txt {
-  text-align: center;
-  display: block;
-  font-size: 16px; /*no*/
-}
-
-.book_item {
-  display: flex;
-  flex-wrap: wrap;
-  font-size: 25px;
-}
-
-.cont_book_list .book_item li {
-  height: 55px;
-  line-height: 55px;
-  width: 33.3%;
-  margin-bottom: 3%;
-  padding: 0 15px;
-  position: relative;
-}
-
-.cont_book_list .book_item li a {
-  width: 100%;
-  border: 2px solid #ccc;
-  border-radius: 30px;
-  text-align: center;
-  cursor: pointer;
-  display: inline-block;
-}
-
-.cont_book_list .book_item li.lock .cont_lock {
-  background: #fff url(/static/img/icon/lock.png);
-  width: 40px;
-  height: 40px;
-  display: block;
-  z-index: 11;
-  background-size: 100%;
-  position: absolute;
-  right: 0px;
-  bottom: -5px;
-  border-radius: 50%;
-}
-
-.cont_book_list .book_item .cont_num {
-  font-size: 30px;
-}
-
-.cont_book_list .book_item .cont_money {
-  color: #ffa500;
-}
+<style lang="stylus" scoped>
+.prompt_txt 
+  text-align center
+  display block
+  font-size 16px
+.cont_book_list 
+  .book_item 
+    display flex
+    flex-wrap wrap
+    font-size 25px
+    li 
+      height 55px
+      line-height 55px
+      width 33.3%
+      margin-bottom 3%
+      padding 0 15px
+      position relative
+      a 
+        width 100%
+        border 2px solid #ccc
+        border-radius 30px
+        text-align center
+        cursor pointer
+        display inline-block
+      &.lock 
+        .cont_lock 
+          background #fff url(/static/img/icon/lock.png)
+          width 40px
+          height 40px
+          display block
+          z-index 11
+          background-size 100%
+          position absolute
+          right 0px
+          bottom -5px
+          border-radius 50%
+    .cont_num 
+      font-size 30px
+    .cont_money 
+      color #ffa500
 </style>
 
 

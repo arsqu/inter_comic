@@ -66,17 +66,15 @@ export default {
     },
     login() {
       if (this.isComplete) {
-        // Toast("请等待");
         this.$toast(this.$t("login.tips.wait"));
         return;
       }
       if (!this.uname || !this.upass) {
-        // Toast("账号密码不为空");
-        // this.$toast("账号密码不为空");
         this.$toast(this.$t("login.tips.empty"));
         return;
       }
       this.isComplete = true;
+      this.$toast(this.$t("login.tips.load"));
       this.$api
         .postDataN(
           "login",
@@ -92,7 +90,7 @@ export default {
             this.$bus.$emit("isLogin", "1");
             this.setCache(data);
             var path = localStorage.getItem("loginUrl");
-            if (!path) path = "/index";
+            if (!path) path = "/";
             this.$router.push({ path });
           } else msg = this.$t("login.status.err");
           this.$toast(msg);
@@ -107,65 +105,54 @@ export default {
 };
 </script>
 
-<style scoped>
-.back {
-  z-index: 100;
-  border-top: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-color: #fff;
-  height: 30px;
-  width: 30px;
-  vertical-align: middle;
-  -webkit-transform: rotate(-135deg);
-  transform: rotate(-135deg);
-  display: inline-block;
-  position: absolute;
-  left: 5%;
-  top: 3%;
-  padding: 15px;
-}
+<style lang="stylus" scoped>
+.back
+  z-index 100
+  border-top 3px solid transparent
+  border-right 3px solid transparent
+  border-color #fff
+  height 30px
+  width 30px
+  vertical-align middle
+  -webkit-transform rotate(-135deg)
+  transform rotate(-135deg)
+  display inline-block
+  position absolute
+  left 5%
+  top 3%
+  padding 15px
 
-.login_info {
-  padding: 0 60px;
-}
+.login_info
+  padding 0 60px
 
-.form_item {
-  margin-bottom: 30px;
-}
+.form_item
+  margin-bottom 30px
+  input
+    width 100%
+    border 0 none
+    background #f5f5f5
+    padding 0 20px
+    height 100px
+    outline 0 none
+    border-radius 45px
+    color #555
 
-.form_item > input {
-  width: 100%;
-  border: 0 none;
-  background: #f5f5f5;
-  padding: 0 20px;
-  height: 100px;
-  outline: 0 none;
-  border-radius: 45px;
-  color: #555;
-}
+.login_btn
+  margin-top 10%
+  span
+    display inline-block
+    width 40%
+    border-radius 40px
+    padding 15px 0
+    border 2px solid #fd5c63
+    text-align center
+    font-size 35px
+  .register
+    color #fd5c63
+    float left
+  .login
+    color #fff
+    background #fd5c63
+    float right
 
-.login_btn {
-  margin-top: 10%;
-}
-
-.login_btn span {
-  display: inline-block;
-  width: 40%;
-  border-radius: 40px;
-  padding: 15px 0;
-  border: 2px solid #fd5c63;
-  text-align: center;
-  font-size: 35px;
-}
-
-.login_btn > .register {
-  color: #fd5c63;
-  float: left;
-}
-
-.login_btn > .login {
-  color: #fff;
-  background: #fd5c63;
-  float: right;
-}
 </style>

@@ -4,7 +4,6 @@ import config from '../util/config'
 const _import = require('@/i18n/_import_lang')//获取组件的方法
 Vue.use(VueI18n);
 
-
 // arr
 // function exchange(arr) {
 //   var opt = {};

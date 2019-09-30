@@ -21,7 +21,7 @@
         <img src="/static/img/icon/home.png" alt="home" />
       </router-link>
       <span v-show="showHome" @click="changeWords">
-        <img src="/static/img/icon/1.png" alt="language" />
+        <img src="/static/img/icon/language.png" alt="language" />
       </span>
       <router-link :to="{name:'userInfo'}" v-show="showHome">
         <img src="/static/img/icon/user.png" alt="userInfo" />
@@ -31,21 +31,16 @@
 </template>
 
 <script>
-import config from "../../util/config";
 export default {
   data() {
-    return {
-      lang: {}
-    };
+    return {};
   },
   props: {
     loader: Boolean,
     showHome: Boolean,
     comicTxt: String
   },
-  created() {
-    this.lang = config.lang;
-  },
+  created() {},
   methods: {
     reBack() {
       this.$router.go(-1);
@@ -58,88 +53,67 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="stylus" scoped>
 /* 页头 */
-.top_bar {
-  height: 100px;
-  position: fixed;
-  z-index: 20;
-  top: 0;
-  left: 0;
-  right: 0;
-  width: 100%;
-  background: #fff;
-  font-size: 30px;
-  padding: 0 25px;
-  display: flex;
-  align-items: center;
-}
+.top_bar 
+  height 100px
+  position fixed
+  z-index 20
+  top 0
+  left 0
+  right 0
+  width 100%
+  background #fff
+  font-size 30px
+  padding 0 25px
+  display flex
+  align-items center
 
-.top_title {
-  /* flex: 1; */
-  width: 90%;
-}
+  .top_title
+    width 90%
+    .top_logo,.top_detl_txt
+      font-weight bold
+      font-size 38px
+      font-family "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif
 
-.top_logo,
-.top_detl_txt {
-  font-weight: bold;
-  font-size: 38px;
-  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
-}
+    .top_logo 
+      color orange
+      .icon_logo 
+        padding-left 40px
+      .top_detl_txt
+        color #555
+        padding-left 10px
+        display flex
+        align-items center
+        .icon_back
+          z-index 100
+          border-top 4px solid transparent
+          border-right 4px solid transparent
+          border-color orange
+          height 30px
+          width 30px
+          vertical-align middle
+          transform rotate(-135deg)
+          display inline-block
+          .comicTxt
+            width 75%
+            white-space nowrap
+            overflow hidden
+            text-overflow ellipsis
+            vertical-align middle
+            display inline-block
 
-.top_logo {
-  color: orange;
-}
-
-.top_detl_txt {
-  color: #555;
-  padding-left: 10px;
-  display: flex;
-  align-items: center;
-}
-
-.top_tools {
-  display: flex;
-  position: relative;
-}
-
-.top_tools a,
-.top_tools span {
-  margin: 0 15px;
-  width: 45px;
-  height: 45px;
-  display: inline-block;
-}
-
-.top_tools img {
-  width: 100%;
-  height: 100%;
-}
-
-.icon_logo {
-  padding-left: 40px;
-}
-
-.icon_back {
-  z-index: 100;
-  border-top: 4px solid transparent;
-  border-right: 4px solid transparent;
-  border-color: orange;
-  height: 30px;
-  width: 30px;
-  vertical-align: middle;
-  transform: rotate(-135deg);
-  display: inline-block;
-}
-
-.comicTxt {
-  width: 75%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  display: inline-block;
-}
+  .top_tools
+    display flex
+    position relative
+    a,span
+      margin 0 15px
+      width 45px
+      height 45px
+      display inline-block
+    img
+      width 100%
+      height 100%
 </style>
 
 

@@ -3,20 +3,37 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Manga</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+  <title>Mangaline</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <!-- ios -->
   <meta name="format-detection" content="telephone=no" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <!-- share -->
+  <meta itemprop="image" content="/static/img/share.jpg">
+  <meta itemprop="name" content="Mangaline">
+  <meta name="keywords" content="Savita bhabhi,manga,cartoon,mature,free,India cartoon,Japanese cartoon,Korean cartoon">
+  <meta itemprop="description" name="description"
+    content="Read manga online including Savita Bhabhi updated at Managaline every week.  Our aim is to bring the latest high quality manga not only from India local  but also from Korea,Japan and China for Indian Manga readers">
   <link rel="stylesheet" href="https://cdn.bootcss.com/mint-ui/2.2.13/style.min.css">
-  <meta name="keywords" content="">
-  <meta name="description" content="">
+  <script>
+    // http://mangaline.net/
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "https://hm.baidu.com/hm.js?13154d0fb7d695ec4883ea934e3c385f";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
 </head>
 
 <body>
   <div id="app"></div>
 
   <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
-  <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.min.js"></script>
+  <!-- <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.min.js"></script> -->
+  <script src="https://cdn.bootcss.com/vue-router/3.1.3/vue-router.min.js"></script>
   <script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
   <!-- <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script> -->
   <script src="https://cdn.bootcss.com/mint-ui/2.2.13/index.js"></script>

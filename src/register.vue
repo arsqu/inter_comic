@@ -54,9 +54,8 @@ import Qs from "qs";
 export default {
   data() {
     return {
-      codeSrc: "http://161.117.178.26:8080/ulogin/code?math=" + Math.random(),
+      codeSrc: "http://mangaline.net:8088/ulogin/code?math=" + Math.random(),
       // codeSrc: "/java/ulogin/code?math=" + Math.random(), //测试环境
-      // codeSrc: "/ulogin/code?math=" + Math.random(),
       uname: "",
       upass: "",
       code: "",
@@ -104,116 +103,108 @@ export default {
         )
         .then(res => {
           var msg = "";
+          // console.log(res);
           if (res.code == 1) {
             var data = res.data;
-            msg = $t("register.status.success");
-            localStorage.setItem("uname", data.uname);
-            localStorage.setItem("money", data.money);
-            localStorage.setItem("isLogin", 1);
+            var local = localStorage;
+            msg = this.$t("register.status.success");
+            var ch = local.getItem("wap_ch") || "none";
+            console.log(_hmt);
+            _hmt.push(["_trackEvent", "register_" + ch], "success"); //充值成功数
+            local.setItem("uname", data.uname);
+            local.setItem("money", data.money);
+            local.setItem("isLogin", 1);
             this.$router.push({ name: "login" });
-          } else if (res.code == 3) msg = this.$t("register.status.warn");
+          } else if (res.code == 3) {
+            msg = this.$t("register.status.warn");
+            _hmt.push(["_trackEvent", "register_" + ch], "error");
+          }
           //this.$toast("验证码错误");
-          else if (res.code == 4) msg = this.$t("register.status.repeat");
+          else if (res.code == 4) {
+            msg = this.$t("register.status.repeat");
+            _hmt.push(["_trackEvent", "register_" + ch], "repeat");
+          }
           //this.$toast("请勿重复注册");
           else {
           }
+          this.$toast(msg);
           // console.log(res);
           this.isComplete = false;
         })
         .catch(err => {
-          this.$toast($t("register.status.err"));
+          this.$toast(this.$t("register.status.err"));
           this.isComplete = false;
           console.log(err);
         });
-      console.log("post");
-      console.log("register");
     }
   }
 };
 </script>
 
-<style scoped>
-.back {
-  z-index: 100;
-  border-top: 3px solid transparent;
-  border-right: 3px solid transparent;
-  border-color: orange;
-  height: 30px;
-  width: 30px;
-  vertical-align: middle;
-  -webkit-transform: rotate(-135deg);
-  transform: rotate(-135deg);
-  display: inline-block;
-  position: absolute;
-  left: 5%;
-  top: 3%;
-  padding: 15px;
-}
+<style lang="stylus" scoped>
+.back
+  z-index 100
+  border-top 3px solid transparent
+  border-right 3px solid transparent
+  border-color orange
+  height 30px
+  width 30px
+  vertical-align middle
+  -webkit-transform rotate(-135deg)
+  transform rotate(-135deg)
+  display inline-block
+  position absolute
+  left 5%
+  top 3%
+  padding 15px
 
-.login_box {
-  padding: 0 60px;
-}
+.login_box 
+  padding 0 60px
+  .top_logo 
+    padding 60px 0
+    text-align center
+    color #666
 
-.top_logo {
-  padding: 60px 0;
-  text-align: center;
-  color: #666;
-}
 
-.form_item {
-  margin-bottom: 30px;
-  font-size: 0;
-}
+.form_item
+  margin-bottom 30px
+  font-size 0
+  &>input
+    width 100%
+    border 0 none
+    background #f5f5f5
+    padding 0 20px
+    height 100px
+    outline 0 none
+    border-radius 45px
+    color #555
+    vertical-align middle
+    &.code
+      box-sizing border-box
+      width 70%
+      border-radius 20px 0 0 20px
+  span
+    width 30%
+    display inline-block
+    img
+      height 100px
+      vertical-align middle
 
-.form_item > input {
-  width: 100%;
-  border: 0 none;
-  background: #f5f5f5;
-  padding: 0 20px;
-  height: 100px;
-  outline: 0 none;
-  border-radius: 45px;
-  color: #555;
-  vertical-align: middle;
-}
-
-.form_item > input.code {
-  box-sizing: border-box;
-  width: 70%;
-  border-radius: 20px 0 0 20px;
-}
-
-.form_item span {
-  width: 30%;
-  display: inline-block;
-  /* height: 100px; */
-}
-
-.form_item span img {
-  height: 100px;
-  vertical-align: middle;
-}
-
-.login_btn {
-  margin-top: 10%;
-}
-
-.login_btn span.register {
-  display: inline-block;
-  width: 100%;
-  border-radius: 40px;
-  padding: 15px 0;
-  border: 2px solid #fd5c63;
-  text-align: center;
-  font-size: 35px;
-  color: #fff;
-  background: #fd5c63;
-}
-
-.login_btn > p {
-  font-size: 14px;
-  color: #666;
-  padding-top: 25px;
-  text-align: center;
-}
+.login_btn 
+  margin-top 10%
+  span.register
+    display inline-block
+    width 100%
+    border-radius 40px
+    padding 15px 0
+    border 2px solid #fd5c63
+    text-align center
+    font-size 35px
+    color #fff
+    background #fd5c63
+   p 
+    font-size 14px
+    color #666
+    padding-top 25px
+    text-align center
 </style>

@@ -18,27 +18,26 @@ export default {
   methods: {
     reback() {
       this.$router.push({ name: "main" });
-      console.log("reback");
+      // console.log("reback");
     }
   }
 };
 </script>
 
-<style scoped>
-#notFound .page_box {
-  width: 50%;
-  margin: 0 auto;
-  display: block;
-  margin-top: 200px;
-}
+<style lang="stylus" scoped>
+#notFound 
+  .page_box 
+    width 50%
+    margin 0 auto
+    display block
+    margin-top 200px
 
-#notFound button {
-  border: 0 none;
-  background: #e06278;
-  width: 100%;
-  height: 80px;
-  color: #fff;
-  cursor: pointer;
-  border-radius: 10px;
-}
+  button 
+    border 0 none
+    background #e06278
+    width 100%
+    height 80px
+    color #fff
+    cursor pointer
+    border-radius 10px
 </style>

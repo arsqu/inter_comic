@@ -18,13 +18,12 @@
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="isScroll"
       >
-        <!-- :infinite-scroll-disabled="loading" -->
-        <!-- infinite-scroll-immediate-check="false" -->
         <div class="update_list" v-show="isDay == (idx+1)" v-for="(item,idx) in date" :key="idx">
-          <app-list :boxList="boxT['d'+(idx+1)]" :rankState="false" />
+          <app-list :autoImg="autoImg" :boxList="boxT['d'+(idx+1)]" :rankState="false" />
         </div>
       </div>
     </div>
+    <!-- 提示信息 -->
     <div class="scroll_tips">
       <loading :loadState="loadState" />
       <template v-if="!loadState">
@@ -44,7 +43,7 @@ import Qs from "qs";
 export default {
   data() {
     return {
-      abc: 0,
+      autoImg: "",
       cache: [], //缓存
       date: [], //一周
       boxT: {}, //所有列表
@@ -60,6 +59,7 @@ export default {
   created() {
     // console.log("created");
     this.init();
+    this.autoImg = this.$config.autoImg.list;
   },
   mounted() {
     // console.log("update_mounted");
@@ -68,14 +68,15 @@ export default {
   activated() {
     console.log("activated");
     this.scrollState["d" + this.isDay] = false;
-    this.sendMsg("navBar", this.$t("index.updateHead"));
+    this.$bus.$emit("navBar", this.$t("index.updateHead"));
   },
   beforeRouteLeave(to, from, next) {
     // console.log(to, from);
-    this.scrollState["d" + this.isDay] = true;
+    this.scrollState["d" + this.isDay] = true; //离开时关闭滚动
     next();
   },
   computed: {
+    // 当日滚动状态
     isScroll: function() {
       return this.scrollState["d" + this.isDay];
     }
@@ -86,9 +87,10 @@ export default {
     },
     init() {
       this.isDay = new Date().getDay();
+      this.isDay = this.isDay || 7;
       this.date = this.$t("index.week");
-      this.defData(); // 初始化时间
-      this.sendMsg("navBar", this.$t("index.updateHead"));
+      this.defData(); // 数据初始化
+      this.$bus.$emit("navBar", this.$t("index.updateHead"));
       // this.loadMore();
     },
     defData() {
@@ -102,10 +104,6 @@ export default {
         });
       });
     },
-    sendMsg(key, data) {
-      //组件通信
-      this.$bus.$emit(key, data);
-    },
     //更新标签选中状态
     updateTab(idx) {
       this.isDay = idx;
@@ -116,26 +114,33 @@ export default {
       // console.log("测试滚动");
       this.getUpdate(1);
     },
+    //关闭滚动
+    closeScroll() {},
     //周更新
     getUpdate(isScroll) {
       var cache = this.cache,
         d = this.isDay;
       // console.log("isScroll:", isScroll);
-      //点击tab查看时走缓存
       if (cache.indexOf(d) != -1 && !isScroll) {
+        //console.log("缓存中存在,则点击不刷新,滚动时刷新");
         return;
       }
       //数据加载中
       if (this.loadState) {
-        // console.log("异步请求中...禁止操作");
+        // console.log("请勿频繁操作");
+        return;
+      }
+      var key = "d" + d,
+        page = this.page[key],
+        opt = Object.assign({}, page);
+      if (this.boxT[key].length != 0 && this.boxT[key].length >= page.total) {
+        this.$set(this.scrollState, [key], true); //停止滚动
+        this.loadState = false;
         return;
       }
       cache.push(d);
-      var page = this.page["d" + d], //分页参数
-        opt = Object.assign({}, page);
       opt.week = d;
       this.loadState = true;
-      var key = "d" + d;
       this.$api
         .getData("weekList", opt)
         .then(res => {
@@ -143,20 +148,17 @@ export default {
           //请求成功时
           if (res.code == 1) {
             var data = res.data;
+            //首次更新数据
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
             } else {
-              //数组变化时更新
+              console.log("拼接");
               if (this.boxT["d" + d].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
-              } else {
-                //内容超出停止滚动
-                this.$set(this.scrollState, [key], true); //停止滚动
-                this.loadState = false;
-                return;
               }
               // console.log(page);
             }
+            //更新分页参数
             this.$set(this.page, [key], {
               limit: 10,
               offset: data.offset + data.limit,
@@ -170,10 +172,9 @@ export default {
           this.loadState = false;
         })
         .catch(err => {
-          this.loadState = false;
           this.$set(this.scrollState, [key], true);
-          console.log(err);
-          console.log("server error");
+          this.loadState = false;
+          // console.log("server error");
           // console.log("关闭滚动");
         });
     }
@@ -181,55 +182,43 @@ export default {
 };
 </script>
 
-<style scoped>
-.update_time {
-  background: #fff;
-  width: 100%;
-  position: fixed;
-  top: 100px;
-  z-index: 10;
-}
-
-.update_box {
-  padding-top: 80px;
-}
-
-.update_time > ul {
-  display: flex;
-  font-size: 30px;
-  color: #999;
-  padding: 0 25px;
-  border-bottom: 3px solid #f3f3f3;
-}
-
-.update_time li {
-  position: relative;
-  flex: 1;
-  background: #fff;
-  text-align: center;
-  height: 80px;
-  line-height: 80px;
-}
-
-.update_time li.active {
-  background: #f7f7f7;
-  color: #ffa500;
-  font-size: 32px;
-}
-
-.update_time li.active:after {
-  content: "";
-  display: block;
-  border-top: 3px solid #ffa500;
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
-.update_list {
-  padding: 10px;
-  /* background: #f3f3f3; */
-}
+<style lang="stylus" scoped>
+.update_time 
+  background #fff
+  width 100%
+  position fixed
+  top 100px
+  z-index 10
+  ul 
+    display flex
+    font-size 30px
+    color #999
+    padding 0 25px
+    border-bottom 3px solid #f3f3f3
+    li 
+      position relative
+      flex 1
+      background #fff
+      text-align center
+      height 80px
+      line-height 80px
+    li.active
+      background #f7f7f7
+      color #ffa500
+      font-size 32px
+    li.active:after
+      content ""
+      display block
+      border-top 3px solid #ffa500
+      position absolute
+      bottom 0
+      width 100%
+    
+.update_box 
+  padding-top 80px
+  .update_list 
+    padding 10px
+ 
 </style>
 
 

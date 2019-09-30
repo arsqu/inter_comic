@@ -3,7 +3,7 @@
     <!-- v-if 会导致页面重绘 -->
     <template v-if="$route.name!='login'&&$route.name!='register'">
       <Header v-show="headShow" :showHome="showHome" :loader="loader" :comicTxt="comicTxt" />
-      <!-- inner -->
+      <!-- container -->
       <div class="page_layout" :class="{opac:loading}">
         <keep-alive>
           <router-view v-if="$route.meta.keepAlive" />
@@ -37,7 +37,6 @@
 
 <script>
 // import TabBar from "./components/tabbar";
-import config from "./util/config";
 import Qs from "qs";
 const Header = () => import("@/components/common/header");
 const chapterBox = () => import("@/components/module/chapterBox");
@@ -54,6 +53,7 @@ export default {
       showHome: false,
       chaperId: null,
       lang: {},
+      event: "", //上下章
       chapterIdx: null,
       hasMoney: 0, //余额
       isLanguage: false, //语言框
@@ -73,7 +73,7 @@ export default {
   },
   created() {
     // console.log("app_created");
-    this.lang = config.lang;
+    this.lang = this.$config.lang;
   },
   activated() {
     // console.log("app_activated");
@@ -149,6 +149,7 @@ export default {
       this.btn = document.getElementsByClassName("backTop")[0];
     },
     unlock() {
+      // console.log(this.chapterId, this.chapterIdx);
       this.$bus.$emit("chapter", {
         chapterId: this.chapterId,
         chapterIdx: this.chapterIdx,
@@ -220,7 +221,7 @@ export default {
         me.isRecharge = true;
       });
       this.$bus.$on("comic", data => {
-        // console.log("oncomic", data);
+        console.log("oncomic", data);
         me.bookId = data.bookId;
         me.chapterId = data.chapterId;
         me.chapterIdx = data.chapterIdx;
@@ -270,7 +271,6 @@ export default {
   watch: {
     $route(to, from) {
       // console.log(to, from);
-      // console.log("路由变化");
       this.showHome = false;
       var name = this.$router.history.current.name;
       if (name == "main") {
@@ -282,87 +282,72 @@ export default {
 };
 </script>
 
-<style scoped>
-.opac {
-  opacity: 0.6;
-}
+<style lang="stylus" scoped>
+.opac
+  opacity 0.6
 
-.page_layout {
-  transition: opacity 0.6s ease-out;
-  margin-top: 100px;
-}
+.page_layout
+  transition opacity 0.6s ease-out
+  margin-top 100px
 
-.page_modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  margin: auto;
-  z-index: 100;
-  background-color: rgba(0, 0, 0, 0.65);
-}
-
-.page_modal.lang {
-  top: 100px;
-}
+.page_modal
+  position fixed
+  top 0
+  left 0
+  bottom 0
+  right 0
+  margin auto
+  z-index 100
+  background-color rgba(0, 0, 0, 0.65)
+  &.lang
+    top 100px
 
 /* language box*/
-.langList {
-  position: absolute;
-  top: 100px;
-  z-index: 100;
-  width: 100%;
-  background: #fff;
-  font-size: 28px;
-  padding: 0px 10px;
-  border-bottom: 5px solid #ff8300;
-}
-
-.langList li {
-  padding: 15px 10px;
-  color: #555;
-  border-top: 1px solid #ddd;
-}
-
-.langList li:first-child {
-  border-top: 0 none;
-}
+.langList
+  position absolute
+  top 100px
+  z-index 100
+  width 100%
+  background #fff
+  font-size 28px
+  padding 0px 10px
+  border-bottom 5px solid #ff8300
+  li
+    padding 15px 10px
+    color #555
+    border-top 1px solid #ddd
+    &:first-child
+      border-top 0 none
 
 /* backTop */
-.backTop {
-  border: 1px solid #ddd;
-  position: fixed;
-  display: none;
-  z-index: 100;
-  width: 80px;
-  height: 80px;
-  background: #fff;
-  right: 25px;
-  bottom: 5%;
-  transition: all 0.2s linear;
-  opacity: 1;
-}
-
-.backTop:after {
-  border-top: 2px solid transparent;
-  border-right: 2px solid transparent;
-  border-color: #666;
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  height: 20px;
-  width: 20px;
-  margin-top: -4px;
-  margin-left: -10px;
-  transform: rotate(-45deg);
-  content: "";
-}
-
-.backTop.show {
-  display: block;
-  bottom: 10%;
-  opacity: 1;
-}
+.backTop
+  border 1px solid #ddd
+  position fixed
+  display none
+  z-index 100
+  width 80px
+  height 80px
+  background #fff
+  right 25px
+  bottom 5%
+  transition all 0.2s linear
+  opacity 1
+  &:after
+    border-top 2px solid transparent
+    border-right 2px solid transparent
+    border-color #666
+    position absolute
+    left 50%
+    top 50%
+    height 20px
+    width 20px
+    margin-top -6px
+    margin-left -10px
+    transform rotate(-45deg)
+    content ""
+  &.show
+    display block
+    bottom 10%
+    opacity 1
 </style>
 

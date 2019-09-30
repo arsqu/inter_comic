@@ -59,73 +59,54 @@ export default {
 };
 </script>
 
-<style scoped>
-.recharge.show {
-  bottom: 0;
-}
+<style lang="stylus" scoped>
+.recharge 
+  background #fff
+  z-index 200
+  position fixed
+  bottom -100%
+  width 100%
+  transition all 0.4s ease
+  &.show 
+    bottom 0
+  & > .close 
+    width 30px
+    height 30px
+    position absolute
+    right 15px
+    top 15px
+    cursor pointer
+  .rechargeDetl 
+    font-size 16px
+    text-align center
+    padding-top 60px
+    .pay_tip 
+      color #ec6029
+    & > div 
+      &:first-child
+        color #252525
+        font-size 33px
+    .pay_money 
+      color #333
+      font-size 30px
+      padding-top 35px
+      & > span 
+        font-size 40px
+        color #fd5c63
+    .has_money 
+      font-size 26px
+      padding-top 20px
+      color #666
+    .pay_txt 
+      color #888
+      font-size 30px
+      padding 50px 0
+    .login_btn 
+      height 100px
+      line-height 100px
+      font-size 30px
+      background #fd5c63
+      color #fff
+      margin-top 40px
 
-.recharge {
-  background: #fff;
-  z-index: 200;
-  position: fixed;
-  bottom: -100%;
-  width: 100%;
-  transition: all 0.4s ease;
-}
-
-.recharge > .close {
-  width: 30px;
-  height: 30px;
-  position: absolute;
-  right: 15px;
-  top: 15px;
-  cursor: pointer;
-}
-
-.recharge .rechargeDetl {
-  font-size: 16px;
-  text-align: center;
-  padding-top: 60px;
-}
-
-.recharge .rechargeDetl .pay_tip {
-  color: #ec6029;
-}
-
-.recharge .rechargeDetl > div:first-child {
-  color: #252525;
-  font-size: 33px;
-}
-
-.recharge .rechargeDetl .pay_money {
-  color: #333;
-  font-size: 30px;
-  padding-top: 35px;
-}
-
-.recharge .rechargeDetl .pay_money > span {
-  font-size: 40px;
-  color: #fd5c63;
-}
-
-.recharge .rechargeDetl .pay_txt {
-  color: #888;
-  font-size: 30px;
-  padding: 50px 0;
-}
-
-.recharge .rechargeDetl .has_money {
-  font-size: 15px; /*no*/
-  padding-top: 20px;
-  color: #666;
-}
-
-.recharge .rechargeDetl .login_btn {
-  height: 100px;
-  line-height: 100px;
-  font-size: 30px;
-  background: #fd5c63;
-  color: #fff;
-  margin-top: 40px;
-}
 </style>

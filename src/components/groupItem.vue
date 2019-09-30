@@ -1,8 +1,7 @@
 <template>
-  <!-- $route.params.type -->
   <!-- more comic -->
-  <div class="groupItem" :key="Math.random()">
-    <!-- 列表模板 -->
+  <div class="groupItem">
+    <!--  :key="Math.random()" -->
     <div class="push_column">
       <!-- 滚动加载 -->
       <ul
@@ -11,7 +10,6 @@
         infinite-scroll-disabled="isScroll"
         infinite-scroll-distance="15"
       >
-        <!-- infinite-scroll-immediate-check="true" -->
         <template v-if="bookList.length>0">
           <li
             class="book_detl"
@@ -20,7 +18,7 @@
             @click="tar_href(detl.id,detl.title)"
           >
             <div class="book_pto">
-              <img v-lazy="detl.show_img" alt />
+              <img v-lazy="detl.show_img+'?'+autoImg" alt />
             </div>
             <div class="book_desc">
               <span class="book_txt over_ellipsis">{{detl.title}}</span>
@@ -48,12 +46,10 @@ import Qs from "qs";
 export default {
   data() {
     return {
-      // check: false,
+      autoImg: "",
       groupId: null,
-      check: true,
       isScroll: false, //是否停止滚动
       loadState: false, //加载状态
-      isUpdate: true, //是否更新
       page: {
         offset: 0,
         limit: 10,
@@ -62,45 +58,37 @@ export default {
       bookList: []
     };
   },
-  // beforeRouteEnter(to, from, next) {
-  //   console.log(from, to);
-  //   this.$route.meta.keepAlive = true;
-  //   next();
-  // },
-  // beforeRouteLeave(to, from, next) {
-  //   this.$route.meta.keepAlive = true;
-  //   next();
-  // },
   activated() {
     var param = this.$route.params;
-    // console.log("groupId", this.groupId);
-    // console.log("paramId", param.id);
     if (this.groupId != param.id) {
       this.def();
       this.bookList = [];
       this.isScroll = false;
-      this.$set(this.page, "offset", 0);
+      this.resetPage();
       this.getBook();
       console.log("update");
     } else {
-      this.sendMsg("navBar", this.type); //切换header状态
+      this.$bus.$emit("navBar", this.type); //切换header状态
     }
     // console.log("activated");
+  },
+  created() {
+    this.autoImg = this.$config.autoImg.column;
   },
   mounted() {
     // console.log("mounted");
     this.def();
   },
   methods: {
+    resetPage() {
+      this.$set(this.page, "offset", 0);
+      this.$set(this.page, "total", 0);
+    },
     def() {
       var param = this.$route.params;
       this.groupId = param.id;
       this.type = param.type;
-      this.sendMsg("navBar", this.type);
-    },
-    //组件通信
-    sendMsg(key, data) {
-      this.$bus.$emit(key, data);
+      this.$bus.$emit("navBar", this.type);
     },
     //跳转详情页
     tar_href(id, title) {
@@ -115,15 +103,18 @@ export default {
     //加载漫画
     getBook() {
       if (this.loadState) {
-        // console.log("异步请求中...禁止操作");
+        // console.log("操作太频繁");
         // this.$toast("please wait...");
         return;
       }
-      var opt = Object.assign({}, this.page);
+      var opt = Object.assign({}, this.page); //分页参数
       opt.groupId = this.groupId;
       this.loadState = true;
-      //测试数据
-      // console.log("请求数据");
+      if (this.bookList.length != 0 && this.bookList.length >= opt.total) {
+        this.isScroll = true;
+        this.loadState = false;
+        return;
+      }
       this.$api
         .getData("getMore", opt)
         .then(res => {
@@ -131,6 +122,7 @@ export default {
             var data = res.data;
             if (this.bookList.length == 0) {
               this.$set(this, "bookList", data.list);
+              //首次请求小于10关闭滚动
               if (data.list.length < 10) {
                 console.log("暂无更多数据");
                 this.isScroll = true;
@@ -139,22 +131,23 @@ export default {
               }
             } else {
               // console.log("拼接");
-              // console.log(this.bookList.length);
               if (this.bookList.length < data.total) {
                 this.bookList = this.bookList.concat(data.list);
-              } else {
-                this.isScroll = true; //停止滚动
-                this.loadState = false;
-                return;
               }
+              // else {
+              //   console.log("ajax停止滚动");
+              //   this.isScroll = true; //停止滚动
+              //   this.loadState = false;
+              //   return;
+              // }
             }
+            //更新分页参数
             this.$set(this, "page", {
               limit: 10,
               offset: data.offset + data.limit,
               total: data.total
             });
           } else {
-            console.log("停止滚动");
             this.isScroll = true; //停止滚动
           }
           this.loadState = false;
@@ -164,6 +157,7 @@ export default {
           this.isScroll = true;
           this.loadState = false;
         });
+      //Mock测试数据
       // this.$axios.post("/test/comicMore").then(res => {
       //   var data = res.data;
       //   data = data.data ? data.data : data;
@@ -195,68 +189,48 @@ export default {
   }
 };
 </script>
-<style scoped>
-.push_column {
-  font-size: 30px;
-  padding: 15px;
-  background: #fff;
-}
+<style lang="stylus" scoped>
+.push_column 
+  font-size 30px
+  padding 15px
+  background #fff
+  .book_list 
+    display flex
+    flex-wrap wrap
+    .book_detl 
+      width 33.3%
+      box-sizing border-box
+      padding 15px 10px
+      cursor pointer
+      .book_pto 
+        position relative
+        width 100%
+        margin-bottom 5px
+        padding-bottom 133%
+        img 
+          position absolute
+          height 100%
+          width 100%
+          border-radius 10px
+      .book_txt 
+        display block
+        font-size 28px
+        padding 0 5px
+        color #252525
+        letter-spacing 0
+        font-weight bold
+        text-align center
+      .book_update 
+        display block
+        font-size 26px
+        padding 0 5px
+        color #777
+        text-align center
+  .prompt_txt 
+    color #555
+    font-size 0.373333rem
+    padding 0.266667rem
+    text-align center
 
-.book_list {
-  display: flex;
-  flex-wrap: wrap;
-}
 
-.push_column .book_txt {
-  display: block;
-  font-size: 28px;
-  padding: 0 5px;
-  color: #252525;
-  letter-spacing: 0;
-  font-weight: bold;
-  text-align: center;
-}
-
-.push_column .book_update {
-  display: block;
-  font-size: 26px;
-  padding: 0 5px;
-  color: #777;
-  text-align: center;
-}
-
-.book_detl {
-  width: 33.3%;
-  box-sizing: border-box;
-  padding: 15px 10px;
-  cursor: pointer;
-}
-
-.book_pto {
-  position: relative;
-  width: 100%;
-  margin-bottom: 5px;
-  padding-bottom: 133%;
-}
-
-.book_pto img {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  border-radius: 10px;
-}
-
-.prompt_txt {
-  color: #555;
-  font-size: 0.373333rem;
-  padding: 0.266667rem;
-  text-align: center;
-  /* display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 10px 0;
-  width: 100%;
-  font-size: 26px;
-  color: #666; */
-}
 </style>

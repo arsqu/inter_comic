@@ -48,6 +48,12 @@ export default {
   position: relative;
 }
 
+.page-swipe .mint-swipe {
+  height: 435px;
+  color: #fff;
+  font-size: 30px;
+}
+
 .page-infinite-loading {
   position: absolute;
   top: 50%;
@@ -62,11 +68,7 @@ export default {
   cursor: pointer;
 }
 
-.page-swipe .mint-swipe {
-  height: 435px;
-  color: #fff;
-  font-size: 30px;
-}
+
 </style>
 
 

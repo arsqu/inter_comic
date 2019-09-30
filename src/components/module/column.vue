@@ -3,7 +3,7 @@
   <div class="push_box" :key="$route.path">
     <div class="push_column" v-for="(item,idx) in bookList" :key="idx">
       <div class="push_txt">
-        <span class="push_title">{{item.GroupName}}</span>
+        <span class="push_title">{{$t('index.module.'+item.GroupName)}}</span>
         <span
           class="push_more"
           @click="loadGroupItem(item.GroupId,item.GroupName)"
@@ -19,7 +19,7 @@
               @click="tar_href(detl.id,detl.title)"
             >
               <div class="book_pto">
-                <img v-lazy="detl.show_img" :key="detl.show_img" alt />
+                <img v-lazy="detl.show_img+'?'+autoImg" :key="detl.show_img" alt />
               </div>
               <div class="book_desc">
                 <span class="book_txt over_ellipsis">{{detl.title}}</span>
@@ -46,7 +46,8 @@ export default {
     return {};
   },
   props: {
-    bookList: Array
+    bookList: Array,
+    autoImg: String
   },
   methods: {
     tar_href(id, title) {
@@ -73,105 +74,78 @@ export default {
 </script>
 
 
-<style scoped>
-.push_column {
-  font-size: 30px;
-  padding: 25px;
-  margin-bottom: 10px;
-  background: #fff;
-}
-
-.push_column .push_txt {
-  display: flex;
-  align-items: center;
-}
-
-.push_column .push_title {
-  border-left: 5px solid #ffa500;
-  padding: 0 15px;
-  color: #333;
-  flex: 1;
-}
-
-.push_column .push_more {
-  cursor: pointer;
-  font-size: 28px;
-  position: relative;
-  padding-right: 20px;
-  color: #666;
-}
-
-.push_column .push_more:after {
-  width: 16px;
-  height: 16px;
-  border-top: 2px solid transparent;
-  border-right: 2px solid transparent;
-  border-color: #ffa500;
-  position: absolute;
-  right: 0;
-  top: 50%;
-  margin-top: -8px;
-  transform: rotate(45deg);
-  content: "";
-  display: block;
-}
-
-.push_column .push_book {
-  padding-top: 20px;
-}
-
-.push_book .book_list {
-  display: flex;
-  flex-wrap: wrap;
-}
-
-.push_column .book_txt {
-  display: block;
-  font-size: 28px;
-  color: #333;
-  text-align: center;
-}
-
-.push_column .book_update {
-  display: block;
-  font-size: 22px;
-  color: #666;
-  text-align: center;
-}
-
-.book_detl {
-  width: 33.3%;
-  box-sizing: border-box;
-  cursor: pointer;
-  padding: 0 10px;
-}
-
-.book_desc {
-  margin-bottom: 8px;
-}
-
-.book_pto {
-  position: relative;
-  width: 100%;
-  margin-bottom: 8px;
-  padding-bottom: 133%;
-}
-
-.book_pto img {
-  position: absolute;
-  height: 100%;
-  width: 100%;
-  border-radius: 10px;
-}
-
-.prompt_txt {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 15px 0;
-  width: 100%;
-  font-size: 30px;
-  color: #666;
-}
+<style lang="stylus" scoped>
+.push_column
+  font-size 30px
+  padding 25px
+  margin-bottom 10px
+  background #fff
+  .push_txt
+    display flex
+    align-items center
+    .push_title
+      border-left 5px solid #ffa500
+      padding 0 15px
+      color #333
+      flex 1
+    .push_more
+      cursor pointer
+      font-size 28px
+      position relative
+      padding-right 20px
+      color #666
+      &:after
+        width 16px
+        height 16px
+        border-top 2px solid transparent
+        border-right 2px solid transparent
+        border-color #ffa500
+        position absolute
+        right 0
+        top 50%
+        margin-top -8px
+        transform rotate(45deg)
+        content ""
+        display block
+  .push_book 
+    padding-top 20px
+    .book_list
+      display flex
+      flex-wrap wrap
+      .book_detl
+        width 33.3%
+        box-sizing border-box
+        cursor pointer
+        padding 0 10px
+        .book_desc
+          margin-bottom 8px
+          .book_txt
+            display block
+            font-size 28px
+            color #333
+            text-align center
+          .book_update
+            display block
+            font-size 22px
+            color #666
+            text-align center
+        .book_pto 
+          position relative
+          width 100%
+          margin-bottom 8px
+          padding-bottom 133%
+          img
+            position absolute
+            height 100%
+            width 100%
+            border-radius 10px
+    .prompt_txt
+      display flex
+      align-items center
+      justify-content center
+      padding 15px 0
+      width 100%
+      font-size 30px
+      color #666
 </style>
 

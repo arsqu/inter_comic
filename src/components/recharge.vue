@@ -23,7 +23,6 @@
 </template>
 
 <script>
-// import { Toast } from "mint-ui";
 import Qs from "qs";
 export default {
   data() {
@@ -32,6 +31,7 @@ export default {
       symbol: "",
       exchangeRate: "",
       currency: "",
+      timer: null,
       isComplete: false
     };
   },
@@ -51,7 +51,6 @@ export default {
   },
   mounted() {
     this.init();
-    // console.log("app_mounted");
   },
   methods: {
     init() {
@@ -70,6 +69,16 @@ export default {
           console.log(err);
         });
     },
+    //查询余额
+    hasMoney() {
+      this.$api.getDataN("hasMoney").then(res => {
+        // console.log(res);
+        if (res.code == 1) {
+          var data = res.data;
+          localStorage.setItem("money", data.money);
+        }
+      });
+    },
     recharge() {
       // console.log("充值");
       var money = +this.money,
@@ -80,6 +89,7 @@ export default {
         return;
       }
       if (money && reg.test(money)) {
+        this.$toast(this.$t("recharge.loading"));
         this.$api
           .postDataN("recharge", Qs.stringify({ money }))
           .then(res => {
@@ -89,9 +99,12 @@ export default {
             if (res.code == 1) {
               msg = this.$t("recharge.rechargeStatus.success");
               var data = res.data;
+              var ch = localStorage.getItem("wap_ch") || "none";
+              _hmt.push(["_trackEvent", "recharge_" + ch]); //充值成功数
+              clearTimeout(this.timer);
+              this.timer = setTimeout(this.hasMoney(), 2000);
               window.open(data.shortUrl);
               // var price = +localStorage.getItem("money");
-              // localStorage.setItem("money", price + money);
             } else msg = this.$t("recharge.rechargeStatus.err");
             this.$toast(msg);
           })
@@ -107,49 +120,41 @@ export default {
 };
 </script>
 
-<style scoped>
-.recharge_box .unit {
-  color: #fd5c63;
-  font-weight: bold;
-  font-size: 26px; /*no*/
-}
-
-.recharge_txt {
-  padding: 20px 25px;
-  font-size: 15px; /*no*/
-  color: #666;
-}
-
-.recharge_txt span:first-child {
-  color: #de0000;
-  font-size: 18px; /*no*/
-}
-
-.recharge_box > div:first-child {
-  width: 100%;
-  display: flex;
-  text-align: center;
-  font-size: 0;
-  width: 100%;
-  padding-top: 5%;
-}
-
-.recharge_box input {
-  width: 80%;
-  height: 80px;
-  font-size: 15px; /*no*/
-  padding-left: 25px;
-  border-color: #999;
-  color: #666;
-  border: 1px solid #ddd;
-}
-
-.recharge_box button {
-  width: 20%;
-  height: 80px;
-  background: #fd5c63;
-  color: #fff;
-  border: 0 none;
-  outline: 0 none;
-}
+<style lang="stylus" scoped>
+.recharge_box 
+  .recharge_txt 
+    padding 20px 25px
+    font-size 30px
+    color #666
+    span 
+      &:first-child 
+        color #de0000
+        font-size 35px
+    .unit 
+      color #fd5c63
+      font-weight bold
+      font-size 46px
+  & > div 
+    &:first-child 
+      width 100%
+      display flex
+      text-align center
+      font-size 0
+      width 100%
+      padding-top 5%
+  input 
+    width 80%
+    height 80px
+    font-size 30px
+    padding-left 25px
+    border-color #999
+    color #666
+    border 1px solid #ddd
+  button 
+    width 20%
+    height 80px
+    background #fd5c63
+    color #fff
+    border 0 none
+    outline 0 none
 </style>

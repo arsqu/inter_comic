@@ -7,11 +7,11 @@ import 'amfe-flexible' //自适应
 // import 'default-passive-events'
 // import './util/mock' //模拟数据
 import api from './util/api'
+import config from './util/config'
 import router from './router'
 import plugin from './plugins' //自定义组件
 import i18n from './i18n' //国际化
 import App from './App'
-
 // import Lazyload from 'mint-ui'
 import Lazyload from 'vue-lazyload'
 Vue.use(Lazyload, {
@@ -20,11 +20,10 @@ Vue.use(Lazyload, {
   // loading: '/static/img/404.png'
 });
 
-//'x-oss-process=style/imageZoom' //移动端显示漫画
 Vue.config.productionTip = false
-// axios.defaults.baseURL = process.env.API_BASE;
 axios.defaults.withCredentials = true
 Vue.prototype.$axios = axios
+Vue.prototype.$config = Vue.prototype.$config || config
 Vue.prototype.$api = api //请求地址
 
 //全局通信
@@ -39,7 +38,7 @@ axios.interceptors.response.use(function (response) {
     console.log('未登录');
     local.setItem('loginTips', ++idx);
     if (idx < 3) {
-      Vue.$toast(i18n.t('tips.tiplogin'));
+      Vue.$toast(i18n.t('tips.tiplogin')); //只提醒三次
     }
     local.removeItem("isLogin");
     local.removeItem("uname");
@@ -52,18 +51,23 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-// router.beforeEach((to, from, next) => {
-//   console.log(to, from);
-//   if (to.name == 'login' && (from.name != 'login' || from.name != 'register')) {
-//     local.setItem('loginUrl', from.path)
-//   }
-//   next();
-// })
+var ch = local.getItem('wap_ch') || 'none';
+router.beforeEach((to, from, next) => {
+  // console.log(to, from);
+  // eslint-disable-next-line
+  if (_hmt) {
+    if (to.name == 'recharge' || to.name == 'main' || to.name == 'register') {
+      console.log('trackPageView', '/' + to.name + '?ch=' + ch);
+      // eslint-disable-next-line
+      _hmt.push(['_trackPageview', '/' + to.name + '?ch=' + ch]); //统计各页面打开的次数
+    }
+  }
+  next();
+});
 
 new Vue({
   el: '#app',
   router,
   i18n,
-  components: { App },
-  template: '<App/>'
+  render: h => h(App)
 })
