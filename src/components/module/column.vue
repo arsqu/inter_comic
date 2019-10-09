@@ -105,9 +105,9 @@ export default {
         top 50%
         margin-top -8px
         transform rotate(45deg)
-        content ""
+        content ''
         display block
-  .push_book 
+  .push_book
     padding-top 20px
     .book_list
       display flex
@@ -129,7 +129,7 @@ export default {
             font-size 22px
             color #666
             text-align center
-        .book_pto 
+        .book_pto
           position relative
           width 100%
           margin-bottom 8px

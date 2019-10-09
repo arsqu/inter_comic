@@ -19,6 +19,7 @@ var base = '/api/v1';
 
 const crossUrl = {
   'login': '/ulogin/loginUser',
+  'logout': '/mediaUser/delLogin',
   'register': '/ulogin/addMediaUser',
   'code': '/ulogin/code',
   'hasMoney': '/ulogin/UserMoney',

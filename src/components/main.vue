@@ -129,7 +129,7 @@ export default {
   background-size 100% 80px
   display flex
   text-align center
-  li 
+  li
     width 50%
     height 80px
     line-height 80px
@@ -137,22 +137,19 @@ export default {
     background #fff
     outline 0 none
     margin-top 40px
-    .nav_icon 
+    .nav_icon
       vertical-align middle
-    .nav_icon,.nav_icon img 
+    .nav_icon, .nav_icon img
       display inline-block
       width 50px
       height 50px
-
-.push_box .push_column 
+.push_box .push_column
   padding 25px
   margin 25px 0
-
 /* 推荐栏 */
-.push_item 
+.push_item
   background #fbf5f5
   padding-top 45px
-
 </style>
 
 

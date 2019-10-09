@@ -8,6 +8,7 @@ import 'amfe-flexible' //自适应
 // import './util/mock' //模拟数据
 import api from './util/api'
 import config from './util/config'
+import util from './util/util'
 import router from './router'
 import plugin from './plugins' //自定义组件
 import i18n from './i18n' //国际化
@@ -22,9 +23,11 @@ Vue.use(Lazyload, {
 
 Vue.config.productionTip = false
 axios.defaults.withCredentials = true
+
 Vue.prototype.$axios = axios
 Vue.prototype.$config = Vue.prototype.$config || config
 Vue.prototype.$api = api //请求地址
+Vue.prototype.$util = util //请求地址
 
 //全局通信
 Vue.prototype.$bus = new Vue();
@@ -35,12 +38,14 @@ var idx = 0;
 //拦截器
 axios.interceptors.response.use(function (response) {
   if (response.data.code == 401) {
-    console.log('未登录');
+    // console.log('未登录');
     local.setItem('loginTips', ++idx);
     if (idx < 3) {
       Vue.$toast(i18n.t('tips.tiplogin')); //只提醒三次
     }
     local.removeItem("isLogin");
+    local.removeItem("bookId");
+    local.removeItem("loginTips");
     local.removeItem("uname");
     local.removeItem("money");
     local.removeItem("path");

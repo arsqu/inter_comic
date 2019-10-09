@@ -82,6 +82,7 @@ export default {
     pass: 'krpaya apana paasavard darj karen',
     register: 'sain ap karen',
     login: 'daakhil karana',
+    logout: 'log aaut karen',
     tips: {
       load: 'mein pravesh karen',
       wait: 'krpaya prateeksha karen',
@@ -128,6 +129,11 @@ export default {
       1: 'shesh raashi vaapas nahin lee ja sakatee',
       2: 'yadi aapake paas koee richaarj samasya hai to krpaya hamase sampark karen',
       3: 'richaarj karane ke baad krpaya apane khaate kee jaanakaaree taaza karen'
+    },
+    payTips: {
+      txt: 'chaahe reechaarj jaaree rakhana hai',
+      pay:'ke lie bhugataan',
+      cancel:'radd karana'
     },
     rechargeStatus: {
       success: 'richaarj saphal',

@@ -82,6 +82,7 @@ export default {
     pass: 'enter your password',
     register: 'Sign up',
     login: 'Sign in',
+    logout:'sign out',
     tips: {
       load: 'logging in',
       wait: 'Please wait',
@@ -129,6 +130,11 @@ export default {
       1: 'The balance cannot be withdrawn',
       2: 'Please contact us if you have any recharge issues',
       3: 'Please refresh your account information after recharging'
+    },
+    payTips:{
+      txt:'Whether to continue to recharge',
+      pay:'payfor',
+      cancel:'cancel'
     },
     rechargeStatus: {
       success: 'Recharge successful',

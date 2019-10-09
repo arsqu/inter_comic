@@ -31,6 +31,7 @@ export default {
       param: {
         contryId: "1",
         content: "",
+        userName: "",
         phone: "",
         email: ""
       },
@@ -69,12 +70,15 @@ export default {
     //反馈
     feedBack() {
       this.isComplete = true;
+      this.param.userName = localStorage.getItem("uname");
       this.$api
         .postDataN("suggest.post", Qs.stringify(this.param))
         .then(res => {
           if (res.code == 1) {
             this.msg = this.$t("post.success");
-            this.param = {};
+            this.param = {
+              contryId: "1"
+            };
             setTimeout(_ => {
               this.msg = "";
             }, 2000);
@@ -93,40 +97,40 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.suggest 
+.suggest
   width 100%
   height calc(100vh - 100px)
   padding 20px
   background #f8f8f8
-  .form_box 
-    .form_item 
+  .form_box
+    .form_item
       label
         display block
         color #666
         font-size 28px
         padding 10px 0 10px 10px
-      input 
+      input
         border 0 none
         width 100%
         padding 15px 10px
         outline 0 none
         border-radius 8px
-    .content 
+    .content
       width 100%
       border 0 none
       padding 10px
       min-height 250px
       outline 0 none
       color #666
-  .prompt_txt 
+  .prompt_txt
     font-size 30px
     color #eb2727
-  .postBtn 
+  .postBtn
     width 100%
     position absolute
     bottom 10%
     text-align center
-    span 
+    span
       background #fd183d
       color #fff
       display inline-block

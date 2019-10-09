@@ -10,11 +10,11 @@
           :width="autoSize.wid"
           :height="autoSize.het"
           preserveAspectRatio="xMidYMid slice"
-        ></feImage>
-        <feGaussianBlur stdDeviation="30"></feGaussianBlur>
+        />
+        <feGaussianBlur stdDeviation="30" />
       </filter>
     </defs>
-    <rect id="svg_rect" x="0" y="0" :width="autoSize.wid" :height="autoSize.het" filter="url(#f)"></rect>
+    <rect id="svg_rect" x="0" y="0" :width="autoSize.wid" :height="autoSize.het" filter="url(#f)" />
   </svg>
 </template>
 

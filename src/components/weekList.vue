@@ -183,19 +183,19 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.update_time 
+.update_time
   background #fff
   width 100%
   position fixed
   top 100px
   z-index 10
-  ul 
+  ul
     display flex
     font-size 30px
     color #999
     padding 0 25px
     border-bottom 3px solid #f3f3f3
-    li 
+    li
       position relative
       flex 1
       background #fff
@@ -207,18 +207,16 @@ export default {
       color #ffa500
       font-size 32px
     li.active:after
-      content ""
+      content ''
       display block
       border-top 3px solid #ffa500
       position absolute
       bottom 0
       width 100%
-    
-.update_box 
+.update_box
   padding-top 80px
-  .update_list 
+  .update_list
     padding 10px
- 
 </style>
 
 

@@ -63,41 +63,43 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.com_lists 
+.com_lists
   display flex
   align-items center
   background #fff
   margin 10px 0
   border-bottom 1px solid #eee
   position relative
-  .com_img > img 
-      width 165px
-      height 210px
-      border 0 none
-      border-radius 4px
-  .com_desc 
+  .com_img > img
+    width 165px
+    height 210px
+    border 0 none
+    border-radius 4px
+  .com_desc
     padding 10px 30px
     width auto
     text-align left
     align-items center
-    .com_tit 
+    .com_tit
       overflow hidden
       display -webkit-box
+      /* ! autoprefixer: off */
       -webkit-box-orient vertical
+      /* autoprefixer:on */
       -webkit-line-clamp 2
       word-break break-all
       color #4b566a
       padding 5px 0
-      &:first-child 
+      &:first-child
         font-size 32px
         padding-right 35px
         font-weight bold
-      &:last-child 
+      &:last-child
         color #a2a2a2
         font-size 30px
-    .com_week 
+    .com_week
       font-size 28px
-  .com_rank 
+  .com_rank
     position absolute
     color #999
     z-index 10
@@ -107,20 +109,15 @@ export default {
     border-radius 30px
     padding 10px
     background #eee
-    &.spec 
+    &.spec
       background #ffc107
       color #fff
       border-radius 30px
       padding 10px
-    &.spec_0 
+    &.spec_0
       background #fe7100
-    &.spec_1 
+    &.spec_1
       background #ff9900
-// .d_tit 
-//   font-size 12px
-//   color #999
-//   padding 5px 0
-
 </style>
 
 

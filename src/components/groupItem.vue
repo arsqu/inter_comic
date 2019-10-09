@@ -190,29 +190,29 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
-.push_column 
+.push_column
   font-size 30px
   padding 15px
   background #fff
-  .book_list 
+  .book_list
     display flex
     flex-wrap wrap
-    .book_detl 
+    .book_detl
       width 33.3%
       box-sizing border-box
       padding 15px 10px
       cursor pointer
-      .book_pto 
+      .book_pto
         position relative
         width 100%
         margin-bottom 5px
         padding-bottom 133%
-        img 
+        img
           position absolute
           height 100%
           width 100%
           border-radius 10px
-      .book_txt 
+      .book_txt
         display block
         font-size 28px
         padding 0 5px
@@ -220,17 +220,15 @@ export default {
         letter-spacing 0
         font-weight bold
         text-align center
-      .book_update 
+      .book_update
         display block
         font-size 26px
         padding 0 5px
         color #777
         text-align center
-  .prompt_txt 
+  .prompt_txt
     color #555
-    font-size 0.373333rem
-    padding 0.266667rem
+    font-size 28px
+    padding 15px
     text-align center
-
-
 </style>

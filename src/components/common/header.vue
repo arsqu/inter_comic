@@ -8,7 +8,7 @@
         </div>
         <div class="top_detl_txt" v-show="!loader">
           <span class="icon_back" @click="reBack"></span>
-          <span class="comicTxt">{{comicTxt}}</span>
+          <span class="comicTxt over_ellipsis">{{comicTxt}}</span>
         </div>
       </div>
     </div>
@@ -55,7 +55,7 @@ export default {
 
 <style lang="stylus" scoped>
 /* 页头 */
-.top_bar 
+.top_bar
   height 100px
   position fixed
   z-index 20
@@ -68,23 +68,25 @@ export default {
   padding 0 25px
   display flex
   align-items center
-
   .top_title
     width 90%
-    .top_logo,.top_detl_txt
+    .top_logo, .top_detl_txt
       font-weight bold
       font-size 38px
-      font-family "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif
-
-    .top_logo 
+      font-family 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+    .top_logo
       color orange
-      .icon_logo 
+      .icon_logo
         padding-left 40px
       .top_detl_txt
         color #555
         padding-left 10px
         display flex
         align-items center
+        .comicTxt
+          width 85%
+          vertical-align middle
+          display inline-block
         .icon_back
           z-index 100
           border-top 4px solid transparent
@@ -95,18 +97,10 @@ export default {
           vertical-align middle
           transform rotate(-135deg)
           display inline-block
-          .comicTxt
-            width 75%
-            white-space nowrap
-            overflow hidden
-            text-overflow ellipsis
-            vertical-align middle
-            display inline-block
-
   .top_tools
     display flex
     position relative
-    a,span
+    a, span
       margin 0 15px
       width 45px
       height 45px

@@ -291,80 +291,77 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-modal(){
+modal()
   position fixed
   z-index 20
   width 100%
   left 0
   right 0
-  background rgba(11, 11, 11, 0.85)
+  background rgba(11, 11, 11, .85)
   font-size 30px
   padding 0 25px
   align-items center
   display flex
-}
-
-.top_bar 
+.top_bar
   height 120px
   top 0
   modal()
-.bottom_bar 
+.bottom_bar
   height 100px
   bottom 0
   modal()
-  .top_tools 
+  .top_tools
     display flex
     flex 1
     justify-content space-around
     height 100%
     align-items center
-  a 
+  a
     justify-content center
-.chapter 
+.chapter
   font-size 35px
   padding-left 45px
   color #999
-.top_icon 
+.top_icon
   margin 0 10px
   width 45px
   cursor pointer
   height 45px
   display inline-block
-  img 
+  img
     vertical-align bottom
-.top_title 
+.top_title
   width 90%
-.top_tools 
+.top_tools
   width 10%
-  a 
+  a
     margin 0 10px
-    width 100px
-    height 100%
+    width 60px
+    // height 100%
     display flex
     align-items center
-  img 
-    width 55%
-    height 55%
+  img
+    width 100%
+    height 100%
     cursor pointer
-.top_logo,
-.top_detl_txt 
+.top_logo, .top_detl_txt
   font-weight bold
   font-size 35px
-  font-family "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif
-.top_logo 
+  font-family 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
+.top_logo
   color orange
-.top_detl_txt 
+.top_detl_txt
   color #555
-.icon_logo 
+.icon_logo
   padding-left 40px
-.icon_back 
+.icon_back
   z-index 100
   width 60px
   height 60px
   position absolute
   top 50%
   margin-top -30px
-  &:after 
+  &:after
     border-top 4px solid transparent
     border-right 4px solid transparent
     border-color orange
@@ -372,9 +369,9 @@ modal(){
     height 30px
     width 30px
     margin-top 15px
-    content ""
+    content ''
     transform rotate(-135deg)
-.comicTxt 
+.comicTxt
   padding-left 55px
   width 90%
   color #999
@@ -384,23 +381,21 @@ modal(){
   text-overflow ellipsis
   display inline-block
 /* 漫画容器 */
-.imgBox 
+.imgBox
   position relative
-.img_item 
+.img_item
   cursor pointer
   text-align center
-  img 
+  img
     width auto
-  img[lazy="loading"] 
-    background url(/static/img/loading_bicyle.gif) no-repeat center
+  img[lazy='loading']
+    background url('/static/img/loading_bicyle.gif') no-repeat center
     background-size 6rem
-  img[lazy="error"] 
-    background url(/static/img/loading_bicyle.gif) no-repeat center
+  img[lazy='error']
+    background url('/static/img/loading_bicyle.gif') no-repeat center
     background-size 6rem
-.img_item img[lazy="loading"],
-.img_item img[lazy="error"] 
+.img_item img[lazy='loading'], .img_item img[lazy='error']
   height 300px
-
 </style>
 
 

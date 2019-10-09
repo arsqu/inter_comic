@@ -67,32 +67,32 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.prompt_txt 
+.prompt_txt
   text-align center
   display block
   font-size 16px
-.cont_book_list 
-  .book_item 
+.cont_book_list
+  .book_item
     display flex
     flex-wrap wrap
     font-size 25px
-    li 
+    li
       height 55px
       line-height 55px
       width 33.3%
       margin-bottom 3%
       padding 0 15px
       position relative
-      a 
+      a
         width 100%
         border 2px solid #ccc
         border-radius 30px
         text-align center
         cursor pointer
         display inline-block
-      &.lock 
-        .cont_lock 
-          background #fff url(/static/img/icon/lock.png)
+      &.lock
+        .cont_lock
+          background #fff url('/static/img/icon/lock.png')
           width 40px
           height 40px
           display block
@@ -102,9 +102,9 @@ export default {
           right 0px
           bottom -5px
           border-radius 50%
-    .cont_num 
+    .cont_num
       font-size 30px
-    .cont_money 
+    .cont_money
       color #ffa500
 </style>
 

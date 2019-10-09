@@ -11,25 +11,17 @@ h4,
 h5,
 h6,
 p,
-blockquote,
 pre,
-abbr,
-address,
-cite,
 code,
 del,
-dfn,
 em,
 img,
 ins,
-kbd,
 q,
-samp,
 small,
 strong,
 sub,
 sup,
-var,
 b,
 i,
 dl,
@@ -38,12 +30,9 @@ dd,
 ol,
 ul,
 li,
-fieldset,
 form,
 label,
-legend,
 table,
-caption,
 tbody,
 tfoot,
 thead,
@@ -54,17 +43,12 @@ article,
 aside,
 canvas,
 details,
-figcaption,
-figure,
 footer,
 header,
-hgroup,
 menu,
 nav,
 section,
 summary,
-time,
-mark,
 audio,
 video {
     margin: 0;
@@ -101,6 +85,20 @@ body {
     -ms-user-select: none;
     /*IE10*/
     user-select: none;
+}
+
+/* ios */
+input[type="button"], input[type="submit"], input[type="file"], 
+button { 
+  cursor: pointer;
+}
+
+input{
+  -webkit-user-select:text!important;
+  -khtml-user-select: text!important;
+  -moz-user-select: text!important;
+  -ms-user-select: text!important;
+  user-select: text!important;
 }
 
 img {

@@ -16,9 +16,8 @@
           <span @click="recharge">{{$t('recharge.recharge')}}</span>
         </div>
       </div>
-      <!-- <div class="suggest" > -->
+      <div class="logout" @click="logOut">{{$t('login.logout')}}</div>
       <router-link class="suggest" tag="div" :to="{name:'suggest'}">{{$t('userInfo.suggestions')}}</router-link>
-      <!-- </div> -->
     </div>
     <div class="tabTurn">
       <span
@@ -57,6 +56,11 @@ export default {
   },
   computed: {},
   methods: {
+    logOut() {
+      this.$api.getDataN("logout").then(res => {
+        // this.$toast("图溢出成功");
+      });
+    },
     checkLogin() {
       this.isLogin = false;
       if (localStorage.getItem("isLogin")) {
@@ -102,18 +106,26 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.info_bg 
+.info_bg
   padding 8% 25px
   background #f5f5f5
-  .info_box 
+  .logout
+    font-size 30px
+    color #666
+    width 130px
+    margin-top 10px
+    color #ee7676
+    font-weight bold
+    text-decoration underline
+    text-align center
+  .info_box
     display flex
     align-items center
-    
     .info_img
       width 130px
       height 130px
       margin-right 30px
-      img 
+      img
         width 100%
         height 100%
         border-radius 50%
@@ -123,7 +135,6 @@ export default {
       margin-right 30px
       &>div
         margin-bottom 5px
-
       .toLogin
         color #fff
         padding 15px 25px
@@ -133,8 +144,7 @@ export default {
       .balance
         color #e55c3f
         font-size 30px
-
-    .rechargeBtn 
+    .rechargeBtn
       text-align right
       flex 1
       span
@@ -143,22 +153,22 @@ export default {
         font-size 28px
         border-radius 10px
         color #fff
+        display inline-block
+        cursor pointer
   .suggest
     font-size 32px
-    color #333
     text-align right
-    text-decoration blink
     color #db5f5f
+    cursor pointer
     font-weight bold
     text-decoration underline
-  
 .tabTurn
   font-size 30px
   color #333
   span
     width 50%
     color #666
-    transition all 0.3s ease
+    transition all .3s ease
     display inline-block
     text-align center
     padding 15px 0
@@ -168,7 +178,6 @@ export default {
     &.active
       border-bottom-color #e55c3f
       color #e55c3f
-
 </style>
 
 

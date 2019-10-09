@@ -43,32 +43,23 @@ export default {
 };
 </script>
 
-<style scoped>
-.page-swipe {
-  position: relative;
-}
-
-.page-swipe .mint-swipe {
-  height: 435px;
-  color: #fff;
-  font-size: 30px;
-}
-
-.page-infinite-loading {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  color: #333;
-  z-index: 10;
-  transform: translate(-50%, -80%);
-}
-
-.def_view img {
-  height: 100%;
-  cursor: pointer;
-}
-
-
+<style lang="stylus" scoped>
+.page-swipe
+  position relative
+.page-swipe .mint-swipe
+  height 435px
+  color #fff
+  font-size 30px
+.page-infinite-loading
+  position absolute
+  top 50%
+  left 50%
+  color #333
+  z-index 10
+  transform translate(-50%, -80%)
+.def_view img
+  height 100%
+  cursor pointer
 </style>
 
 

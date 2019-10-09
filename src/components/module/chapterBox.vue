@@ -60,53 +60,52 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.recharge 
+.recharge
   background #fff
   z-index 200
   position fixed
   bottom -100%
   width 100%
-  transition all 0.4s ease
-  &.show 
+  transition all .4s ease
+  &.show
     bottom 0
-  & > .close 
+  & > .close
     width 30px
     height 30px
     position absolute
     right 15px
     top 15px
     cursor pointer
-  .rechargeDetl 
+  .rechargeDetl
     font-size 16px
     text-align center
     padding-top 60px
-    .pay_tip 
+    .pay_tip
       color #ec6029
-    & > div 
+    & > div
       &:first-child
         color #252525
         font-size 33px
-    .pay_money 
+    .pay_money
       color #333
       font-size 30px
       padding-top 35px
-      & > span 
+      & > span
         font-size 40px
         color #fd5c63
-    .has_money 
+    .has_money
       font-size 26px
       padding-top 20px
       color #666
-    .pay_txt 
+    .pay_txt
       color #888
       font-size 30px
       padding 50px 0
-    .login_btn 
+    .login_btn
       height 100px
       line-height 100px
       font-size 30px
       background #fd5c63
       color #fff
       margin-top 40px
-
 </style>

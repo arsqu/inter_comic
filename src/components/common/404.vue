@@ -25,14 +25,13 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-#notFound 
-  .page_box 
+#notFound
+  .page_box
     width 50%
     margin 0 auto
     display block
     margin-top 200px
-
-  button 
+  button
     border 0 none
     background #e06278
     width 100%

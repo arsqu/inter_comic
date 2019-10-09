@@ -49,12 +49,11 @@
 </template>
 
 <script>
-// import { Toast } from "mint-ui";
 import Qs from "qs";
 export default {
   data() {
     return {
-      codeSrc: "http://mangaline.net:8088/ulogin/code?math=" + Math.random(),
+      codeSrc: "",
       // codeSrc: "/java/ulogin/code?math=" + Math.random(), //测试环境
       uname: "",
       upass: "",
@@ -62,9 +61,13 @@ export default {
       isComplete: false
     };
   },
-  created() {},
+  created() {
+    var url = process.env.SERVER_JAVA;
+    //"http://mangaline.net:8088/ulogin/code?math=" + Math.random(),
+    if (url) this.codeSrc = url + "/ulogin/code?math=" + Math.random();
+  },
   activated() {
-    // console.log("app_activated");
+    //console.log("app_activated");
   },
   mounted() {
     // console.log("app_mounted");
@@ -80,6 +83,10 @@ export default {
         "?math=" + Math.random()
       );
     },
+    //统计注册渠道
+    statistics(){
+
+    },
     register() {
       if (this.isComplete) {
         this.$toast(this.$t("login.tips.wait"));
@@ -91,6 +98,7 @@ export default {
         return;
       }
       this.isComplete = true;
+      this.code = this.code.toUpperCase();
       this.$api
         .postDataN(
           "register",
@@ -102,27 +110,30 @@ export default {
           })
         )
         .then(res => {
-          var msg = "";
+          var msg = "",
+            status = "";
           // console.log(res);
           if (res.code == 1) {
-            var data = res.data;
-            var local = localStorage;
+            var data = res.data,
+              local = localStorage;
             msg = this.$t("register.status.success");
+            status = "success";
             var ch = local.getItem("wap_ch") || "none";
             console.log(_hmt);
-            _hmt.push(["_trackEvent", "register_" + ch], "success"); //充值成功数
+            // this.$util.statistics();
+            _hmt.push(["_trackEvent", "register_" + ch, status]); //充值成功数
             local.setItem("uname", data.uname);
             local.setItem("money", data.money);
             local.setItem("isLogin", 1);
             this.$router.push({ name: "login" });
           } else if (res.code == 3) {
             msg = this.$t("register.status.warn");
-            _hmt.push(["_trackEvent", "register_" + ch], "error");
+            status = "error";
+            _hmt.push(["_trackEvent", "register_" + ch, status]);
           }
           //this.$toast("验证码错误");
           else if (res.code == 4) {
             msg = this.$t("register.status.repeat");
-            _hmt.push(["_trackEvent", "register_" + ch], "repeat");
           }
           //this.$toast("请勿重复注册");
           else {
@@ -157,15 +168,12 @@ export default {
   left 5%
   top 3%
   padding 15px
-
-.login_box 
+.login_box
   padding 0 60px
-  .top_logo 
+  .top_logo
     padding 60px 0
     text-align center
     color #666
-
-
 .form_item
   margin-bottom 30px
   font-size 0
@@ -189,8 +197,7 @@ export default {
     img
       height 100px
       vertical-align middle
-
-.login_btn 
+.login_btn
   margin-top 10%
   span.register
     display inline-block
@@ -202,7 +209,7 @@ export default {
     font-size 35px
     color #fff
     background #fd5c63
-   p 
+  p
     font-size 14px
     color #666
     padding-top 25px

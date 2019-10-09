@@ -222,13 +222,11 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.ranking_type 
+.ranking_type
   background #fff
-
 .ranking_detl
   padding 20px
-
-.ranking_type .rank_item 
+.ranking_type .rank_item
   display flex
   flex-wrap wrap
   font-size 30px
@@ -240,7 +238,7 @@ export default {
     border-right 1px solid #ddd
     &.active
       color orange
-    &:nth-child(3n) 
+    &:nth-child(3n)
       border-right 0 none
 </style>
 
