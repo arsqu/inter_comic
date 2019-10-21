@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <meta name="full-screen" content="yes">
+  <meta name="renderer" content="webkit">
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <title></title>
+  <style>
+    html {
+      height: 100%;
+      font-family: Roboto, SourceHanSan;
+    }
+
+    .layout {
+      width: 80%;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .layout_bottom {
+      position: absolute;
+      bottom: 15%;
+      left: 50%;
+      width: 50%;
+      margin-left: -25%;
+    }
+
+    .pay_txt {
+      font-size: 18px;
+      color: #4fc684;
+      font-weight: bold;
+    }
+
+    .err .pay_txt {
+      font-size: 18px;
+      color: #555;
+      font-weight: bold;
+    }
+
+    .pay_status {
+      margin-top: 25%;
+    }
+
+    .pay_logo {
+      width: 20%;
+      padding-bottom: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .err .pay_logo {
+      width: 18%;
+      padding-bottom: 20px;
+    }
+
+    .pay_product {
+      margin-top: 25%;
+      font-size: 17px;
+    }
+
+    .product_price {
+      padding-top: 10px;
+      font-size: 45px;
+    }
+
+    .btn {
+      border: 2px solid #4fc684;
+      border-radius: 5px;
+      width: 100%;
+      height: 35px;
+      line-height: 35px;
+      color: #4fc684;
+    }
+
+    .err .btn {
+      border: 2px solid #e8ab18;
+      color: #eb9e2c;
+    }
+
+    .atten {
+      margin-top: 12%;
+      color: #B7B7B7;
+      font-size: 14px;
+    }
+
+    .product_money {
+      padding-left: 5px;
+      line-height: 50px;
+    }
+
+    .product_money>span:first-child {
+      font-size: 25px;
+      vertical-align: top;
+      line-height: 40px;
+    }
+
+    label {
+      margin: 0;
+      vertical-align: middle;
+    }
+
+    .atten input[type="checkbox"] {
+      margin: 0 3px;
+      vertical-align: middle;
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout err">
+    <div class="pay_status">
+      <img src="static/img/error.png" alt="" class="pay_logo">
+      <span class="pay_txt">{{payError}}</span>
+    </div>
+    <div class="layout_bottom">
+      <div class="btn err" onclick="reBack()">{{reBack}}</div>
+    </div>
+  </div>
+
+  <script>
+    var def = 'en';
+    var browser = (navigator.systemLanguage ? navigator.systemLanguage : navigator.language).slice(0, 2);
+    var translate = {
+      "en": {
+        paySuccess: 'Payment successful',
+        payError: 'Payment failed',
+        reBack: "go back"
+      },
+      "in": {
+        paySuccess: "saphal bhugataan",
+        payError: 'bhugataan viphal raha',
+        reBack: "vaapas jao"
+      }
+    };
+    function match() {
+      for (var k in translate) {
+        if (browser == k) {
+          splitLang(k);
+          break;
+        }
+      }
+      splitLang(def);
+    }
+
+    function reBack() {
+      location.href = 'http://mangaline.net';
+    }
+
+    function splitLang(lang) {
+      var doc = document.documentElement;
+      var str = doc.innerHTML;
+      str = str.replace(/\{\{(.+?)\}\}/g, function (a, b, c) {
+        return translate[lang][b];
+      });
+      doc.innerHTML = str;
+    }
+    window.onload = function () {
+      match();
+    }
+  </script>
+</body>
+
+</html>

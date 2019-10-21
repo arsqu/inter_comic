@@ -8,10 +8,10 @@ import 'amfe-flexible' //自适应
 // import './util/mock' //模拟数据
 import api from './util/api'
 import config from './util/config'
+import i18n from './i18n' //国际化
 import util from './util/util'
 import router from './router'
 import plugin from './plugins' //自定义组件
-import i18n from './i18n' //国际化
 import App from './App'
 // import Lazyload from 'mint-ui'
 import Lazyload from 'vue-lazyload'
@@ -41,14 +41,9 @@ axios.interceptors.response.use(function (response) {
     // console.log('未登录');
     local.setItem('loginTips', ++idx);
     if (idx < 3) {
-      Vue.$toast(i18n.t('tips.tiplogin')); //只提醒三次
+      util.Toast('tips.tiplogin');
     }
-    local.removeItem("isLogin");
-    local.removeItem("bookId");
-    local.removeItem("loginTips");
-    local.removeItem("uname");
-    local.removeItem("money");
-    local.removeItem("path");
+    util.clearItem();
     // router.push({ name: 'login' });
   }
   return response;
@@ -59,18 +54,16 @@ axios.interceptors.response.use(function (response) {
 var ch = local.getItem('wap_ch') || 'none';
 router.beforeEach((to, from, next) => {
   // console.log(to, from);
-  // eslint-disable-next-line
   if (_hmt) {
     if (to.name == 'recharge' || to.name == 'main' || to.name == 'register') {
-      console.log('trackPageView', '/' + to.name + '?ch=' + ch);
-      // eslint-disable-next-line
+      // console.log('trackPageView', '/' + to.name + '?ch=' + ch);
       _hmt.push(['_trackPageview', '/' + to.name + '?ch=' + ch]); //统计各页面打开的次数
     }
   }
   next();
 });
 
-new Vue({
+window.vm = new Vue({
   el: '#app',
   router,
   i18n,

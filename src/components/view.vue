@@ -205,9 +205,15 @@ export default {
       var chapterList = localStorage.getItem("cache_chapter");
       this.chapterList =
         typeof chapterList == "string" ? JSON.parse(chapterList) : chapterList;
-      // if (this.prevView == false) {
-      if (this.chapterList[this.prevIdx].is_free) {
-        this.$toast(this.$t("view.tips.pay"));
+      if (!this.prev) {
+        this.$util.Toast("view.tips.first");
+        return;
+      }
+      if (
+        this.chapterList[this.prevIdx] &&
+        this.chapterList[this.prevIdx].is_free
+      ) {
+        this.$util.Toast("view.tips.pay");
         this.showBox(this.prevChapter, this.prevIdx);
         return;
       }
@@ -217,7 +223,7 @@ export default {
           params: { id: this.prev, bookId }
         });
       } else {
-        this.$toast(this.$t("view.tips.first"));
+        this.$util.Toast("view.tips.first");
       }
       console.log("prev");
     },
@@ -228,9 +234,15 @@ export default {
       var chapterList = localStorage.getItem("cache_chapter");
       this.chapterList =
         typeof chapterList == "string" ? JSON.parse(chapterList) : chapterList;
-      if (this.chapterList[this.nextIdx].is_free) {
-        // if (this.nextView == false) {
-        this.$toast(this.$t("view.tips.pay"));
+      if (!this.next) {
+        this.$util.Toast("view.tips.last");
+        return;
+      }
+      if (
+        this.chapterList[this.nextIdx] &&
+        this.chapterList[this.nextIdx].is_free
+      ) {
+        this.$util.Toast("view.tips.pay");
         this.showBox(this.nextChapter, this.nextIdx);
         return;
       }
@@ -246,7 +258,7 @@ export default {
         });
       } else {
         // console.log(this.currentIdx);
-        this.$toast(this.$t("view.tips.last"));
+        this.$util.Toast("view.tips.last");
       }
       console.log("next");
     },
@@ -270,8 +282,11 @@ export default {
     },
     //返回章节页
     toDetl() {
-      var path = localStorage.getItem("new_detl");
-      this.$router.push({ path });
+      var params = this.$route.params;
+      this.$router.push({
+        name: "new_detl",
+        params: { id: params.bookId }
+      });
     }
   },
   watch: {
@@ -389,9 +404,11 @@ modal()
   img
     width auto
   img[lazy='loading']
+    width 100%
     background url('/static/img/loading_bicyle.gif') no-repeat center
     background-size 6rem
   img[lazy='error']
+    width 100%
     background url('/static/img/loading_bicyle.gif') no-repeat center
     background-size 6rem
 .img_item img[lazy='loading'], .img_item img[lazy='error']

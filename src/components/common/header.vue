@@ -1,31 +1,33 @@
 <template>
   <!-- 页头 -->
-  <div class="top_bar">
-    <div class="top_title">
-      <div class="top_logo">
-        <div>
-          <span class="icon_logo" v-show="loader">Mangaline</span>
-        </div>
-        <div class="top_detl_txt" v-show="!loader">
-          <span class="icon_back" @click="reBack"></span>
-          <span class="comicTxt over_ellipsis">{{comicTxt}}</span>
+  <div class="top_fixed">
+    <div class="top_bar">
+      <div class="top_title">
+        <div class="top_logo">
+          <div>
+            <span class="icon_logo" v-show="loader">Mangaline</span>
+          </div>
+          <div class="top_detl_txt" v-show="!loader">
+            <span class="icon_back" @click="reBack"></span>
+            <span class="comicTxt over_ellipsis">{{comicTxt}}</span>
+          </div>
         </div>
       </div>
-    </div>
-    <!-- <div>{{$route.name}}</div> -->
-    <div class="top_tools">
-      <!-- <router-link :to="{name:'search'}">
+      <!-- <div>{{$route.name}}</div> -->
+      <div class="top_tools">
+        <!-- <router-link :to="{name:'search'}">
         <img src="/static/img/icon/search.png" alt="search" />
-      </router-link>-->
-      <router-link :to="{name:'main'}" v-show="!showHome">
-        <img src="/static/img/icon/home.png" alt="home" />
-      </router-link>
-      <span v-show="showHome" @click="changeWords">
-        <img src="/static/img/icon/language.png" alt="language" />
-      </span>
-      <router-link :to="{name:'userInfo'}" v-show="showHome">
-        <img src="/static/img/icon/user.png" alt="userInfo" />
-      </router-link>
+        </router-link>-->
+        <router-link :to="{name:'main'}" v-show="!showHome">
+          <img src="/static/img/icon/home.png" alt="home" />
+        </router-link>
+        <span v-show="showHome" @click="changeWords">
+          <img src="/static/img/icon/language.png" alt="language" />
+        </span>
+        <router-link :to="{name:'userInfo'}" v-show="showHome">
+          <img src="/static/img/icon/user.png" alt="userInfo" />
+        </router-link>
+      </div>
     </div>
   </div>
 </template>
@@ -55,6 +57,8 @@ export default {
 
 <style lang="stylus" scoped>
 /* 页头 */
+.top_fixed
+  height 100px
 .top_bar
   height 100px
   position fixed

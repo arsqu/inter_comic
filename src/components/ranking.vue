@@ -31,14 +31,14 @@
               :key="key+i"
             >
               <!-- rankState:排序时是否显示序号 -->
-              <app-list :autoImg="autoImg" :boxList="boxT[key+i]" :rankState="true" />
+              <listModule :autoImg="autoImg" :boxList="boxT[key+i]" :rankState="true" />
             </div>
           </template>
         </template>
       </div>
       <div class="scroll_tips">
-        <loading :loadState="loadState" />
-        <template v-if="!loadState">
+        <loading :loadState="loading" />
+        <template v-if="!loading">
           <div
             v-if="boxT[isHover[0]+isHover[1]]&&boxT[isHover[0]+isHover[1]].length == 0"
             class="prompt_week"
@@ -65,11 +65,12 @@ export default {
       scrollState: {}, //滚动状态
       page: {},
       isHover: "", //当前点击项
-      loadState: false //加载状态
+      loadState: false,
+      loading: true //接口请求状态
     };
   },
   components: {
-    "app-list": listModule
+    listModule
   },
   created() {
     this.init();
@@ -145,17 +146,19 @@ export default {
         return;
       }
       if (this.loadState) {
-        // console.log("请求频繁");
+        console.log("数据请求中...");
         return;
       }
       cache.push(key);
       var page = this.page[key],
         opt = Object.assign({}, page);
       opt[k] = idx; //查询参数
-      this.loadState = true; //loading加载效果
+      this.loading = true;
+      this.loadState = true;
       if (this.boxT[key].length != 0 && this.boxT[key].length >= page.total) {
         console.log("禁止滚动");
         this.$set(this.scrollState, [key], true);
+        this.loading = false;
         this.loadState = false;
         return;
       }
@@ -167,14 +170,13 @@ export default {
             var data = res.data;
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
+              if (data.total < 10) {
+                this.loading = false;
+              }
             } else {
               console.log("拼接");
               if (this.boxT[key].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
-              } else {
-                // this.$set(this.scrollState, [key], true);
-                // this.loadState = false;
-                // return;
               }
             }
             this.$set(this.page, [key], {
@@ -189,6 +191,7 @@ export default {
           // console.log(this.boxT, page);
         })
         .catch(err => {
+          this.loading = false;
           this.loadState = false;
           this.$set(this.scrollState, [key], true);
           console.log(err);
@@ -225,7 +228,7 @@ export default {
 .ranking_type
   background #fff
 .ranking_detl
-  padding 20px
+  padding 10px
 .ranking_type .rank_item
   display flex
   flex-wrap wrap

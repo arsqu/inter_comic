@@ -15,9 +15,8 @@ Vue.use(VueI18n);
 // object
 function exchange(opt) {
   var lang = {};
-  for (var k in opt) {
+  for (var k in opt)
     lang[k] = _import(k);
-  }
   return lang;
 }
 

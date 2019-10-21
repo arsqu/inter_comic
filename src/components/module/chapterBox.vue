@@ -1,14 +1,13 @@
 <template>
   <!-- 弹出框 -->
-  <div v-show="isRecharge" :class="['recharge',isRecharge?'show':'']">
+  <!-- v-show="isRecharge" -->
+  <div :class="['recharge',isRecharge?'show':'']">
     <img class="close" @click="closeModal" src="/static/img/icon/win-cross.png" />
     <div class="rechargeDetl">
       <div>
         <span>
           {{$t('column.chapter')}} {{chapterInfo.orderNo}} &lt;{{chapterInfo.title}}&gt;
-          <template
-            v-show="!isLogin"
-          >
+          <template v-show="!isLogin">
             <br />
             <span class="pay_tip">{{$t('detl.payRead')}}</span>
           </template>
@@ -62,13 +61,15 @@ export default {
 <style lang="stylus" scoped>
 .recharge
   background #fff
-  z-index 200
+  // z-index 200
+  z-index -1
   position fixed
   bottom -100%
   width 100%
   transition all .4s ease
   &.show
     bottom 0
+    z-index 200
   & > .close
     width 30px
     height 30px

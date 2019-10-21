@@ -2,7 +2,7 @@
   <div class="main_page">
     <!-- 轮播图 -->
     <div class="swiper_box">
-      <app-swiper :loadState="loadState" :bannerList="bannerList" />
+      <swiper :loadState="loadState" :bannerList="bannerList" />
     </div>
     <!-- 导航栏 -->
     <div class="navbar">
@@ -36,7 +36,7 @@
 </template>
 
 <script>
-const swiper = () => import("./module/swipe");
+const swiper = () => import("./module/swiper");
 const column = () => import("./module/column");
 
 export default {
@@ -110,8 +110,7 @@ export default {
     }
   },
   components: {
-    //轮播和类目组件
-    "app-swiper": swiper,
+    swiper,
     column
   }
 };

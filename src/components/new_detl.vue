@@ -91,13 +91,13 @@
 const column = () => import("./module/column");
 const gaussian = () => import("./module/gaussian");
 const category = () => import("./module/category");
-import Qs from "qs";
-
 export default {
   data() {
     return {
       isCur: 1,
       id: null,
+      bookName: "",
+      from: "", //路由来源
       bookId: null,
       autoImg: "",
       loadState: false,
@@ -177,6 +177,13 @@ export default {
     gaussian,
     category
   },
+  beforeRouteEnter(to, from, next) {
+    localStorage.setItem("detl_from", "");
+    if (from.name == "view") {
+      localStorage.setItem("detl_from", 1);
+    }
+    next();
+  },
   created() {
     this.tabList = [
       {
@@ -187,31 +194,29 @@ export default {
       }
     ];
     this.autoImg = this.$config.autoImg.gaussian;
-    localStorage.setItem("new_detl", this.$route.fullPath); //章节页返回时的地址
     // console.log("detl_created");
-  },
-  beforeRouteLeave(to, from, next) {
-    next();
   },
   //缓存页
   activated() {
     var params = this.$route.params;
     // console.log("activated");
-    this.isCur = this.from == "view" ? 2 : 1;
+    this.isCur =
+      this.from == "view" || localStorage.getItem("detl_from") ? 2 : 1;
     if (params.id != this.bookId) {
       this.def();
       this.init();
     } else {
       this.checkLogin();
-      // console.log("不同");
       this.sendMsg();
       this.$bus.$emit("loading", false); //关闭loading加载效果
     }
-    localStorage.setItem("new_detl", this.$route.fullPath); //缓存时章节的返回地址
-    this.$bus.$emit("navBar", params.title); //同步漫画名
+    if (params.title) {
+      this.bookName = params.title;
+    }
+    this.$bus.$emit("navBar", this.bookName);
   },
   mounted() {
-    // console.log("mounted");
+    console.log("mounted");
     this.def();
     this.init();
   },
@@ -282,14 +287,14 @@ export default {
         // console.log("onchapter", data);
         if (data.chapterId) {
           this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);
-          localStorage.setItem("cache_chapter", JSON.stringify(this.catalogue));
+          // localStorage.setItem("cache_chapter", JSON.stringify(this.catalogue));
         }
       });
     },
     getChapter(opt) {
       this.loadState = true;
       return new Promise((resolve, reject) => {
-        localStorage.setItem("cache_chapter", []);
+        // localStorage.setItem("cache_chapter", '');
         this.$api
           // .getDataN("getAllChapter", opt)
           .getData("getAllChapter", opt)
@@ -392,13 +397,16 @@ export default {
         .then(res => {
           // console.log(res);
           if (res.code == 1) {
-            var data = res.data;
+            var data = res.data,
+              detl = data.detail;
             // console.log(this.bookList);
-            this.$set(this, "bookList", data.detail);
-            this.price = data.detail.price;
+            this.$set(this, "bookList", detl);
+            this.bookName = detl.title;
+            this.price = detl.price;
             localStorage.setItem("price", this.price);
             //设置模糊框尺寸
-            this.$set(this.autoSize, "src", data.detail.show_img);
+            this.$set(this.autoSize, "src", detl.show_img);
+            this.$bus.$emit("navBar", detl.title);
           }
           this.$bus.$emit("loading", false); //关闭loading
         })
@@ -486,7 +494,7 @@ export default {
 /* tab栏 */
 .comic_desc
   font-size 25px
-  background #fbf5f5
+  background #f9f9f9
   padding-bottom 10px
   /* 漫画描述 */
   .tabBar

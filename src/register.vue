@@ -54,7 +54,6 @@ export default {
   data() {
     return {
       codeSrc: "",
-      // codeSrc: "/java/ulogin/code?math=" + Math.random(), //测试环境
       uname: "",
       upass: "",
       code: "",
@@ -63,7 +62,6 @@ export default {
   },
   created() {
     var url = process.env.SERVER_JAVA;
-    //"http://mangaline.net:8088/ulogin/code?math=" + Math.random(),
     if (url) this.codeSrc = url + "/ulogin/code?math=" + Math.random();
   },
   activated() {
@@ -83,22 +81,21 @@ export default {
         "?math=" + Math.random()
       );
     },
-    //统计注册渠道
-    statistics(){
-
-    },
     register() {
       if (this.isComplete) {
-        this.$toast(this.$t("login.tips.wait"));
+        // this.$toast(this.$t("login.tips.wait"));
+        this.$util.Toast("login.tips.wait");
         return;
       }
       if (!this.uname || !this.upass || !this.code) {
         // this.$toast("账号密码验证码不能为空");
-        this.$toast(this.$t("login.tips.empty"));
+        this.$util.Toast("login.tips.empty");
         return;
       }
       this.isComplete = true;
       this.code = this.code.toUpperCase();
+      var local = localStorage;
+      var ch = local.getItem("wap_ch") || "none";
       this.$api
         .postDataN(
           "register",
@@ -114,36 +111,26 @@ export default {
             status = "";
           // console.log(res);
           if (res.code == 1) {
-            var data = res.data,
-              local = localStorage;
-            msg = this.$t("register.status.success");
+            var data = res.data;
+            msg = "register.status.success";
             status = "success";
-            var ch = local.getItem("wap_ch") || "none";
-            console.log(_hmt);
-            // this.$util.statistics();
-            _hmt.push(["_trackEvent", "register_" + ch, status]); //充值成功数
             local.setItem("uname", data.uname);
             local.setItem("money", data.money);
             local.setItem("isLogin", 1);
             this.$router.push({ name: "login" });
+            this.$util.statistics("register_" + ch, status); //统计代码
           } else if (res.code == 3) {
-            msg = this.$t("register.status.warn");
+            msg = "register.status.warn";
             status = "error";
-            _hmt.push(["_trackEvent", "register_" + ch, status]);
+          } else if (res.code == 4) {
+            msg = "register.status.repeat";
+          } else {
           }
-          //this.$toast("验证码错误");
-          else if (res.code == 4) {
-            msg = this.$t("register.status.repeat");
-          }
-          //this.$toast("请勿重复注册");
-          else {
-          }
-          this.$toast(msg);
-          // console.log(res);
+          this.$util.Toast(msg);
           this.isComplete = false;
         })
         .catch(err => {
-          this.$toast(this.$t("register.status.err"));
+          this.$util.Toast("register.status.err");
           this.isComplete = false;
           console.log(err);
         });

@@ -34,7 +34,6 @@
 </template>
 
 <script>
-// import { Toast } from "mint-ui";
 import Qs from "qs";
 export default {
   data() {
@@ -66,15 +65,15 @@ export default {
     },
     login() {
       if (this.isComplete) {
-        this.$toast(this.$t("login.tips.wait"));
+        this.$util.Toast("login.tips.wait");
         return;
       }
       if (!this.uname || !this.upass) {
-        this.$toast(this.$t("login.tips.empty"));
+        this.$util.Toast("login.tips.empty");
         return;
       }
       this.isComplete = true;
-      this.$toast(this.$t("login.tips.load"));
+      this.$util.Toast("login.tips.load");
       this.$api
         .postDataN(
           "login",
@@ -85,15 +84,15 @@ export default {
           var msg = "";
           if (res.code == 1) {
             var data = res.data;
-            msg = this.$t("login.status.success");
+            msg = "login.status.success";
             // console.log("登录成功");
             this.$bus.$emit("isLogin", "1");
             this.setCache(data);
             var path = localStorage.getItem("loginUrl");
             if (!path) path = "/";
             this.$router.push({ path });
-          } else msg = this.$t("login.status.err");
-          this.$toast(msg);
+          } else msg = "login.status.err";
+          this.$util.Toast(msg);
           this.isComplete = false;
         })
         .catch(err => {
@@ -121,10 +120,8 @@ export default {
   left 5%
   top 3%
   padding 15px
-
 .login_info
   padding 0 60px
-
 .form_item
   margin-bottom 30px
   input
@@ -136,7 +133,6 @@ export default {
     outline 0 none
     border-radius 45px
     color #555
-
 .login_btn
   margin-top 10%
   span
@@ -154,5 +150,4 @@ export default {
     color #fff
     background #fd5c63
     float right
-
 </style>

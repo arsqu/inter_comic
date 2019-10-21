@@ -49,7 +49,7 @@ export default new VueRouter({
       }
     },
     {
-      path: '/new_detl.html/:id/:title',
+      path: '/new_detl.html/:id/:title?',
       name: 'new_detl',
       component: () => import('@/components/new_detl'), //详情页
       meta: {
@@ -108,6 +108,12 @@ export default new VueRouter({
       path: '/search.html',
       name: 'search',
       component: () => import('@/components/search'), //搜索
+    },
+    {
+      // path: '/payfor.html/:payUrl',
+      path: '/payfor.html/:payForm',
+      name: 'payfor',
+      component: () => import('@/components/payfor'), //更新列表
     },
     {
       path: "/404.html",

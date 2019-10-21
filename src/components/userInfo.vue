@@ -16,7 +16,7 @@
           <span @click="recharge">{{$t('recharge.recharge')}}</span>
         </div>
       </div>
-      <div class="logout" @click="logOut">{{$t('login.logout')}}</div>
+      <div class="logout" v-if="isLogin" @click="logOut">{{$t('login.logout')}}</div>
       <router-link class="suggest" tag="div" :to="{name:'suggest'}">{{$t('userInfo.suggestions')}}</router-link>
     </div>
     <div class="tabTurn">
@@ -27,6 +27,7 @@
         :key="idx"
       >{{item}}</span>
     </div>
+    <div class="tabBox">{{$t('userInfo.tips')}}</div>
   </div>
 </template>
 
@@ -52,18 +53,30 @@ export default {
   },
   mounted() {
     console.log("update_mounted");
-    // this.getUpdate();
+    this.loadData();
+    this.checkLogin(); //本地状态判断是否登录
   },
   computed: {},
   methods: {
     logOut() {
-      this.$api.getDataN("logout").then(res => {
-        // this.$toast("图溢出成功");
-      });
+      this.$api
+        .getDataN("logout")
+        .then(res => {
+          if (res.code == 1) {
+            this.isLogin = false;
+            this.$util.clearItem();
+            this.$router.go(0);
+          }
+          // this.$toast("退出成功");
+        })
+        .catch(err => {
+          console.log(err);
+        });
     },
     checkLogin() {
       this.isLogin = false;
       if (localStorage.getItem("isLogin")) {
+        console.log("已登录");
         this.isLogin = true;
       } else {
         console.log("未登录");
@@ -78,8 +91,6 @@ export default {
     },
     init() {
       this.sendMsg("navBar", this.tabList[this.isCur]);
-      this.checkLogin();
-      this.loadData();
     },
     toggle(idx) {
       this.isCur = idx;
@@ -98,6 +109,11 @@ export default {
           localStorage.setItem("uname", data.uname);
           this.money = data.money;
           this.uname = data.uname;
+        } else if (res.code == 401) {
+          //服务器登录状态是否过期
+          this.isLogin = false;
+          localStorage.setItem("loginUrl", this.$route.fullPath);
+          this.$util.clearItem();
         }
       });
     }
@@ -178,6 +194,11 @@ export default {
     &.active
       border-bottom-color #e55c3f
       color #e55c3f
+.tabBox
+  font-size 30px
+  color #666
+  text-align center
+  padding 10px
 </style>
 
 

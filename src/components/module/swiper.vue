@@ -3,14 +3,12 @@
     <template>
       <p v-show="loadState" class="page-infinite-loading">
         <mt-spinner type="triple-bounce" class="r_loading" />
-        <!-- 加载中... -->
       </p>
     </template>
     <mt-swipe :auto="3000">
       <mt-swipe-item class="slide" v-for="(item,idx) in bannerList" :key="idx">
         <div class="def_view">
-          <img v-lazy="item.group_img" @click="tar_href(item.id,item.title)" />
-          <!-- <img :src="item.group_img||''" @click="tar_href(item.id,item.title)" /> -->
+          <img v-lazy="item.group_img+'?'+autoImg" @click="tar_href(item.id,item.title)" />
         </div>
       </mt-swipe-item>
     </mt-swipe>
@@ -20,7 +18,9 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      autoImg: ""
+    };
   },
   props: {
     loadState: Boolean,
@@ -29,8 +29,8 @@ export default {
       default: []
     }
   },
-  mounted() {
-    // console.log(this.bannerList);
+  created() {
+    this.autoImg = this.$config.autoImg.swiper;
   },
   methods: {
     tar_href(id, title) {

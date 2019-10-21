@@ -18,20 +18,22 @@
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="isScroll"
       >
-        <div class="update_list" v-show="isDay == (idx+1)" v-for="(item,idx) in date" :key="idx">
-          <app-list :autoImg="autoImg" :boxList="boxT['d'+(idx+1)]" :rankState="false" />
+        <!-- class="update_list" -->
+        <div v-show="isDay == (idx+1)" v-for="(item,idx) in date" :key="idx">
+          <listModule :autoImg="autoImg" :boxList="boxT['d'+(idx+1)]" :rankState="false" />
         </div>
       </div>
     </div>
     <!-- 提示信息 -->
     <div class="scroll_tips">
-      <loading :loadState="loadState" />
-      <template v-if="!loadState">
+      <loading :loadState="loading" />
+      <template v-if="!loading">
         <div
           v-if="boxT['d'+isDay]&&boxT['d'+isDay].length == 0"
           class="prompt_week"
         >{{$t('tips.notupdate')}}</div>
-        <div v-else-if="isScroll" class="prompt_week">{{$t('tips.end')}}</div>
+        <!-- <div v-else-if="isScroll" class="prompt_week">{{$t('tips.end')}}</div> -->
+        <div v-else class="prompt_week">{{$t('tips.end')}}</div>
       </template>
     </div>
   </div>
@@ -50,11 +52,12 @@ export default {
       scrollState: {}, //滚动状态
       page: {}, //分页
       isDay: "", //第几天
-      loadState: false //接口请求状态
+      loading: true, //接口请求状态
+      loadState: false //禁止短时间多次请求
     };
   },
   components: {
-    "app-list": listModule
+    listModule
   },
   created() {
     // console.log("created");
@@ -114,8 +117,6 @@ export default {
       // console.log("测试滚动");
       this.getUpdate(1);
     },
-    //关闭滚动
-    closeScroll() {},
     //周更新
     getUpdate(isScroll) {
       var cache = this.cache,
@@ -125,9 +126,8 @@ export default {
         //console.log("缓存中存在,则点击不刷新,滚动时刷新");
         return;
       }
-      //数据加载中
       if (this.loadState) {
-        // console.log("请勿频繁操作");
+        console.log("数据请求中...");
         return;
       }
       var key = "d" + d,
@@ -136,21 +136,25 @@ export default {
       if (this.boxT[key].length != 0 && this.boxT[key].length >= page.total) {
         this.$set(this.scrollState, [key], true); //停止滚动
         this.loadState = false;
+        this.loading = false;
         return;
       }
       cache.push(d);
       opt.week = d;
       this.loadState = true;
+      this.loading = true;
       this.$api
         .getData("weekList", opt)
         .then(res => {
           // console.log(res);
-          //请求成功时
           if (res.code == 1) {
             var data = res.data;
             //首次更新数据
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
+              if (data.total < 10) {
+                this.loading = false;
+              }
             } else {
               console.log("拼接");
               if (this.boxT["d" + d].length < data.total) {
@@ -169,11 +173,12 @@ export default {
             this.$set(this.scrollState, [key], true); //停止滚动
             // console.log(this.scrollState);
           }
-          this.loadState = false;
+          this.loadState = false; //请求结束
         })
         .catch(err => {
           this.$set(this.scrollState, [key], true);
           this.loadState = false;
+          this.loading = false;
           // console.log("server error");
           // console.log("关闭滚动");
         });
@@ -183,6 +188,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.weekList
+  padding 10px
 .update_time
   background #fff
   width 100%
@@ -209,14 +216,12 @@ export default {
     li.active:after
       content ''
       display block
-      border-top 3px solid #ffa500
+      border-top 8px solid #ffa500
       position absolute
-      bottom 0
+      bottom -8px
       width 100%
 .update_box
   padding-top 80px
-  .update_list
-    padding 10px
 </style>
 
 

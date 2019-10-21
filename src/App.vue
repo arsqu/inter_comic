@@ -12,7 +12,7 @@
       </div>
       <!-- modal -->
       <div :class="['page_modal',isLanguage?'lang':'']" v-show="isModal" @click="closeModal"></div>
-      <!-- chapterBox -->
+      <!-- payfor Chapter -->
       <chapterBox
         :isLogin="isLogin"
         :isRecharge="isRecharge"
@@ -21,9 +21,10 @@
         @closeModal="closeModal"
         @btnFunc="btnFunc"
       />
-      <!-- language Box -->
+      <!-- select language -->
       <div class="langList" v-show="isLanguage">
         <ul>
+          <!-- <li>当前语言:{{locale}}</li> -->
           <li v-for="(item,key,idx) in lang" :key="idx" @click="changeWords(key)">{{item}}</li>
         </ul>
       </div>
@@ -43,12 +44,16 @@ const chapterBox = () => import("@/components/module/chapterBox");
 export default {
   data() {
     return {
+      locale: "",
+      //章节详情
       chapterInfo: {
         title: "",
         txtIdx: "",
         orderNo: "",
         price: ""
       },
+      catalogue: [], //章节列表
+      timer: null, //支付成功延迟获取金额
       bookId: null,
       showHome: false,
       chaperId: null,
@@ -81,15 +86,27 @@ export default {
   mounted() {
     this.init();
     // console.log("app_mounted");
+    // this.matchLang();
     window.removeEventListener("scroll", this.showBtn); //监听滚动显示按钮
     window.addEventListener("scroll", this.showBtn); //监听滚动显示按钮
   },
   methods: {
+    //匹配语言
+    matchLang() {
+      var locale = (this.locale = this.$i18n.locale);
+      for (var k in this.lang) {
+        console.log(this.lang, locale);
+        if (k == locale) {
+          this.locale = this.lang[k];
+          break;
+        }
+      }
+    },
     //切换语言
     changeWords(lang) {
       if (lang) {
         this.$i18n.locale = lang;
-        this.$toast(this.$t("tips.lang"));
+        this.$util.Toast("tips.lang");
       }
       this.closeModal();
     },
@@ -120,25 +137,26 @@ export default {
           var data = res.data;
           if (res.code == 1) {
             // this.$toast(res.msg);
-            this.getMoney(); //查看余额
+            clearTimeout(this.timer);
+            this.timer = setTimeout(this.getMoney, 500); //查看余额
             this.unlock();
             // msg = "购买成功";
-            msg = this.$t("detl.payStatus.success");
+            msg = "detl.payStatus.success";
             console.log("购买成功");
           } else if (res.code == 103) {
             //余额不足
             this.$router.push({ name: "recharge" });
             this.getMoney(); //查看余额
             // msg = "余额不足";
-            msg = this.$t("detl.payStatus.error");
+            msg = "detl.payStatus.error";
           } else if (res.code == 102) {
             //已购买
             this.unlock();
             // msg = "已购买";
-            msg = this.$t("detl.payStatus.warning");
+            msg = "detl.payStatus.warning";
           }
           this.closeModal();
-          this.$toast(msg);
+          this.$util.Toast(msg);
         });
       } else {
       }
@@ -155,6 +173,13 @@ export default {
         chapterIdx: this.chapterIdx,
         is_free: 0
       });
+      var catalogue = localStorage.getItem("cache_chapter");
+      catalogue = catalogue ? JSON.parse(catalogue) : null;
+      if (catalogue) {
+        //手动修改状态
+        catalogue[this.chapterIdx].is_free = 0;
+        localStorage.setItem("cache_chapter", JSON.stringify(catalogue));
+      }
     },
     //关闭重置
     closeModal() {
@@ -284,12 +309,10 @@ export default {
 
 <style lang="stylus" scoped>
 .opac
-  opacity 0.6
-
+  opacity .6
 .page_layout
-  transition opacity 0.6s ease-out
-  margin-top 100px
-
+  transition opacity .6s ease-out
+  // margin-top 100px
 .page_modal
   position fixed
   top 0
@@ -298,13 +321,12 @@ export default {
   right 0
   margin auto
   z-index 100
-  background-color rgba(0, 0, 0, 0.65)
+  background-color rgba(0, 0, 0, .65)
   &.lang
     top 100px
-
-/* language box*/
+/* language box */
 .langList
-  position absolute
+  position fixed
   top 100px
   z-index 100
   width 100%
@@ -318,7 +340,6 @@ export default {
     border-top 1px solid #ddd
     &:first-child
       border-top 0 none
-
 /* backTop */
 .backTop
   border 1px solid #ddd
@@ -330,7 +351,7 @@ export default {
   background #fff
   right 25px
   bottom 5%
-  transition all 0.2s linear
+  transition all .2s linear
   opacity 1
   &:after
     border-top 2px solid transparent
@@ -344,7 +365,7 @@ export default {
     margin-top -6px
     margin-left -10px
     transform rotate(-45deg)
-    content ""
+    content ''
   &.show
     display block
     bottom 10%

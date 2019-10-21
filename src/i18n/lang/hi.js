@@ -74,7 +74,8 @@ export default {
   },
   userInfo: {
     tabs: ['itihaas', 'anshadaan'],
-    suggestions: 'sujhaav'
+    suggestions: 'sujhaav',
+    tips: 'lambit vikaas...'
   },
   login: {
     notAllowed: 'log in nahin kiya gaya',
@@ -131,13 +132,15 @@ export default {
       3: 'richaarj karane ke baad krpaya apane khaate kee jaanakaaree taaza karen'
     },
     payTips: {
+      openUrl: 'bhugataan prshth khul raha hai, krpaya prateeksha karen ...',
       txt: 'chaahe reechaarj jaaree rakhana hai',
-      pay:'ke lie bhugataan',
-      cancel:'radd karana'
+      pay: 'ke lie bhugataan',
+      cancel: 'radd karana'
     },
     rechargeStatus: {
       success: 'richaarj saphal',
-      err: 'richaarj phel ho gaya'
+      err: 'richaarj phel ho gaya',
+      wait: 'krpaya 2 sekand ke baad phir se klik karen'
     },
     response: {
       err: 'anurodh viphal raha'

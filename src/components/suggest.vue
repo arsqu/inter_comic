@@ -31,7 +31,7 @@ export default {
       param: {
         contryId: "1",
         content: "",
-        userName: "",
+        // userName: "",
         phone: "",
         email: ""
       },
@@ -70,7 +70,7 @@ export default {
     //反馈
     feedBack() {
       this.isComplete = true;
-      this.param.userName = localStorage.getItem("uname");
+      // this.param.userName = localStorage.getItem("uname");
       this.$api
         .postDataN("suggest.post", Qs.stringify(this.param))
         .then(res => {

@@ -1,14 +1,12 @@
 <template>
   <!-- more comic -->
   <div class="groupItem">
-    <!--  :key="Math.random()" -->
     <div class="push_column">
-      <!-- 滚动加载 -->
       <ul
         class="book_list scroll_tab"
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="isScroll"
-        infinite-scroll-distance="15"
+        infinite-scroll-distance="20"
       >
         <template v-if="bookList.length>0">
           <li
@@ -29,13 +27,11 @@
           </li>
         </template>
       </ul>
-      <loading :loadState="loadState" />
-      <template v-if="!loadState">
+      <loading :loadState="loading" />
+      <template v-if="!loading">
         <!-- 加载结束后小于9条 -->
-        <template v-if="bookList.length<9">
-          <div class="prompt_txt">{{$t('tips.nomore')}}</div>
-        </template>
-        <div class="prompt_txt" v-else>{{$t('tips.end')}}</div>
+        <div v-if="bookList.length<9" class="prompt_week">{{$t('tips.nomore')}}</div>
+        <div class="prompt_week" v-else>{{$t('tips.end')}}</div>
       </template>
     </div>
   </div>
@@ -49,7 +45,8 @@ export default {
       autoImg: "",
       groupId: null,
       isScroll: false, //是否停止滚动
-      loadState: false, //加载状态
+      loadState: false, //接口请求状态
+      loading: true, //loading效果
       page: {
         offset: 0,
         limit: 10,
@@ -76,7 +73,7 @@ export default {
     this.autoImg = this.$config.autoImg.column;
   },
   mounted() {
-    // console.log("mounted");
+    //console.log("mounted");
     this.def();
   },
   methods: {
@@ -103,16 +100,18 @@ export default {
     //加载漫画
     getBook() {
       if (this.loadState) {
-        // console.log("操作太频繁");
+        console.log("数据请求中...");
         // this.$toast("please wait...");
         return;
       }
       var opt = Object.assign({}, this.page); //分页参数
       opt.groupId = this.groupId;
       this.loadState = true;
+      this.loading = true;
       if (this.bookList.length != 0 && this.bookList.length >= opt.total) {
-        this.isScroll = true;
+        this.isScroll = true; //禁止滚动
         this.loadState = false;
+        this.loading = false;
         return;
       }
       this.$api
@@ -122,24 +121,17 @@ export default {
             var data = res.data;
             if (this.bookList.length == 0) {
               this.$set(this, "bookList", data.list);
-              //首次请求小于10关闭滚动
+              // 首次请求小于10关闭滚动
               if (data.list.length < 10) {
-                console.log("暂无更多数据");
+                // console.log("暂无更多数据");
                 this.isScroll = true;
-                this.loadState = false;
-                return;
+                this.loading = false;
               }
             } else {
               // console.log("拼接");
               if (this.bookList.length < data.total) {
                 this.bookList = this.bookList.concat(data.list);
               }
-              // else {
-              //   console.log("ajax停止滚动");
-              //   this.isScroll = true; //停止滚动
-              //   this.loadState = false;
-              //   return;
-              // }
             }
             //更新分页参数
             this.$set(this, "page", {
@@ -155,6 +147,7 @@ export default {
         .catch(err => {
           // console.log(err);
           this.isScroll = true;
+          this.loading = false;
           this.loadState = false;
         });
       //Mock测试数据
@@ -180,9 +173,7 @@ export default {
       handler(to, from) {
         // console.log(to, from);
         //跳转详情页的laoding效果
-        if (to.name == "new_detl") {
-          this.$bus.$emit("loading", true); //loading加载效果
-        }
+        if (to.name == "new_detl") this.$bus.$emit("loading", true); //loading加载效果
       },
       deep: true
     }
@@ -192,7 +183,7 @@ export default {
 <style lang="stylus" scoped>
 .push_column
   font-size 30px
-  padding 15px
+  padding 10px
   background #fff
   .book_list
     display flex
@@ -200,7 +191,7 @@ export default {
     .book_detl
       width 33.3%
       box-sizing border-box
-      padding 15px 10px
+      padding 10px 10px
       cursor pointer
       .book_pto
         position relative
@@ -226,9 +217,4 @@ export default {
         padding 0 5px
         color #777
         text-align center
-  .prompt_txt
-    color #555
-    font-size 28px
-    padding 15px
-    text-align center
 </style>

@@ -23,21 +23,37 @@
         <router-link :to="{name:'login'}">{{$t('login.login')}}</router-link>
       </div>
     </div>
+    <!-- payBox -->
     <div class="paybox" v-show="payBox">
       <div class="payfor">
-        <!-- <p>是否继续充值?</p> -->
         <p>{{$t('recharge.payTips.txt')}}</p>
-        <a
-          class="pay_txt"
-          @click="payfor"
-          :href="payUrl"
-          target="_blank"
-        >{{$t('recharge.payTips.pay')}}</a>
+        <!-- :href="payUrl" -->
+        <!-- target="_blank" -->
+        <!-- <a class="pay_txt" @click="payfor" href="javascrjpt:;">{{$t('recharge.payTips.pay')}}</a> -->
+        <span :class="[isLoad?'opa':'','pay_txt pay']" @click="payfor">
+          <span class="load_pic" v-show="isLoad">
+            <img src="/static/img/oval.svg" alt />
+          </span>
+          &nbsp;{{$t('recharge.payTips.pay')}}
+        </span>
         <span class="pay_txt" @click="cancel">{{$t('recharge.payTips.cancel')}}</span>
       </div>
     </div>
   </div>
 </template>
+
+<style lang="stylus">
+.load_pic
+  width 35px
+  height 35px
+  line-height 35px
+  text-align center
+  float left
+  background-repeat no-repeat
+  background-position center
+.pay_txt.opa
+  opacity .5
+</style>
 
 <script>
 import Qs from "qs";
@@ -52,21 +68,13 @@ export default {
       exchangeRate: "", //兑换比例
       currency: "", //单位
       timer: null,
-      isComplete: false
+      isLoad: false,
+      post: false //是否可充值
     };
   },
   created() {
     this.$bus.$emit("navBar", this.$t("recharge.recharge"));
-    var isLogin = localStorage.getItem("isLogin");
-    this.post = true;
-    if (!isLogin) {
-      this.post = false;
-      this.isLogin = false;
-      this.$toast(this.$t("tips.toLogin"));
-      //   this.$router.push({ name: "login" });
-      return;
-    }
-    this.isLogin = true;
+    this.checkLogin();
   },
   activated() {
     // console.log("app_activated");
@@ -75,6 +83,19 @@ export default {
     this.init();
   },
   methods: {
+    pay() {
+      location.href = this.payUrl;
+    },
+    checkLogin() {
+      var isLogin = localStorage.getItem("isLogin");
+      this.isLogin = true;
+      if (!isLogin) {
+        this.isLogin = false;
+        this.$util.Toast("tips.toLogin");
+        localStorage.setItem("loginUrl", this.$route.fullPath);
+        // this.$router.push({ name: "login" });
+      }
+    },
     init() {
       this.$api
         .getDataN("currencyUnit")
@@ -84,6 +105,10 @@ export default {
             this.symbol = data.currency;
             this.exchangeRate = data.proportion;
             this.currency = data.currency;
+          } else if (res.code == 401) {
+            this.isLogin = false;
+            localStorage.setItem("loginUrl", this.$route.fullPath);
+            this.$util.clearItem();
           }
           console.log(res);
         })
@@ -102,63 +127,145 @@ export default {
       });
     },
     payfor() {
-      this.payBox = false;
+      // console.log(document.f1);
+      // document.d1.submit();
+      if (this.isLoad) {
+        console.log("请3s后再操作");
+        // this.$util.Toast("recharge.rechargeStatus.wait");
+        return;
+      }
+      this.$util.Toast("recharge.payTips.openUrl");
+      this.isLoad = true;
+      console.log(this.isLoad);
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(_ => {
+        this.isLoad = false;
+      }, 3000);
+      document.f1.submit();
     },
     cancel() {
       this.payBox = false;
+      this.isLoad = false;
+    },
+    payReady(form) {
+      // console.log(form);
+      var el = document.getElementById("pay1");
+      if (!el) {
+        var div = document.createElement("div");
+        div.setAttribute("id", "pay1");
+        div.style.display = "none";
+        div.innerHTML = form;
+        document.body.appendChild(div);
+      } else el.innerHTML = form;
     },
     recharge() {
       // console.log("充值");
       var money = +this.money,
-        reg = /\d+/; //校验数字格式
-      if (!this.post) {
-        this.$toast(this.$t("tips.toLogin"));
+        reg = /^\d+$/; //校验数字格式
+      if (!this.isLogin) {
+        this.$util.Toast("tips.toLogin");
         this.$router.push({ name: "login" });
         return;
       }
       this.payBox = false;
-      if (money && reg.test(money)) {
-        this.$toast(this.$t("recharge.loading"));
-        this.$api
-          .postDataN("recharge", Qs.stringify({ money }))
-          .then(res => {
-            // console.log(res);
-            // window.open("https://p-y.tm/hQ-sDbJ");
-            var msg = "",
-              status = "";
-            if (res.code == 1) {
-              // msg = this.$t("recharge.rechargeStatus.success");
-              status = "success";
-              var data = res.data;
-              this.payBox = true;
-              this.payUrl = data.shortUrl || data.longUrl;
-              var ch = localStorage.getItem("wap_ch") || "none";
-              _hmt.push(["_trackEvent", "recharge_" + ch, status]); //充值成功数
-              clearTimeout(this.timer);
-              this.timer = setTimeout(this.hasMoney(), 2000);
-            } else {
-              msg = this.$t("recharge.rechargeStatus.err");
-              status = "error";
-              _hmt.push(["_trackEvent", "recharge_" + ch, status]); //充值失败数
-            }
-            this.$toast(msg);
-          })
-          .catch(err => {
-            status = "error";
-            this.$toast(this.$t("response.err"));
-            _hmt.push(["_trackEvent", "recharge_" + ch, status]); //充值失败数
-          });
-      } else {
+      if (!(money && reg.test(money))) {
         this.money = "";
-        // this.$toast("只允许输入整数");
+        return;
       }
+      if (this.post) {
+        console.log("频繁点击");
+        return;
+      }
+      this.$util.Toast("recharge.loading");
+      var ch = localStorage.getItem("wap_ch") || "none";
+      this.post = true;
+      this.$api
+        .postDataN("recharge", Qs.stringify({ money }))
+        .then(res => {
+          // console.log(res);
+          // window.open("https://p-y.tm/hQ-sDbJ");
+          var msg = "",
+            status = "";
+          if (res.code == 1) {
+            // msg = "recharge.rechargeStatus.success";
+            status = "success";
+            var data = res.data;
+            if (data.code == 200) {
+              this.payReady(data.webPage);
+              this.payBox = true;
+              var payUrl = (this.payUrl = data.shortUrl || data.longUrl);
+            }
+            this.$util.closeToast();
+            //跳转支付页
+            // this.$router.push({
+            //   name: "payfor",
+            //   params: { payUrl }
+            // });
+            // location.href = data.shortUrl || data.longUrl;
+            // clearTimeout(this.timer);
+            // this.timer = setTimeout(this.hasMoney, 2000);
+          } else {
+            msg = "recharge.rechargeStatus.err";
+            status = "error";
+            this.$util.Toast(msg);
+          }
+          this.post = false;
+          this.$util.statistics("recharge_" + ch, status); //统计充值数
+        })
+        .catch(err => {
+          status = "error";
+          this.$util.Toast("response.err");
+          this.post = false;
+          // this.payBox = true;
+          // var form =
+          //   "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'><html><head><title>Merchant Checkout Page</title></head><body><center><h1>Please do not refresh this page...</h1></center><form method='post' action='https://securegw.paytm.in/theia/processTransaction' name='f1'><input type='hidden' name='CALLBACK_URL' value='https://testapi.pay.goldenmob.com/trans/callback/paytm/status'><input type='hidden' name='CHANNEL_ID' value='WAP'><input type='hidden' name='CUST_ID' value='10052'><input type='hidden' name='INDUSTRY_TYPE_ID' value='Retail'><input type='hidden' name='MID' value='KRISTR39074830433502'><input type='hidden' name='ORDER_ID' value='1571317166919'><input type='hidden' name='TXN_AMOUNT' value='100'><input type='hidden' name='WEBSITE' value='WEBPROD'><input type='hidden' name='CHECKSUMHASH' value='6z6GmgmiDjDcxkY9YDLOboBO1I90RLWAkKON/Zm3EX7j3SFp56Wlf4S1TzbGZYcZDpKRLugkCP9LnQzblrSuNsqyzl/IMbfQWD1RCU0Jh/Q='></form>\<script type='text/javascript'\>document.f1.submit();\<\/script></body></html>";
+          // this.payReady(form);
+          // this.payUrl =
+          //   "https://paytm.business/link/invoice/payment/LL_16193955";
+          // this.$router.push({
+          //   name: "payfor",
+          //   // params: { payUrl: "https://p-y.tm/JjSW-LN" }
+          //   params: { payForm: "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'><html><head><title>Merchant Checkout Page</title></head><body><center><h1>Please do not refresh this page...</h1></center><form method='post' action='https://securegw.paytm.in/theia/processTransaction' name='f1'><input type='hidden' name='CALLBACK_URL' value='https://testapi.pay.goldenmob.com/trans/callback/paytm/status'><input type='hidden' name='CHANNEL_ID' value='WAP'><input type='hidden' name='CUST_ID' value='10052'><input type='hidden' name='INDUSTRY_TYPE_ID' value='Retail'><input type='hidden' name='MID' value='KRISTR39074830433502'><input type='hidden' name='ORDER_ID' value='1571305488062'><input type='hidden' name='TXN_AMOUNT' value='100'><input type='hidden' name='WEBSITE' value='WEBPROD'><input type='hidden' name='CHECKSUMHASH' value='40uH5/ouo6mc/AmckZfepqAoD7yvGEeM/8/n4MkJoLSWchbjrz94CmNqhTKE4gCb8yIUrWuMCpO0GLDlGdkrWD0dNZQQnUbUMF/7/KbYImU='></form>\<script type='text/javascript'\>document.f1.submit();\<\/script\></body></html>" }
+          // });
+        });
     }
   }
 };
 </script>
-
 <style lang="stylus" scoped>
+.indicatorBox
+  -webkit-transition opacity .2s linear
+  transition opacity .2s linear
+  .indicatorItem
+    top 50%
+    left 50%
+    position fixed
+    -webkit-transform translate(-50%, -50%)
+    transform translate(-50%, -50%)
+    border-radius 5px
+    background rgba(0, 0, 0, .7)
+    color #fff
+    box-sizing border-box
+    text-align center
+    .spinner
+      border-top-color rgb(204, 204, 204)
+      border-left-color rgb(204, 204, 204)
+      border-bottom-color rgb(204, 204, 204)
+      height 32px
+      width 32px
+      -webkit-animation mint-spinner-rotate .8s infinite linear
+      animation mint-spinner-rotate .8s infinite linear
+      border 4px solid transparent
+      border-radius 50%
 .recharge_box
+  div>button
+    width 20%
+    height 80px
+    background #fd5c63
+    color #fff
+    font-size 28px
+    border 0 none
+    outline 0 none
   .paybox
     position fixed
     z-index 100
@@ -185,7 +292,7 @@ export default {
         margin 40px 0
         color #666
         font-size 32px
-      &>a
+      &>.pay
         background #EA0010
         color #fff
         display inline-block
@@ -224,14 +331,7 @@ export default {
     height 80px
     font-size 30px
     padding-left 25px
-    border-color #999
     color #666
     border 1px solid #ddd
-  button
-    width 20%
-    height 80px
-    background #fd5c63
-    color #fff
-    border 0 none
-    outline 0 none
+    // box-shadow 0 4px 9px rgba(0,0,0,.23)
 </style>

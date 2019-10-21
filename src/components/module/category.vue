@@ -70,7 +70,7 @@ export default {
 .prompt_txt
   text-align center
   display block
-  font-size 16px
+  font-size 28px
 .cont_book_list
   .book_item
     display flex
