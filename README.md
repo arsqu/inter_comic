@@ -1,6 +1,6 @@
 # comic_project
 
-> A Vue.js project (漫画项目，暂未做缓存)
+> A Vue.js project (印度漫画)
 
 ## Build Setup
 
