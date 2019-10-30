@@ -140,9 +140,11 @@ export default {
         key = k + idx;
       var cache = this.cache,
         group = this.group;
+      // console.log(this.loading);
       //缓存记录
       if (cache.indexOf(key) != -1 && !isScroll) {
         // console.log("点击tab时有缓存不更新数据");
+        this.loading = false;
         return;
       }
       if (this.loadState) {
@@ -186,6 +188,7 @@ export default {
             });
           } else {
             this.$set(this.scrollState, [key], true); //停止滚动
+            this.loading = false;
           }
           this.loadState = false;
           // console.log(this.boxT, page);

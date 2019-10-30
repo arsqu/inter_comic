@@ -43,7 +43,7 @@ export default new VueRouter({
     {
       path: '/recharge.html',
       name: 'recharge',
-      component: () => import('@/components/recharge'), //首页
+      component: () => import('@/components/recharge'),
       meta: {
         title: '充值'
       }
@@ -121,9 +121,14 @@ export default new VueRouter({
       component: () => import('@/components/common/404')
     },
     {
-      path: "*", // 此处需特别注意置于最底部
-      redirect: "/404.html"
-    }
+      path: '/406',
+      name: '406',
+      component: () => import('@/components/common/406')
+    },
+    // {
+    //   path: "*", // 此处需特别注意置于最底部
+    //   redirect: "/404.html"
+    // }
     // , {
     //   path: '/list/:key/:url',
     //   name: 'list',

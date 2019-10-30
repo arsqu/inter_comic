@@ -89,7 +89,7 @@ export default {
             this.$bus.$emit("isLogin", "1");
             this.setCache(data);
             var path = localStorage.getItem("loginUrl");
-            if (!path) path = "/";
+            if (!path || path == "/login.html") path = "/";
             this.$router.push({ path });
           } else msg = "login.status.err";
           this.$util.Toast(msg);

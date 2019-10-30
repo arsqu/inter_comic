@@ -118,6 +118,8 @@ export default {
 
 <style lang="stylus" scoped>
 /* 公共导航 */
+.swiper_box
+  height 435px
 .nav_list
   background url('/static/img/banner_bottom.png') no-repeat
   position relative

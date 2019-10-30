@@ -28,6 +28,9 @@ const crossUrl = {
   // 'getAllChapter': '/chapter/chapterList',
   'hasRecord': '/record/AllRecord',
   'buyChapter': "/record/payRecord",
+  search: {
+    get: '/media/selectMediaByOr'
+  },
   suggest: {
     post: '/feedb/addFeedBack'
   },

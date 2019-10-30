@@ -141,10 +141,16 @@ export default {
       success: 'richaarj saphal',
       err: 'richaarj phel ho gaya',
       wait: 'krpaya 2 sekand ke baad phir se klik karen'
-    },
-    response: {
-      err: 'anurodh viphal raha'
     }
+  },
+  response: {
+    err: 'anurodh viphal raha'
+  },
+  search: {
+    txt: 'haasy | lekhak',
+    search: 'khoj',
+    total: 'sampoorn',
+    tips: 'inaput bahut lamba hai ( > 100 varn )'
   },
   post: {
     txt: 'prastut karana',

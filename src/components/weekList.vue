@@ -122,7 +122,9 @@ export default {
       var cache = this.cache,
         d = this.isDay;
       // console.log("isScroll:", isScroll);
+      console.log(this.loading);
       if (cache.indexOf(d) != -1 && !isScroll) {
+        this.loading = false;
         //console.log("缓存中存在,则点击不刷新,滚动时刷新");
         return;
       }
@@ -154,6 +156,8 @@ export default {
               this.$set(this.boxT, [key], data.list);
               if (data.total < 10) {
                 this.loading = false;
+                this.$set(this.scrollState, [key], true); //停止滚动
+                console.log("停止滚动条", this.scrollState[key]);
               }
             } else {
               console.log("拼接");
@@ -171,9 +175,11 @@ export default {
           } else {
             // console.log("关闭滚动");
             this.$set(this.scrollState, [key], true); //停止滚动
+            this.loading = false;
             // console.log(this.scrollState);
           }
           this.loadState = false; //请求结束
+          // this.loading = false; //请求结束
         })
         .catch(err => {
           this.$set(this.scrollState, [key], true);

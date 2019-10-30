@@ -1,5 +1,5 @@
 // import Vue from 'vue'
-import axios from 'axios'
+// import axios from 'axios'
 // import mintUiCom from './mintUiCom' //局部引入mintUi
 import './assets/css/common.css' //公共样式
 import 'amfe-flexible' //自适应
@@ -53,14 +53,18 @@ axios.interceptors.response.use(function (response) {
 
 var ch = local.getItem('wap_ch') || 'none';
 router.beforeEach((to, from, next) => {
-  // console.log(to, from);
-  if (_hmt) {
-    if (to.name == 'recharge' || to.name == 'main' || to.name == 'register') {
-      // console.log('trackPageView', '/' + to.name + '?ch=' + ch);
-      _hmt.push(['_trackPageview', '/' + to.name + '?ch=' + ch]); //统计各页面打开的次数
-    }
+  // console.log(window.history.length)
+  if (navigator.language.slice(0, 2).indexOf('zh') != -1) {
+    if (to.name == '406')
+      next();
+    else
+      next('/406')
+  } else {
+    if (_hmt)
+      if (to.name == 'recharge' || to.name == 'main' || to.name == 'register')
+        _hmt.push(['_trackPageview', '/' + to.name + '?ch=' + ch]); //统计各页面打开的次数
+    next();
   }
-  next();
 });
 
 window.vm = new Vue({

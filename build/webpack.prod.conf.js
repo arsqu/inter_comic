@@ -17,7 +17,7 @@ const webpackConfig = merge(baseWebpackConfig, {
   externals: {
     'vue': 'Vue',
     'vue-router': "VueRouter",
-    // 'axios': 'axios',
+    'axios': 'axios',
     "mint-ui": "MINT"
   },
   module: {

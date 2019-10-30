@@ -10,6 +10,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <title></title>
   <style>
+    * {
+      padding: 0;
+      margin: 0;
+    }
+
     html {
       height: 100%;
       font-family: Roboto, SourceHanSan;
@@ -19,14 +24,6 @@
       width: 80%;
       margin: 0 auto;
       text-align: center;
-    }
-
-    .layout_bottom {
-      position: absolute;
-      bottom: 15%;
-      left: 50%;
-      width: 50%;
-      margin-left: -25%;
     }
 
     .pay_txt {
@@ -46,7 +43,7 @@
     }
 
     .pay_logo {
-      width: 20%;
+      width: 25%;
       padding-bottom: 10px;
       display: block;
       margin: 0 auto;
@@ -72,6 +69,7 @@
       width: 100%;
       height: 35px;
       line-height: 35px;
+      font-size: 20px;
       color: #4fc684;
     }
 
@@ -107,17 +105,32 @@
       vertical-align: middle;
       margin-bottom: 2px;
     }
+
+    .layout_bottom {
+      position: absolute;
+      bottom: 10%;
+      left: 50%;
+      width: 50%;
+      margin-left: -25%;
+    }
+
+    .layout_bottom p {
+      color: #666;
+      padding-top: 8px;
+      font-size: 14px;
+    }
   </style>
 </head>
 
 <body>
   <div class="layout">
     <div class="pay_status">
-      <img src="http://mangaline.net/static/img/success.jpg" alt="" class="pay_logo">
+      <img src="http://mangaline.net/static/img/success.jpg" class="pay_logo">
       <span class="pay_txt">{{paySuccess}}</span>
     </div>
     <div class="layout_bottom">
       <div class="btn" onclick="reBack()">{{reBack}}</div>
+      <p>Mangaline.net</p>
     </div>
   </div>
 
@@ -128,7 +141,7 @@
       "en": {
         paySuccess: 'Payment successful',
         payError: 'Payment failed',
-        reBack: "go back"
+        reBack: "Go back"
       },
       "in": {
         paySuccess: "saphal bhugataan",

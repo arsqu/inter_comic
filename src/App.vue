@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <!-- v-if 会导致页面重绘 -->
-    <template v-if="$route.name!='login'&&$route.name!='register'">
+    <template v-if="$route.name!='login'&&$route.name!='register'&&$route.name!='406'">
       <Header v-show="headShow" :showHome="showHome" :loader="loader" :comicTxt="comicTxt" />
       <!-- container -->
       <div class="page_layout" :class="{opac:loading}">

@@ -106,14 +106,14 @@ export default {
       }
       var opt = Object.assign({}, this.page); //分页参数
       opt.groupId = this.groupId;
-      this.loadState = true;
-      this.loading = true;
       if (this.bookList.length != 0 && this.bookList.length >= opt.total) {
         this.isScroll = true; //禁止滚动
         this.loadState = false;
         this.loading = false;
         return;
       }
+      this.loadState = true;
+      this.loading = true;
       this.$api
         .getData("getMore", opt)
         .then(res => {
@@ -141,6 +141,7 @@ export default {
             });
           } else {
             this.isScroll = true; //停止滚动
+            this.loading = false;
           }
           this.loadState = false;
         })

@@ -9,7 +9,10 @@
           @click="tar_detail(item.id,item.title)"
         >
           <div class="com_img">
-            <img v-lazy="item.show_img+'?' + autoImg" :key="item.show_img" />
+            <img
+              v-lazy="item.show_img?item.show_img +'?' + autoImg:item.showImg?item.showImg+'?'+autoImg:''"
+              :key="item.show_img"
+            />
           </div>
           <div class="com_desc">
             <p class="com_tit">{{item.title}}</p>

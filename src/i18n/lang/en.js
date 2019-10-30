@@ -100,8 +100,7 @@ export default {
     phone: 'phone',
     email: 'email',
     tips: {
-      content: 'Please enter what you want to feedback',
-      info: ''
+      content: 'Please enter what you want to feedback'
     },
     verify: {
       require: 'Fill in at least one phone or email address',
@@ -146,6 +145,14 @@ export default {
   },
   response: {
     err: 'Request failed'
+  },
+  search: {
+    txt: 'Comic | Author',
+    search: 'search',
+    total: 'total',
+    tips: {
+      tolong: 'Input is too long ( > 100 characters )'
+    }
   },
   post: {
     txt: 'submit',
