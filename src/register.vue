@@ -173,6 +173,7 @@ export default {
     outline 0 none
     border-radius 45px
     color #555
+    font-size 20px
     vertical-align middle
     &.code
       box-sizing border-box

@@ -129,6 +129,7 @@ export default {
     border 0 none
     background #f5f5f5
     padding 0 20px
+    font-size 20px
     height 100px
     outline 0 none
     border-radius 45px

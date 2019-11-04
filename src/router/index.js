@@ -125,10 +125,10 @@ export default new VueRouter({
       name: '406',
       component: () => import('@/components/common/406')
     },
-    // {
-    //   path: "*", // 此处需特别注意置于最底部
-    //   redirect: "/404.html"
-    // }
+    {
+      path: "*", // 此处需特别注意置于最底部
+      redirect: "/404.html"
+    }
     // , {
     //   path: '/list/:key/:url',
     //   name: 'list',

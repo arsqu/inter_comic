@@ -123,7 +123,7 @@ export default {
   recharge: {
     loading: 'richaarj mein, krpaya prateeksha karen',
     recharge: 'oopar se',
-    rechargeMoney: 'top ap raashi',
+    rechargeMoney: 'raashi darj karen',
     tips: 'sheeghr',
     payRate: 'sikkon ka anupaat',
     info: {
@@ -132,6 +132,7 @@ export default {
       3: 'richaarj karane ke baad krpaya apane khaate kee jaanakaaree taaza karen'
     },
     payTips: {
+      toLong: 'sarvar anurodh samay samaapt ho gaya,krpaya punah prayaas karen',
       openUrl: 'bhugataan prshth khul raha hai, krpaya prateeksha karen ...',
       txt: 'chaahe reechaarj jaaree rakhana hai',
       pay: 'ke lie bhugataan',

@@ -59,6 +59,7 @@ router.beforeEach((to, from, next) => {
       next();
     else
       next('/406')
+    // next()
   } else {
     if (_hmt)
       if (to.name == 'recharge' || to.name == 'main' || to.name == 'register')

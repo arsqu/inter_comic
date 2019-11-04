@@ -122,8 +122,8 @@ export default {
   },
   recharge: {
     loading: 'In the recharge,Please wait...',
-    recharge: 'recharge',
-    rechargeMoney: 'top ap',
+    recharge: 'top Up',
+    rechargeMoney: 'Enter the amount',
     tips: 'prompt',
     payRate: 'coins ratio',
     info: {
@@ -132,6 +132,7 @@ export default {
       3: 'Please refresh your account information after recharging'
     },
     payTips: {
+      toLong: 'Server request timed out,Please try again',
       openUrl: 'Opening payment page, please wait...',
       txt: 'Whether to continue to recharge',
       pay: 'payfor',

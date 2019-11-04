@@ -1,11 +1,30 @@
 <template>
   <div class="recharge_box" @keyup.13="recharge">
     <div>
-      <input type="text" v-model="money" :placeholder="$t('recharge.rechargeMoney')" />
+      <input
+        type="text"
+        v-model="money"
+        @input="clearVal"
+        :placeholder="$t('recharge.rechargeMoney')"
+      />
+      <span v-if="isLogin" class="currency">{{currency}}</span>
       <button type="button" @click="recharge">{{$t('recharge.recharge')}}</button>
     </div>
+
+    <!-- topUp -->
+    <div class="topUpBox">
+      <ul class="topUpList">
+        <li
+          :class="{active : isCur == idx}"
+          v-for="(item,idx) in topUpList"
+          :key="idx"
+          @click="setVal(idx,item)"
+        >{{item}} {{currency}}</li>
+      </ul>
+    </div>
+
+    <!-- tipsBox -->
     <div class="recharge_txt">
-      <!-- {{symbol}} -->
       <span>{{$t('recharge.tips')}}:</span>
       <br />
       1. {{$t('recharge.payRate')}}
@@ -60,14 +79,16 @@ import Qs from "qs";
 export default {
   data() {
     return {
+      topUpList: [10, 20, 30, 50, 100, 300],
       payUrl: "", //支付url
+      isCur: -1, //选中充值金额
       payBox: false, //支付框
       isLogin: false,
       money: "", //充值金额
-      symbol: "",
       exchangeRate: "", //兑换比例
       currency: "", //单位
       timer: null,
+      btnTimer: null, //按钮延迟提示
       isLoad: false,
       post: false //是否可充值
     };
@@ -83,8 +104,13 @@ export default {
     this.init();
   },
   methods: {
-    pay() {
-      location.href = this.payUrl;
+    clearVal() {
+      this.isCur = -1;
+    },
+    //填充输入框
+    setVal(idx, val) {
+      this.isCur = idx;
+      this.money = val;
     },
     checkLogin() {
       var isLogin = localStorage.getItem("isLogin");
@@ -102,7 +128,6 @@ export default {
         .then(res => {
           if (res.code == 1) {
             var data = res.data;
-            this.symbol = data.currency;
             this.exchangeRate = data.proportion;
             this.currency = data.currency;
           } else if (res.code == 401) {
@@ -110,10 +135,11 @@ export default {
             localStorage.setItem("loginUrl", this.$route.fullPath);
             this.$util.clearItem();
           }
-          console.log(res);
+          // console.log(res);
         })
         .catch(err => {
-          console.log(err);
+          this.isLogin = false;
+          // console.log(err);
         });
     },
     //查询余额
@@ -160,30 +186,39 @@ export default {
     },
     recharge() {
       // console.log("充值");
-      var money = +this.money,
-        reg = /^\d+$/; //校验数字格式
       if (!this.isLogin) {
         this.$util.Toast("tips.toLogin");
         this.$router.push({ name: "login" });
         return;
       }
+      var money = +this.money,
+        reg = /^\d+$/; //校验数字格式
       this.payBox = false;
       if (!(money && reg.test(money))) {
         this.money = "";
         return;
       }
       if (this.post) {
-        console.log("频繁点击");
+        // console.log("频繁点击");
+        this.$util.Toast("recharge.loading");
         return;
       }
+      // console.log("发起网络我请求");
       this.$util.Toast("recharge.loading");
       var ch = localStorage.getItem("wap_ch") || "none";
       this.post = true;
+      this.btntimer && clearTimeout(this.btntimer);
+      this.btntimer = setTimeout(_ => {
+        // console.log("请求超时");
+        this.$util.Toast("recharge.payTips.toLong");
+        this.post = false; //允许再次请求
+      }, 10 * 1000); //10s后提示
       this.$api
         .postDataN("recharge", Qs.stringify({ money }))
         .then(res => {
           // console.log(res);
           // window.open("https://p-y.tm/hQ-sDbJ");
+          this.btntimer && clearTimeout(this.btntimer);
           var msg = "",
             status = "";
           if (res.code == 1) {
@@ -214,6 +249,7 @@ export default {
         })
         .catch(err => {
           status = "error";
+          this.btntimer && clearTimeout(this.btntimer);
           this.$util.Toast("response.err");
           this.post = false;
           // this.payBox = true;
@@ -233,6 +269,7 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
+topUpH = 80px
 .indicatorBox
   -webkit-transition opacity .2s linear
   transition opacity .2s linear
@@ -258,9 +295,33 @@ export default {
       border 4px solid transparent
       border-radius 50%
 .recharge_box
+  .topUpList
+    display flex
+    padding 20px 10px
+    flex-wrap wrap
+    font-size 40px
+    justify-content space-around
+    text-align center
+    li
+      width calc(100% / 3 - 20px)
+      border 2px solid #666
+      color #666
+      margin 10px
+      border-radius 15px
+      padding 10px 0
+      &.active
+        border-color #fd5c63
+        color #fd5c63
+  .currency
+    border-top 1px solid #ddd
+    border-bottom 1px solid #ddd
+    height topUpH
+    width topUpH
+    font-size 30px
+    line-height 80px
   div>button
     width 20%
-    height 80px
+    height topUpH
     background #fd5c63
     color #fff
     font-size 28px
@@ -270,7 +331,10 @@ export default {
     position fixed
     z-index 100
     width 100%
+    top 50%
+    margin-top -25%
     .payfor
+      background #fff
       width 60%
       margin 0 auto
       border 2px solid #ddd
@@ -321,6 +385,7 @@ export default {
   & > div
     &:first-child
       width 100%
+      align-items center
       display flex
       text-align center
       font-size 0
@@ -328,7 +393,7 @@ export default {
       padding-top 5%
   input
     width 80%
-    height 80px
+    height topUpH
     font-size 30px
     padding-left 25px
     color #666
