@@ -31,7 +31,7 @@
       <span
         v-if="isLogin"
         class="unit"
-      >1{{currency}}:{{exchangeRate}}{{$t('detl.coins')}}</span>
+      >1{{currency}}:{{exchangeRate}}{{$t('common.priceUnit')}}</span>
       <br />2.
       <span>{{$t('recharge.info.1')}}</span>
       <br />
@@ -167,7 +167,7 @@ export default {
       this.timer = setTimeout(_ => {
         this.isLoad = false;
       }, 3000);
-      document.f1.submit();
+      document.forms["paytm"].submit();
     },
     cancel() {
       this.payBox = false;

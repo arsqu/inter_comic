@@ -23,22 +23,25 @@
 <script>
 export default {
   data() {
-    return {};
+    return {
+      autoBuy: false
+    };
   },
   props: {
     catalogue: Array,
     bookList: Object
   },
   mounted() {
-    // this.$bus.$emit("recharge", 1);
+    this.autoBuy = localStorage.getItem("autoBuy") || false;
   },
   methods: {
     book_view(opt, idx) {
-      var id = opt.id;
+      var id = opt.id,
+        bookId = this.bookList.id;
       //1付费 0免费
       if (opt.is_free) {
         this.$bus.$emit("comic", {
-          bookId: this.bookList.id,
+          bookId,
           chapterId: opt.id,
           chapterIdx: idx,
           title: opt.title,
@@ -52,14 +55,22 @@ export default {
           // console.log("isLogin", 0);
           this.$bus.$emit("isLogin", 0);
         }
-        this.$bus.$emit("recharge", 1);
+        //自动购买
+        if (this.autoBuy) {
+          this.$bus.$emit("recharge", "autoBuy");
+        } else {
+          this.$bus.$emit("recharge", 1);
+        }
         return;
       }
-      localStorage.setItem("bookId", this.bookList.id);
+      localStorage.setItem("bookId", bookId);
       this.$router.push({
-        name: "view",
-        params: { bookId: this.bookList.id, id }
+        // name: "view",
+        name: "new_view",
+        params: { bookId, id }
       });
+      var loginUrl = this.$util.replaceUrl("new_view", [bookId, id]);
+      localStorage.setItem("loginUrl", loginUrl);
       // console.log("查看图书");
     }
   }
@@ -92,7 +103,7 @@ export default {
         display inline-block
       &.lock
         .cont_lock
-          background #fff url('/static/img/icon/lock.png')
+          background #fff url('/static/img/icon_new/lock.png')
           width 40px
           height 40px
           display block

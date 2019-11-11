@@ -1,4 +1,10 @@
 export default {
+  common: {
+    priceUnit: 'coins'
+  },
+  pay: {
+    autoBuy: 'Auto buy next chapter'
+  },
   index: {
     module: {
       recommend: 'Recommend',

@@ -101,6 +101,7 @@ export default {
   width 100%
   height calc(100vh - 100px)
   padding 20px
+  position relative
   background #f8f8f8
   .form_box
     .form_item
@@ -126,9 +127,9 @@ export default {
     font-size 30px
     color #eb2727
   .postBtn
-    width 100%
+    width calc(100% - 40px)
     position absolute
-    bottom 10%
+    bottom 12%
     text-align center
     span
       background #fd183d

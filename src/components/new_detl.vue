@@ -179,7 +179,8 @@ export default {
   },
   beforeRouteEnter(to, from, next) {
     localStorage.setItem("detl_from", "");
-    if (from.name == "view") {
+    // if (from.name == "view") {
+    if (from.name == "new_view") {
       localStorage.setItem("detl_from", 1);
     }
     next();
@@ -201,7 +202,8 @@ export default {
     var params = this.$route.params;
     // console.log("activated");
     this.isCur =
-      this.from == "view" || localStorage.getItem("detl_from") ? 2 : 1;
+      // this.from == "view" || localStorage.getItem("detl_from") ? 2 : 1;
+      this.from == "new_view" || localStorage.getItem("detl_from") ? 2 : 1;
     if (params.id != this.bookId) {
       this.def();
       this.init();
@@ -247,7 +249,8 @@ export default {
       }
       localStorage.setItem("bookId", bookId);
       this.$router.push({
-        name: "view",
+        // name: "view",
+        name: "new_view",
         params: { bookId, id }
       });
     },
@@ -284,10 +287,16 @@ export default {
       this.$bus.$off("chapter");
       //解锁
       this.$bus.$on("chapter", data => {
-        // console.log("onchapter", data);
+        console.log("new_detl,onchapter", data);
         if (data.chapterId) {
           this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);
-          // localStorage.setItem("cache_chapter", JSON.stringify(this.catalogue));
+          //付款成功后跳转
+          this.$router.push({
+            name: "new_view",
+            params: { id: data.chapterId, bookId: this.bookId }
+          });
+          localStorage.setItem("bookId", this.bookId);
+          localStorage.setItem("cache_chapter", JSON.stringify(this.catalogue));
         }
       });
     },
@@ -369,21 +378,6 @@ export default {
         .catch(err => {
           console.log(err);
         });
-      // this.$api.getAllChapter(opt).then(res => {
-      //   if (res.code == 1) {
-      //     // console.log(res);
-      //     var data = res.data;
-      //     if (this.catalogue.length == 0) {
-      //       this.catalogue = data.list;
-      //       if (data.list.length > 0) {
-      //         this.readTxt = data.list[0].title;
-      //       }
-      //       // console.log(this.catalogue);
-      //     } else {
-      //       this.catalogue = [];
-      //     }
-      //   }
-      // });
     },
     getBookDetl() {
       var params = this.params,
@@ -419,7 +413,8 @@ export default {
   watch: {
     $route: {
       handler(to, from) {
-        if (from.name == "view") this.from = "view";
+        // if (from.name == "view") this.from = "view";
+        if (from.name == "new_view") this.from = "new_view";
         else this.from = "";
       },
       deep: true

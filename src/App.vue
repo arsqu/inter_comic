@@ -17,8 +17,10 @@
         :isLogin="isLogin"
         :isRecharge="isRecharge"
         :hasMoney="hasMoney"
+        :checkList="checkList"
         :chapterInfo="chapterInfo"
         @closeModal="closeModal"
+        @checkChange="checkChange"
         @btnFunc="btnFunc"
       />
       <!-- select language -->
@@ -52,6 +54,7 @@ export default {
         orderNo: "",
         price: ""
       },
+      checkList: [], //是否自动购买
       catalogue: [], //章节列表
       timer: null, //支付成功延迟获取金额
       bookId: null,
@@ -91,6 +94,14 @@ export default {
     window.addEventListener("scroll", this.showBtn); //监听滚动显示按钮
   },
   methods: {
+    //勾选自动支付
+    checkChange(val) {
+      if (val) {
+        this.checkList = true;
+        return;
+      }
+      this.checkList = false;
+    },
     //匹配语言
     matchLang() {
       var locale = (this.locale = this.$i18n.locale);
@@ -113,7 +124,12 @@ export default {
     //功能按钮
     btnFunc() {
       var txtIdx = this.chapterInfo.txtIdx,
-        isLogin = localStorage.getItem("isLogin");
+        isLogin = localStorage.getItem("isLogin"),
+        checkList = this.checkList;
+      localStorage.removeItem("autoBuy");
+      if (this.checkList) {
+        localStorage.setItem("autoBuy", 1);
+      }
       if (txtIdx == 0 || !isLogin) {
         localStorage.setItem("loginUrl", this.$route.fullPath);
         this.$router.push({ name: "login" });
@@ -173,8 +189,14 @@ export default {
         chapterIdx: this.chapterIdx,
         is_free: 0
       });
+      // this.$bus.$emit("new_view", {
+      //   chapterId: this.chapterId,
+      //   chapterIdx: this.chapterIdx,
+      //   is_free: 0
+      // });
       var catalogue = localStorage.getItem("cache_chapter");
       catalogue = catalogue ? JSON.parse(catalogue) : null;
+      console.log("解锁");
       if (catalogue) {
         //手动修改状态
         catalogue[this.chapterIdx].is_free = 0;
@@ -242,8 +264,14 @@ export default {
       //查看付费章节
       this.$bus.$on("recharge", data => {
         // console.log("onrecharge", data);
-        me.isModal = true;
-        me.isRecharge = true;
+        this.checkList = true;
+        if (data == 1) {
+          me.isModal = true;
+          me.isRecharge = true;
+        } else if (data == "autoBuy") {
+          // console.log("自动购买");
+          this.btnFunc();
+        }
       });
       this.$bus.$on("comic", data => {
         console.log("oncomic", data);

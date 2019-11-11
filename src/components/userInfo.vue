@@ -3,13 +3,14 @@
     <div class="info_bg">
       <div class="info_box">
         <div class="info_img">
-          <img src="/static/img/icon/default_head.png" />
+          <!-- <img src="/static/img/icon/default_head.png" /> -->
+          <img src="/static/img/icon_new/mrtx.gif" />
         </div>
         <div class="infoList">
           <div class="toLogin" v-if="!isLogin" @click="toLogin">{{$t('login.login')}}</div>
           <template v-else>
             <div class="login_name">{{uname}}</div>
-            <div class="balance">{{$t('detl.hasMoney')}}：{{money}}</div>
+            <div class="balance">{{$t('detl.hasMoney')}}：{{money}} {{$t('common.priceUnit')}}</div>
           </template>
         </div>
         <div class="rechargeBtn">
@@ -43,7 +44,7 @@ export default {
       uname: "",
       money: "",
       loadState: false //接口请求状态
-    };
+    }
   },
   components: {},
   created() {
@@ -80,7 +81,7 @@ export default {
         this.isLogin = true;
       } else {
         console.log("未登录");
-        localStorage.setItem("loginUrl", this.$route.fullPath);
+        // localStorage.setItem("loginUrl", this.$route.fullPath);
       }
     },
     toLogin() {
@@ -112,7 +113,7 @@ export default {
         } else if (res.code == 401) {
           //服务器登录状态是否过期
           this.isLogin = false;
-          localStorage.setItem("loginUrl", this.$route.fullPath);
+          // localStorage.setItem("loginUrl", this.$route.fullPath);
           this.$util.clearItem();
         }
       });

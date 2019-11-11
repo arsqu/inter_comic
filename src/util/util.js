@@ -11,6 +11,10 @@ function closeToast() {
     toast.close();
 }
 
+function replaceUrl(url, param) {
+  return url + '.html/' + param.join('/');
+}
+
 function Toast(txt, trans) {
   if (txt) {
     i18n = i18n || window.vm.$i18n;
@@ -28,14 +32,16 @@ function clearItem() {
   l.removeItem("isLogin");
   l.removeItem("bookId");
   // l.removeItem("cache_chapter");
+  l.removeItem("autoBuy");
   l.removeItem("loginTips");
   l.removeItem("uname");
   l.removeItem("money");
   l.removeItem("path");
+  l.removeItem("detl_from");
 }
 
 export default {
-  clearItem,
+  clearItem, replaceUrl,
   closeToast, Toast,
   statistics
 }

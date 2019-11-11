@@ -1,4 +1,10 @@
 export default {
+  common: {
+    priceUnit: 'sikke'
+  },
+  pay: {
+    autoBuy: 'oto agale adhyaay khareeden'
+  },
   index: {
     module: {
       recommend: 'siphaarish',

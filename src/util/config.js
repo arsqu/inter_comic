@@ -14,7 +14,7 @@ const autoImg = {
   gaussian: oss + 365, //new_detl 固定宽度
   // list: oss + 165, //listModule 固定宽度
   list: oss + ~~(Wid >= 768 ? Wid / 2 : Wid), //listModule 固定宽度
-  chapterView: oss + Wid, //auto Height
+  chapterView: oss + (Wid <= 768 ? 768 : Wid), //章节详情 auto Height
 }
 
 export default {

@@ -59,6 +59,8 @@ export default {
     //跳转详情页
     tar_detail(id, title) {
       this.$router.push({ name: "new_detl", params: { id, title } });
+      var loginUrl = this.$util.replaceUrl("new_detl", [id, title]);
+      localStorage.setItem("loginUrl", loginUrl);
     }
   },
   watch: {}

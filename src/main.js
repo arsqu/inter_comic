@@ -51,20 +51,36 @@ axios.interceptors.response.use(function (response) {
   return Promise.reject(error);
 });
 
-var ch = local.getItem('wap_ch') || 'none';
+var ch = local.getItem('wap_ch') || 'none',
+  loginView = ['new_detl', 'new_view'], //登录页面 // 'userInfo'
+  statistics = ['recharge', 'main', 'register']; //统计页面
 router.beforeEach((to, from, next) => {
+  var isLogin = local.getItem('isLogin');
   // console.log(window.history.length)
-  if (navigator.language.slice(0, 2).indexOf('zh') != -1) {
+  // if (navigator.language.slice(0, 2).indexOf('zh') != -1) {
+    if (navigator.language.slice(0, 2).indexOf('zh') == -1) {
     if (to.name == '406')
       next();
     else
       next('/406')
     // next()
   } else {
-    if (_hmt)
-      if (to.name == 'recharge' || to.name == 'main' || to.name == 'register')
-        _hmt.push(['_trackPageview', '/' + to.name + '?ch=' + ch]); //统计各页面打开的次数
-    next();
+    if (_hmt) {
+      if (statistics.indexOf(to.name) != -1) {
+        _hmt.push(['_trackPageview', '/' + to.name + '?ch=' + ch]);
+      }
+    }
+    if (loginView.indexOf(to.name) != -1) {
+      if (isLogin) {
+        next();
+      } else {
+        console.log(from);
+        // local.setItem('loginUrl', to.name);
+        next('/login.html');
+      }
+    } else {
+      next();
+    }
   }
 });
 

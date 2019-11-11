@@ -61,7 +61,15 @@ export default new VueRouter({
       name: 'view',
       component: () => import('@/components/view'),
       meta: {
-        title: '漫画章节'
+        title: '章节详情'
+      }
+    },
+    {
+      path: '/new_view.html/:bookId/:id',
+      name: 'new_view',
+      component: () => import('@/components/new_view'),
+      meta: {
+        title: '章节详情'
       }
     },
     {

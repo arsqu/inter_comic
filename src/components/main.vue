@@ -9,17 +9,18 @@
       <ul class="nav_list">
         <li>
           <router-link :to="{name:'weekList'}">
+            <!-- <i class="icon icon_update"></i> -->
             <span class="nav_icon">
-              <img src="/static/img/icon/update.png" alt="update" />
-              <!-- <img src="/static/img/icon_cache/ic_update.png" alt="update" /> -->
+              <img src="/static/img/icon_new/clock.png" alt="update" />
             </span>
             <span class="nav_txt">{{$t('index.update')}}</span>
           </router-link>
         </li>
         <li>
           <router-link :to="{name:'ranking'}">
+            <!-- <i class="icon icon_rank"></i> -->
             <span class="nav_icon">
-              <img src="/static/img/icon/ranking_1.png" alt="ranking" />
+              <img src="/static/img/icon_new/rank.png" alt="ranking" />
             </span>
             <span class="nav_txt">{{$t('index.rank')}}</span>
           </router-link>

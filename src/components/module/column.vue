@@ -53,9 +53,10 @@ export default {
     tar_href(id, title) {
       // console.log("跳转详情页");
       this.$router.push({ name: "new_detl", params: { id, title } });
+      var loginUrl = this.$util.replaceUrl("new_detl", [id, title]);
+      localStorage.setItem("loginUrl", loginUrl);
     },
     loadGroupItem(id, groupName) {
-      // console.log(this.$router);
       this.$router.push({ name: "groupItem", params: { id, type: groupName } });
     }
   },
@@ -77,7 +78,7 @@ export default {
 <style lang="stylus" scoped>
 .push_column
   font-size 30px
-  padding 25px
+  padding 25px 15px
   margin-bottom 10px
   background #fff
   .push_txt
@@ -86,6 +87,7 @@ export default {
     .push_title
       border-left 5px solid #ffa500
       padding 0 15px
+      font-weight bold
       color #333
       flex 1
     .push_more

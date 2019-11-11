@@ -2,12 +2,14 @@
   <!-- 弹出框 -->
   <!-- v-show="isRecharge" -->
   <div :class="['recharge',isRecharge?'show':'']">
-    <img class="close" @click="closeModal" src="/static/img/icon/win-cross.png" />
+    <img class="close" @click="closeModal" src="/static/img/icon_new/win-cross.png" />
     <div class="rechargeDetl">
       <div>
         <span>
           {{$t('column.chapter')}} {{chapterInfo.orderNo}} &lt;{{chapterInfo.title}}&gt;
-          <template v-show="!isLogin">
+          <template
+            v-show="!isLogin"
+          >
             <br />
             <span class="pay_tip">{{$t('detl.payRead')}}</span>
           </template>
@@ -15,11 +17,14 @@
       </div>
       <div class="pay_money">
         {{$t('detl.chapterPrice')}}
-        <span>{{chapterInfo.price}}{{$t('detl.coins')}}</span>
+        <span>{{chapterInfo.price}}{{$t('common.priceUnit')}}</span>
       </div>
       <!-- account balance -->
       <div class="has_money" v-show="isLogin">({{$t('detl.hasMoney')}}:{{hasMoney}})</div>
       <div class="pay_txt" v-show="!isLogin">{{$t('detl.loginRead')}}</div>
+      <div>
+        <mt-checklist v-model="checkList" :options="[$t('pay.autoBuy')]" @change="checkChange"></mt-checklist>
+      </div>
       <div class="login_btn" @click="btnFunc">{{btnTxt[chapterInfo.txtIdx]}}</div>
     </div>
   </div>
@@ -28,6 +33,7 @@
 <script>
 export default {
   props: {
+    checkList: Array,
     chapterInfo: Object,
     isRecharge: Boolean,
     isLogin: Boolean,
@@ -51,6 +57,9 @@ export default {
     btnFunc() {
       this.$emit("btnFunc", 1);
     },
+    checkChange(val) {
+      this.$emit("checkChange", val);
+    },
     closeModal() {
       this.$emit("closeModal", 1);
     }
@@ -60,6 +69,8 @@ export default {
 
 <style lang="stylus" scoped>
 .recharge
+  & >>> .mint-checklist-title
+    margin 0
   background #fff
   // z-index 200
   z-index -1
@@ -82,7 +93,9 @@ export default {
     text-align center
     padding-top 60px
     .pay_tip
-      color #ec6029
+      color #fd5c63
+      margin-top 10px
+      display inline-block
     & > div
       &:first-child
         color #252525
@@ -90,12 +103,12 @@ export default {
     .pay_money
       color #333
       font-size 30px
-      padding-top 35px
+      padding-top 15px
       & > span
         font-size 40px
         color #fd5c63
     .has_money
-      font-size 26px
+      font-size 28px
       padding-top 20px
       color #666
     .pay_txt
