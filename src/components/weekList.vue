@@ -135,12 +135,6 @@ export default {
       var key = "d" + d,
         page = this.page[key],
         opt = Object.assign({}, page);
-      if (this.boxT[key].length != 0 && this.boxT[key].length >= page.total) {
-        this.$set(this.scrollState, [key], true); //停止滚动
-        this.loadState = false;
-        this.loading = false;
-        return;
-      }
       cache.push(d);
       opt.week = d;
       this.loadState = true;
@@ -154,17 +148,16 @@ export default {
             //首次更新数据
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
-              if (data.total < 10) {
-                this.loading = false;
-                this.$set(this.scrollState, [key], true); //停止滚动
-                console.log("停止滚动条", this.scrollState[key]);
-              }
             } else {
-              console.log("拼接");
               if (this.boxT["d" + d].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
+                console.log("拼接");
               }
-              // console.log(page);
+            }
+            if (data.list.length < 10) {
+              this.loading = false;
+              this.$set(this.scrollState, [key], true); //停止滚动
+              console.log("停止滚动条", this.scrollState[key]);
             }
             //更新分页参数
             this.$set(this.page, [key], {
@@ -173,18 +166,15 @@ export default {
               total: data.total
             });
           } else {
-            // console.log("关闭滚动");
             this.$set(this.scrollState, [key], true); //停止滚动
             this.loading = false;
-            // console.log(this.scrollState);
           }
           this.loadState = false; //请求结束
-          // this.loading = false; //请求结束
         })
         .catch(err => {
-          this.$set(this.scrollState, [key], true);
           this.loadState = false;
           this.loading = false;
+          this.$set(this.scrollState, [key], true);
           // console.log("server error");
           // console.log("关闭滚动");
         });

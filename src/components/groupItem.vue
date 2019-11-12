@@ -55,19 +55,10 @@ export default {
       bookList: []
     };
   },
-  activated() {
-    var param = this.$route.params;
-    if (this.groupId != param.id) {
-      this.def();
-      this.bookList = [];
-      this.isScroll = false;
-      this.resetPage();
-      this.getBook();
-      console.log("update");
-    } else {
-      this.$bus.$emit("navBar", this.type); //切换header状态
-    }
-    // console.log("activated");
+  //离开时关闭滚动
+  beforeRouteLeave(to, from, next) {
+    this.isScroll = true;
+    next();
   },
   created() {
     this.autoImg = this.$config.autoImg.column;
@@ -75,6 +66,20 @@ export default {
   mounted() {
     //console.log("mounted");
     this.def();
+  },
+  activated() {
+    var param = this.$route.params;
+    if (this.groupId != param.id) {
+      this.def();
+      this.bookList = [];
+      this.resetPage();
+      this.getBook();
+      console.log("update");
+    } else {
+      this.$bus.$emit("navBar", this.type); //切换header状态
+    }
+    this.isScroll = false;
+    // console.log("activated");
   },
   methods: {
     resetPage() {
@@ -94,7 +99,7 @@ export default {
     },
     //加载更多漫画
     loadMore() {
-      // console.log("滚动");
+      console.log("滚动");
       this.getBook();
     },
     //加载漫画
@@ -166,17 +171,6 @@ export default {
       //   this.loadState = false;
       //   // console.log(page);
       // });
-    }
-  },
-  watch: {
-    $route: {
-      //监听当前路由下的变化
-      handler(to, from) {
-        // console.log(to, from);
-        //跳转详情页的laoding效果
-        if (to.name == "new_detl") this.$bus.$emit("loading", true); //loading加载效果
-      },
-      deep: true
     }
   }
 };

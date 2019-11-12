@@ -8,7 +8,7 @@ export default new VueRouter({
     {
       path: '/',
       name: 'main',
-      component: () => import('@/components/main'), //首页
+      component: () => import('@/components/main'),
       meta: {
         keepAlive: true,
         title: '首页'
@@ -17,8 +17,7 @@ export default new VueRouter({
     {
       path: '/login.html',
       name: 'login',
-      component: () => import('@/login'), //首页
-      // component: login, //首页
+      component: () => import('@/login'),
       meta: {
         title: '登录'
       }
@@ -26,8 +25,7 @@ export default new VueRouter({
     {
       path: '/register.html',
       name: 'register',
-      // component: register,
-      component: () => import("@/register"), //首页
+      component: () => import("@/register"),
       meta: {
         title: '注册'
       }
@@ -35,7 +33,7 @@ export default new VueRouter({
     {
       path: '/userInfo.html',
       name: 'userInfo',
-      component: () => import('@/components/userInfo'), //首页
+      component: () => import('@/components/userInfo'),
       meta: {
         title: '用户信息'
       }
@@ -51,7 +49,7 @@ export default new VueRouter({
     {
       path: '/new_detl.html/:id/:title?',
       name: 'new_detl',
-      component: () => import('@/components/new_detl'), //详情页
+      component: () => import('@/components/new_detl'),
       meta: {
         keepAlive: true,
         title: '详情页'
@@ -75,7 +73,7 @@ export default new VueRouter({
     {
       path: '/chapter.html/:id',
       name: 'chapter',
-      component: () => import('@/components/chapter'), //目录页,
+      component: () => import('@/components/chapter'),
       meta: {
         title: '目录页'
       }
@@ -83,7 +81,7 @@ export default new VueRouter({
     {
       path: '/weekList.html',
       name: 'weekList',
-      component: () => import('@/components/weekList'), //更新列表
+      component: () => import('@/components/weekList'),
       meta: {
         keepAlive: true,
         title: "更新时间"
@@ -92,7 +90,7 @@ export default new VueRouter({
     {
       path: '/ranking.html',
       name: 'ranking',
-      component: () => import('@/components/ranking'), //排行榜
+      component: () => import('@/components/ranking'),
       meta: {
         keepAlive: true,
         title: "排行"
@@ -101,7 +99,7 @@ export default new VueRouter({
     {
       path: '/groupItem.html/:type/:id',
       name: "groupItem",
-      component: () => import('@/components/groupItem'), //更多漫画
+      component: () => import('@/components/groupItem'),
       meta: {
         title: "更多漫画",
         keepAlive: true
@@ -110,18 +108,25 @@ export default new VueRouter({
     {
       path: '/suggest.html',
       name: 'suggest',
-      component: () => import('@/components/suggest'), //搜索
+      component: () => import('@/components/suggest'),
+      meta: {
+        title: '建议反馈'
+      }
     },
     {
       path: '/search.html',
       name: 'search',
-      component: () => import('@/components/search'), //搜索
+      component: () => import('@/components/search'),
+      meta: {
+        title: '搜索',
+        keepAlive: true
+      }
     },
     {
       // path: '/payfor.html/:payUrl',
       path: '/payfor.html/:payForm',
       name: 'payfor',
-      component: () => import('@/components/payfor'), //更新列表
+      component: () => import('@/components/payfor'),
     },
     {
       path: "/404.html",

@@ -59,17 +59,6 @@ export default {
     loadGroupItem(id, groupName) {
       this.$router.push({ name: "groupItem", params: { id, type: groupName } });
     }
-  },
-  watch: {
-    $route: {
-      //监听当前路由下的变化
-      handler(to, from) {
-        if (to.name == "new_detl") {
-          this.$bus.$emit("loading", true); //loading effects
-        }
-      },
-      deep: true
-    }
   }
 };
 </script>

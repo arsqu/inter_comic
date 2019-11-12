@@ -68,12 +68,20 @@ export default {
   components: {
     listModule
   },
+  beforeRouteLeave(to, from, next) {
+    this.isScroll = true;
+    next();
+  },
   created() {
     this.autoImg = this.$config.autoImg.list;
   },
   mounted() {
     this.txt = this.$t("search.search");
     this.init();
+  },
+  activated() {
+    this.$bus.$emit("navBar", this.txt);
+    this.isScroll = false;
   },
   methods: {
     loadMore() {
@@ -122,12 +130,6 @@ export default {
       opt.cid = 1;
       this.loadState = true;
       this.loading = true;
-      // if (this.bookList.length != 0 && this.bookList.length >= opt.countAll) {
-      //   this.isScroll = true; //禁止滚动
-      //   this.loadState = false;
-      //   this.loading = false;
-      //   return;
-      // }
       this.$api
         .getDataN("search.get", opt)
         .then(res => {

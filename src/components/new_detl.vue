@@ -195,7 +195,7 @@ export default {
       }
     ];
     this.autoImg = this.$config.autoImg.gaussian;
-    // console.log("detl_created");
+    this.$bus.$emit("loading", true);
   },
   //缓存页
   activated() {
@@ -203,14 +203,16 @@ export default {
     // console.log("activated");
     this.isCur =
       // this.from == "view" || localStorage.getItem("detl_from") ? 2 : 1;
+      //详情页返回时停留在章节tab
       this.from == "new_view" || localStorage.getItem("detl_from") ? 2 : 1;
     if (params.id != this.bookId) {
+      this.$bus.$emit("loading", true);
       this.def();
       this.init();
     } else {
       this.checkLogin();
       this.sendMsg();
-      this.$bus.$emit("loading", false); //关闭loading加载效果
+      console.log("activated");
     }
     if (params.title) {
       this.bookName = params.title;
@@ -261,8 +263,8 @@ export default {
     },
     //默认操作
     def() {
-      var params = (this.params = this.$route.params);
-      this.bookId = params.id;
+      this.params = this.$route.params;
+      this.bookId = this.params.id;
       this.checkLogin();
     },
     //初始化
@@ -276,6 +278,7 @@ export default {
     toggleTab(idx) {
       this.isCur = idx + 1;
     },
+    //svg遮罩
     getSize() {
       var el = document.getElementsByClassName("comic_info")[0],
         oWid = el.offsetWidth,
@@ -300,12 +303,11 @@ export default {
         }
       });
     },
+    //所有章节
     getChapter(opt) {
       this.loadState = true;
       return new Promise((resolve, reject) => {
-        // localStorage.setItem("cache_chapter", '');
         this.$api
-          // .getDataN("getAllChapter", opt)
           .getData("getAllChapter", opt)
           .then(res => {
             if (res.code == 1) {
@@ -313,35 +315,28 @@ export default {
               // console.log(data.list);
               this.catalogue = [];
               this.loadState = false;
-              // res.map(data => {
-              //   data.is_free = data.isFree;
-              //   data.order_no = data.orderNo;
-              // });
-              // this.$set(this, "catalogue", res);
               this.$set(this, "catalogue", data.list);
               localStorage.setItem("cache_chapter", JSON.stringify(data.list));
-              // if (res.length > 0) {
               if (data.list.length > 0) {
-                // var def = res[0];
                 var def = data.list[0];
                 this.readTxt = def.title;
                 this.orderNo = def.order_no;
               }
-              this.$bus.$emit("loading", false); //关闭loading
+              this.$bus.$emit("loading", false);
               resolve(res);
               return;
             }
-            this.$bus.$emit("loading", false); //关闭loading
             resolve(false);
           })
           .catch(err => {
             this.loadState = false;
+            this.$bus.$emit("loading", false);
             console.log("server error");
-            this.$bus.$emit("loading", false); //关闭loading
             reject(err);
           });
       });
     },
+    //所有章节(包含付费)
     getAllChapter() {
       var opt = Object.assign({}, this.page);
       var mediaId = (opt.mediaId = this.params.id);
@@ -379,6 +374,7 @@ export default {
           console.log(err);
         });
     },
+    //章节详情
     getBookDetl() {
       var params = this.params,
         id = params.id;
@@ -402,11 +398,9 @@ export default {
             this.$set(this.autoSize, "src", detl.show_img);
             this.$bus.$emit("navBar", detl.title);
           }
-          this.$bus.$emit("loading", false); //关闭loading
         })
         .catch(err => {
           console.log("server error");
-          this.$bus.$emit("loading", false); //关闭loading
         });
     }
   },

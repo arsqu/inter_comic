@@ -157,13 +157,6 @@ export default {
       opt[k] = idx; //查询参数
       this.loading = true;
       this.loadState = true;
-      if (this.boxT[key].length != 0 && this.boxT[key].length >= page.total) {
-        console.log("禁止滚动");
-        this.$set(this.scrollState, [key], true);
-        this.loading = false;
-        this.loadState = false;
-        return;
-      }
       this.$api
         .getCusRank(k, opt)
         .then(res => {
@@ -172,14 +165,15 @@ export default {
             var data = res.data;
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
-              if (data.total < 10) {
-                this.loading = false;
-              }
             } else {
-              console.log("拼接");
               if (this.boxT[key].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
               }
+            }
+            if (data.list.length < 10) {
+              console.log("暂无更多数据");
+              this.$set(this.scrollState, [key], true);
+              this.loading = false;
             }
             this.$set(this.page, [key], {
               limit: 10,

@@ -30,6 +30,10 @@
           <li v-for="(item,key,idx) in lang" :key="idx" @click="changeWords(key)">{{item}}</li>
         </ul>
       </div>
+      <!-- loading -->
+      <div class="page_loading" v-show="loading">
+        <img src="/static/img/whole_page.gif" />
+      </div>
       <!-- <app-tabbar/> -->
       <!-- backTop -->
       <div class="backTop" @click="scrollTop"></div>
@@ -82,6 +86,7 @@ export default {
   created() {
     // console.log("app_created");
     this.lang = this.$config.lang;
+    console.log(this.$i18n);
   },
   activated() {
     // console.log("app_activated");
@@ -258,7 +263,7 @@ export default {
       });
       //页面loading效果
       this.$bus.$on("loading", data => {
-        // console.log('onloading',data);
+        // console.log("onloading", data);
         me.loading = data;
       });
       //查看付费章节
@@ -340,7 +345,7 @@ export default {
   opacity .6
 .page_layout
   transition opacity .6s ease-out
-  // margin-top 100px
+// 拟态框
 .page_modal
   position fixed
   top 0
@@ -368,6 +373,22 @@ export default {
     border-top 1px solid #ddd
     &:first-child
       border-top 0 none
+// loading加载中
+.page_loading
+  position absolute
+  top 0
+  left 0
+  bottom 0
+  right 0
+  z-index 10
+  background #fff
+  img
+    width 250px
+    height 250px
+    position absolute
+    top 50%
+    left 50%
+    margin -125px 0 0 -125px
 /* backTop */
 .backTop
   border 1px solid #ddd

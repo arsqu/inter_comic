@@ -57,8 +57,7 @@ var ch = local.getItem('wap_ch') || 'none',
 router.beforeEach((to, from, next) => {
   var isLogin = local.getItem('isLogin');
   // console.log(window.history.length)
-  // if (navigator.language.slice(0, 2).indexOf('zh') != -1) {
-    if (navigator.language.slice(0, 2).indexOf('zh') == -1) {
+  if (navigator.language.slice(0, 2).indexOf('zh') != -1) {
     if (to.name == '406')
       next();
     else
