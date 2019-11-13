@@ -549,7 +549,7 @@ export default {
     cursor pointer
     background #ffa500
     color #fff
-    a
-      color #fff
+    // a
+    //   color #fff
 </style>
 

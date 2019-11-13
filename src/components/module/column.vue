@@ -67,15 +67,17 @@ export default {
 <style lang="stylus" scoped>
 .push_column
   font-size 30px
-  padding 25px 15px
+  padding 25px 10px
   margin-bottom 10px
   background #fff
   .push_txt
     display flex
     align-items center
+    padding 0 10px
     .push_title
       border-left 5px solid #ffa500
       padding 0 15px
+      font-size 30px
       font-weight bold
       color #333
       flex 1
@@ -83,18 +85,21 @@ export default {
       cursor pointer
       font-size 28px
       position relative
-      padding-right 20px
-      color #666
+      padding-right 30px
+      font-weight 600
+      cursor pointer
+      color #e19416
       &:after
         width 16px
         height 16px
-        border-top 2px solid transparent
-        border-right 2px solid transparent
-        border-color #ffa500
+        border-top 3px solid transparent
+        border-right 3px solid transparent
+        border-color #e19416
         position absolute
         right 0
         top 50%
         margin-top -8px
+        margin-right 8px
         transform rotate(45deg)
         content ''
         display block

@@ -8,7 +8,8 @@
     <div class="navbar">
       <ul class="nav_list">
         <li>
-          <router-link :to="{name:'weekList'}">
+          <!-- <router-link :to="{name:'weekList'}"> -->
+          <router-link :to="{name:'new_week'}">
             <!-- <i class="icon icon_update"></i> -->
             <span class="nav_icon">
               <img src="/static/img/icon_new/clock.png" alt="update" />
@@ -100,13 +101,15 @@ export default {
     exchangeName(book) {
       var opt = {
         推荐: "recommend",
-        最新: "latest",
-        新作: "new",
         热门: "hot",
-        精选: "selected"
+        精选: "selected",
+        新作: "new",
+        最新: "latest"
       };
-      for (var i = 0; i < book.length; i++)
+      for (var i = 0; i < book.length; i++) {
+        // console.log(book[i]);
         book[i].GroupName = opt[book[i].GroupName];
+      }
       return book;
     }
   },

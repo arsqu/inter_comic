@@ -73,6 +73,7 @@ export default {
   align-items center
   .top_title
     width 90%
+    overflow hidden
     .top_logo, .top_detl_txt
       font-weight bold
       font-size 38px

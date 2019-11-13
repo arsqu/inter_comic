@@ -1,6 +1,7 @@
 <template>
   <!-- 更新列表 -->
   <div class="weekList">
+    <!-- tab -->
     <div class="update_time">
       <ul>
         <li
@@ -11,16 +12,16 @@
         >{{item}}</li>
       </ul>
     </div>
+    <!-- 展示区 -->
     <div class="update_box">
       <div
-        class="scroll_tab"
-        infinite-scroll-distance="15"
+        class="push_column scroll_tab"
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="isScroll"
+        infinite-scroll-distance="20"
       >
-        <!-- class="update_list" -->
         <div v-show="isDay == (idx+1)" v-for="(item,idx) in date" :key="idx">
-          <listModule :autoImg="autoImg" :boxList="boxT['d'+(idx+1)]" :rankState="false" />
+          <listMore :autoImg="autoImg" :boxList="boxT['d'+(idx+1)]" />
         </div>
       </div>
     </div>
@@ -32,7 +33,6 @@
           v-if="boxT['d'+isDay]&&boxT['d'+isDay].length == 0"
           class="prompt_week"
         >{{$t('tips.notupdate')}}</div>
-        <!-- <div v-else-if="isScroll" class="prompt_week">{{$t('tips.end')}}</div> -->
         <div v-else class="prompt_week">{{$t('tips.end')}}</div>
       </template>
     </div>
@@ -40,8 +40,7 @@
 </template>
 
 <script>
-const listModule = () => import("./module/listModule");
-import Qs from "qs";
+const listMore = () => import("./module/listMore");
 export default {
   data() {
     return {
@@ -57,7 +56,7 @@ export default {
     };
   },
   components: {
-    listModule
+    listMore
   },
   created() {
     // console.log("created");
@@ -102,7 +101,7 @@ export default {
         this.$set(this.scrollState, ["d" + (i + 1)], false);
         this.$set(this.page, ["d" + (i + 1)], {
           offset: 0,
-          limit: 10,
+          limit: 12,
           total: 0
         });
       });
@@ -149,19 +148,19 @@ export default {
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
             } else {
-              if (this.boxT["d" + d].length < data.total) {
+              if (this.boxT[key].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
                 console.log("拼接");
               }
             }
-            if (data.list.length < 10) {
+            if (data.list.length < 12) {
               this.loading = false;
               this.$set(this.scrollState, [key], true); //停止滚动
               console.log("停止滚动条", this.scrollState[key]);
             }
             //更新分页参数
             this.$set(this.page, [key], {
-              limit: 10,
+              limit: 12,
               offset: data.offset + data.limit,
               total: data.total
             });
@@ -217,7 +216,7 @@ export default {
       bottom -8px
       width 100%
 .update_box
-  padding-top 80px
+  padding-top 85px
 </style>
 
 

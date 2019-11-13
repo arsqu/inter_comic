@@ -79,7 +79,7 @@ import Qs from "qs";
 export default {
   data() {
     return {
-      topUpList: [10, 20, 30, 50, 100, 300],
+      topUpList: [10, 20, 30, 50, 100, 300], //充值金额
       payUrl: "", //支付url
       isCur: -1, //选中充值金额
       payBox: false, //支付框

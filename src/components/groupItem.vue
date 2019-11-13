@@ -2,35 +2,18 @@
   <!-- more comic -->
   <div class="groupItem">
     <div class="push_column">
-      <ul
-        class="book_list scroll_tab"
+      <div
+        class="scroll_tab"
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="isScroll"
         infinite-scroll-distance="20"
       >
-        <template v-if="bookList.length>0">
-          <li
-            class="book_detl"
-            v-for="(detl,idx) in bookList"
-            :key="idx"
-            @click="tar_href(detl.id,detl.title)"
-          >
-            <div class="book_pto">
-              <img v-lazy="detl.show_img+'?'+autoImg" alt />
-            </div>
-            <div class="book_desc">
-              <span class="book_txt over_ellipsis">{{detl.title}}</span>
-              <span
-                class="book_update"
-              >{{$t('show.case')}} {{$t('index.week')[detl.week_no-1]}} {{$t('show.update')}}</span>
-            </div>
-          </li>
-        </template>
-      </ul>
+        <listMore :autoImg="autoImg" :boxList="bookList" />
+      </div>
       <loading :loadState="loading" />
       <template v-if="!loading">
         <!-- 加载结束后小于9条 -->
-        <div v-if="bookList.length<9" class="prompt_week">{{$t('tips.nomore')}}</div>
+        <div v-if="bookList.length<12" class="prompt_week">{{$t('tips.nomore')}}</div>
         <div class="prompt_week" v-else>{{$t('tips.end')}}</div>
       </template>
     </div>
@@ -38,7 +21,7 @@
 </template>
 
 <script>
-import Qs from "qs";
+const listMore = () => import("./module/listMore");
 export default {
   data() {
     return {
@@ -49,11 +32,14 @@ export default {
       loading: true, //loading效果
       page: {
         offset: 0,
-        limit: 10,
+        limit: 12,
         total: 0
       },
       bookList: []
     };
+  },
+  components: {
+    listMore
   },
   //离开时关闭滚动
   beforeRouteLeave(to, from, next) {
@@ -126,8 +112,8 @@ export default {
             var data = res.data;
             if (this.bookList.length == 0) {
               this.$set(this, "bookList", data.list);
-              // 首次请求小于10关闭滚动
-              if (data.list.length < 10) {
+              // 首次请求小于12关闭滚动
+              if (data.list.length < 12) {
                 // console.log("暂无更多数据");
                 this.isScroll = true;
                 this.loading = false;
@@ -140,7 +126,7 @@ export default {
             }
             //更新分页参数
             this.$set(this, "page", {
-              limit: 10,
+              limit: 12,
               offset: data.offset + data.limit,
               total: data.total
             });
@@ -177,39 +163,5 @@ export default {
 </script>
 <style lang="stylus" scoped>
 .push_column
-  font-size 30px
   padding 10px
-  background #fff
-  .book_list
-    display flex
-    flex-wrap wrap
-    .book_detl
-      width 33.3%
-      box-sizing border-box
-      padding 10px 10px
-      cursor pointer
-      .book_pto
-        position relative
-        width 100%
-        margin-bottom 5px
-        padding-bottom 133%
-        img
-          position absolute
-          height 100%
-          width 100%
-          border-radius 10px
-      .book_txt
-        display block
-        font-size 28px
-        padding 0 5px
-        color #252525
-        letter-spacing 0
-        font-weight bold
-        text-align center
-      .book_update
-        display block
-        font-size 26px
-        padding 0 5px
-        color #777
-        text-align center
 </style>

@@ -41,7 +41,6 @@ export default {
   props: {
     boxList: Array,
     autoImg: String,
-    loadState: Boolean,
     rankState: Boolean
   },
   activated() {},

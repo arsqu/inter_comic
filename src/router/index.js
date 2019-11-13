@@ -1,8 +1,3 @@
-// const list = () => import('@/components/cache/list')
-// const recommend = () => import('@/components/cache/recommend')
-// const detail = () => import('@/components/cache/detail') //详情页
-// const ebook = () => import('@/components/cache/ebook') //电子书
-
 export default new VueRouter({
   routes: [
     {
@@ -57,9 +52,9 @@ export default new VueRouter({
     }, {
       path: '/view.html/:bookId/:id',
       name: 'view',
-      component: () => import('@/components/view'),
+      component: () => import('@/components/cache/view'),
       meta: {
-        title: '章节详情'
+        title: '章节详情(未启用)'
       }
     },
     {
@@ -75,13 +70,22 @@ export default new VueRouter({
       name: 'chapter',
       component: () => import('@/components/chapter'),
       meta: {
-        title: '目录页'
+        title: '目录页(未启用)'
       }
     },
     {
       path: '/weekList.html',
       name: 'weekList',
-      component: () => import('@/components/weekList'),
+      component: () => import('@/components/cache/weekList'),
+      meta: {
+        keepAlive: true,
+        title: "更新时间(未启用)"
+      }
+    },
+    {
+      path: '/new_week.html',
+      name: 'new_week',
+      component: () => import('@/components/new_week'),
       meta: {
         keepAlive: true,
         title: "更新时间"
@@ -125,7 +129,7 @@ export default new VueRouter({
     {
       // path: '/payfor.html/:payUrl',
       path: '/payfor.html/:payForm',
-      name: 'payfor',
+      name: 'payfor(未启用)',
       component: () => import('@/components/payfor'),
     },
     {
@@ -142,25 +146,6 @@ export default new VueRouter({
       path: "*", // 此处需特别注意置于最底部
       redirect: "/404.html"
     }
-    // , {
-    //   path: '/list/:key/:url',
-    //   name: 'list',
-    //   component: list
-    // }, {
-    //   path: '/recommend/:key/:url',
-    //   name: 'recommend',
-    //   component: recommend
-    // },
-    // {
-    //   path: '/detail',
-    //   name: 'detail',
-    //   component: detail
-    // },
-    // {
-    //   path: '/ebook',
-    //   name: 'ebook',
-    //   component: ebook
-    // }
   ],
   mode: "history", //隐藏地址栏#号
   scrollBehavior(to, from, savedPosition) { //自动滚到顶部

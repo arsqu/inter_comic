@@ -393,18 +393,20 @@ export default {
 .backTop
   border 1px solid #ddd
   position fixed
-  display none
   z-index 100
-  width 80px
-  height 80px
+  width 90px
+  height 90px
   background #fff
   right 25px
-  bottom 5%
-  transition all .2s linear
-  opacity 1
+  bottom 10%
+  transition all .4s ease
+  opacity 0
+  border-radius 50%
+  /* display: none; */
+  box-shadow 0px 0px 5px #f7f7f7
   &:after
-    border-top 2px solid transparent
-    border-right 2px solid transparent
+    border-top 3px solid transparent
+    border-right 3px solid transparent
     border-color #666
     position absolute
     left 50%
@@ -416,8 +418,8 @@ export default {
     transform rotate(-45deg)
     content ''
   &.show
-    display block
-    bottom 10%
+    // display block
+    // bottom 10%
     opacity 1
 </style>
 

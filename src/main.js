@@ -52,17 +52,17 @@ axios.interceptors.response.use(function (response) {
 });
 
 var ch = local.getItem('wap_ch') || 'none',
-  loginView = ['new_detl', 'new_view'], //登录页面 // 'userInfo'
+  loginView = ['new_detl', 'new_view'], //登录页面 //'userInfo'
   statistics = ['recharge', 'main', 'register']; //统计页面
 router.beforeEach((to, from, next) => {
   var isLogin = local.getItem('isLogin');
   // console.log(window.history.length)
-  if (navigator.language.slice(0, 2).indexOf('zh') != -1) {
+  if (navigator.language.slice(0, 2).indexOf('zh') != -1) { //非中文环境
+    // if (navigator.language.slice(0, 2).indexOf('zh') == -1) { //谷歌中文环境测试
     if (to.name == '406')
       next();
     else
       next('/406')
-    // next()
   } else {
     if (_hmt) {
       if (statistics.indexOf(to.name) != -1) {
