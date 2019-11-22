@@ -1,6 +1,5 @@
 <template>
   <div class="suggest">
-    <!-- contryId  国家id  反馈内容content  联系方式  email 或者 phone -->
     <div class="form_box">
       <div class="form_item">
         <label></label>
@@ -17,7 +16,19 @@
     </div>
     <div class="prompt_txt">{{msg}}</div>
     <div class="postBtn">
-      <span @click="postBtn">{{$t('post.txt')}}</span>
+      <!-- <mt-button class="btn_def" type="danger" size="large" :disabled="disabled" @click.native="postBtn">
+        <span v-show="isComplete" class="icon_load1" slot="icon"></span>
+        {{$t('post.txt')}}
+      </mt-button>-->
+      <cs-button
+        round
+        :type="'danger'"
+        :size="'large'"
+        :disabled="disabled"
+        :title="$t('post.txt')"
+        :isComplete="isComplete"
+        :func="postBtn"
+      />
     </div>
   </div>
 </template>
@@ -35,12 +46,11 @@ export default {
         phone: "",
         email: ""
       },
-      isComplete: false
+      isComplete: false,
+      disabled: false
     };
   },
-  created() {
-    this.$bus.$emit("navBar", this.$t("suggest.txt"));
-  },
+  created() {},
   activated() {
     // console.log("app_activated");
   },
@@ -71,6 +81,7 @@ export default {
     feedBack() {
       this.isComplete = true;
       // this.param.userName = localStorage.getItem("uname");
+      this.disabled = true;
       this.$api
         .postDataN("suggest.post", Qs.stringify(this.param))
         .then(res => {
@@ -82,13 +93,15 @@ export default {
             setTimeout(_ => {
               this.msg = "";
             }, 2000);
-            return;
+          } else {
+            this.msg = this.$t("post.err");
           }
-          this.msg = this.$t("post.err");
           this.isComplete = false;
+          this.disabled = false;
         })
         .catch(err => {
           this.msg = this.$t("post.err");
+          this.disabled = false;
           this.isComplete = false;
         });
     }
@@ -102,7 +115,7 @@ export default {
   height calc(100vh - 100px)
   padding 20px
   position relative
-  background #f8f8f8
+  background #F9F9F9
   .form_box
     .form_item
       label
@@ -113,16 +126,25 @@ export default {
       input
         border 0 none
         width 100%
-        padding 15px 10px
+        padding 5px 10px
+        height 70px
         outline 0 none
-        border-radius 8px
+        transition all .6s ease
+        border-radius 10px
+        box-shadow 0 0 6px #ddd
+        &:focus
+          box-shadow 0 0 6px #4bc461
     .content
       width 100%
       border 0 none
       padding 10px
       min-height 250px
+      transition all .6s ease
       outline 0 none
       color #666
+      box-shadow 0 0 6px #ddd
+      &:focus
+        box-shadow 0 0 6px #4bc461
   .prompt_txt
     font-size 30px
     color #eb2727
@@ -130,8 +152,7 @@ export default {
     width calc(100% - 40px)
     position absolute
     bottom 12%
-    text-align center
-    span
+    &>span
       background #fd183d
       color #fff
       display inline-block

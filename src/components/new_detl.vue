@@ -9,8 +9,6 @@
       <!-- 漫画详情 -->
       <div class="comic_box">
         <div class="comic_pic">
-          <!-- <img :src.sync="bookList.show_img?bookList.show_img+'?'+autoImg:''" /> -->
-          <!-- <img :src.sync="bookList.show_img||''" /> -->
           <img :src="bookList.show_img?bookList.show_img+'?'+autoImg:''" />
         </div>
         <div class="comic_info_list">
@@ -32,12 +30,19 @@
             <span>{{$t('detl.country')}} :</span>
             <span class="c_auth">{{bookList.area||$t('show.unknown')}}</span>
           </p>
-          <!-- <p class="c_mar">
-            <span>{{$t('detl.read')}} :</span>
-            <span class="c_read">{{bookList.read||'0'}}</span>
-          </p>-->
         </div>
       </div>
+    </div>
+    <!-- download app -->
+    <div class="downloadApp" v-if="closeApp">
+      <!-- <i class="close" @click="close"></i> -->
+      <i class="close" @click="close"></i>
+      <img src="/static/img/win-logo.png" alt />
+      <a class="down_txt">
+        <p class>Mangeline</p>
+        <p class>{{$t('common.download')}}</p>
+      </a>
+      <a :href="$config.downUrl" class="down_btn">{{$t('common.install')}}</a>
     </div>
     <!-- 导航详情 -->
     <div class="comic_desc">
@@ -87,6 +92,13 @@
   </div>
 </template>
 
+<style lang="stylus">
+.downloadApp
+  i.close
+    background url('data:image/png;base64, iVBORw0KGgoAAAANSUhEUgAAAB0AAAAdCAMAAABhTZc9AAAAhFBMVEUAAACOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpOOjpP///+Kio/y8vKDgofFxMV4eHyFhIh/foOBgIWJiI2Hh4t7en34+Pjb29vOzc7CwcK+vb69vb6fnqF7e39vbnK3tretrK5lylagAAAAFHRSTlMA0vEHBSjqn+50NlVU5phmSHVyJ9pnmIMAAAEMSURBVCjPrZJtd4IwDIXXilaEObelUKQt4Lvb//9/M5exVjlnftD7qc1z0tykeXmKJqulkCTFcjUZseTtlQbNPpJr+CkolpjGcDGna80XAU4l3Ur+ZSeCxhJD7ZRv3toG4cK1riCi9LeVGcfsdtMYPqz33Zdj531jOVKPWpe1ucBK667lUAaq8J4pGVuGeu84pEB7T3XNuN1dYLUu4AtUEmQY6wBJgvIJ2ADvGEJxLvlzxbS1w0CiunDLYucU6qoIVnBeU/Cc4ewODM9ozKFyFmZFp47dejg/eswqmrP5Lg/s1jSbreXc9/iPCnPqH2ys9fije/97fzeQfbtX/+xkmoz3OVfYZ5WjlYf1A8e+KHpWHo9/AAAAAElFTkSuQmCC') no-repeat
+    background-size 100%
+</style>
+
 <script>
 const column = () => import("./module/column");
 const gaussian = () => import("./module/gaussian");
@@ -101,6 +113,7 @@ export default {
       bookId: null,
       autoImg: "",
       loadState: false,
+      closeApp: true,
       params: {
         //路由参数
         id: null,
@@ -225,6 +238,10 @@ export default {
     this.init();
   },
   methods: {
+    close() {
+      console.log("close");
+      this.closeApp = false;
+    },
     //查看漫画详情
     viewDetl() {
       var opt = this.catalogue[0];
@@ -337,42 +354,38 @@ export default {
       });
     },
     //所有章节(包含付费)
-    getAllChapter() {
+    async getAllChapter() {
       var opt = Object.assign({}, this.page);
       var mediaId = (opt.mediaId = this.params.id);
-      this.getChapter(opt)
-        .then(res => {
-          //没章节则不查询购买记录
-          if (res.length == 0) {
-            return;
-          }
-          if (res) {
-            //已购买章节
-            this.$api.getDataN("hasRecord", { mediaId }).then(buy => {
-              if (buy.code == 1) {
-                var buy = buy.data;
-                if (buy.length > 0) {
-                  this.catalogue.map((chapter, idx) => {
-                    buy.map(has => {
-                      if (chapter.id == has.chaperId) {
-                        //已购买章节置为免费
-                        this.$set(this.catalogue[idx], "is_free", 0);
-                      }
-                    });
+      // var [err, res] = await this.$util.awaitReturn(this.getChapter(opt));
+      var res = await this.$util.awaitReturn(this.getChapter(opt));
+      if (res) {
+        if (res.code == 1 && res.data.length > 0) {
+          //已购买章节
+          this.$api.getDataN("hasRecord", { mediaId }).then(buy => {
+            if (buy.code == 1) {
+              var buy = buy.data;
+              if (buy.length > 0) {
+                this.catalogue.map((chapter, idx) => {
+                  buy.map(has => {
+                    if (chapter.id == has.chaperId) {
+                      //已购买章节置为免费
+                      this.$set(this.catalogue[idx], "is_free", 0);
+                    }
                   });
-                  //付费章节
-                  localStorage.setItem(
-                    "cache_chapter",
-                    JSON.stringify(this.catalogue)
-                  );
-                }
+                });
+                //付费章节
+                localStorage.setItem(
+                  "cache_chapter",
+                  JSON.stringify(this.catalogue)
+                );
               }
-            });
-          }
-        })
-        .catch(err => {
-          console.log(err);
-        });
+            }
+          });
+        }
+      } else {
+        console.log("失败");
+      }
     },
     //章节详情
     getBookDetl() {
@@ -407,7 +420,6 @@ export default {
   watch: {
     $route: {
       handler(to, from) {
-        // if (from.name == "view") this.from = "view";
         if (from.name == "new_view") this.from = "new_view";
         else this.from = "";
       },
@@ -420,7 +432,11 @@ export default {
 <style lang="stylus" scoped>
 .comic_detl
   padding-bottom 110px
-  /* 图片信息 */
+  .downloadApp
+    position relative
+    padding 10px
+    img
+      width 10%
   .comic_info
     height 400px
     width 100%
@@ -467,9 +483,9 @@ export default {
           font-weight bold
           overflow hidden
           display -webkit-box
-          /* ! autoprefixer: off */
+          /*autoprefixer: off*/
           -webkit-box-orient vertical
-          /* autoprefixer: on */
+          /*autoprefixer: on*/
           -webkit-line-clamp 2
           word-break break-all
         .c_state
@@ -480,12 +496,12 @@ export default {
           color #fff
           .done
             background #d37777
-/* tab栏 */
+/*tab栏*/
 .comic_desc
   font-size 25px
   background #f9f9f9
   padding-bottom 10px
-  /* 漫画描述 */
+  /*漫画描述*/
   .tabBar
     display flex
     background #fff
@@ -505,7 +521,7 @@ export default {
       padding 0 25px
       border-bottom 5px solid #ffa500
       margin-top 2.5px
-  /* 章节详情 */
+  /*章节详情*/
   .container_item
     color #555
     .cont
@@ -520,7 +536,7 @@ export default {
         padding-top 15px
     .detl > p:first-child
       font-size 35px
-// 底部阅读栏
+//底部阅读栏
 .book_fixed
   position fixed
   height 100px
@@ -549,7 +565,7 @@ export default {
     cursor pointer
     background #ffa500
     color #fff
-    // a
-    //   color #fff
+    //a
+    //color #fff
 </style>
 

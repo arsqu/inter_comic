@@ -110,7 +110,7 @@ export default {
           z-index 11
           background-size 100%
           position absolute
-          right 0px
+          right 0
           bottom -5px
           border-radius 50%
     .cont_num

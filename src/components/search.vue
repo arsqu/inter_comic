@@ -30,7 +30,7 @@
         infinite-scroll-distance="20"
       >
         <template v-if="bookList.length>0">
-          <listModule :autoImg="autoImg" :boxList="bookList" :rankState="false" />
+          <listModule :autoImg="this.$config.autoImg.list" :boxList="bookList" :rankState="false" />
         </template>
       </ul>
       <loading :loadState="loading" />
@@ -39,7 +39,6 @@
         <div v-if="bookList.length<9" class="prompt_week">{{$t('tips.nomore')}}</div>
         <div class="prompt_week" v-else>{{$t('tips.end')}}</div>
       </template>
-      <!-- </template> -->
     </div>
   </div>
 </template>
@@ -49,7 +48,6 @@ const listModule = () => import("./module/listModule");
 export default {
   data() {
     return {
-      autoImg: "", //图片
       keyword: "", //搜索关键词
       val: "", //查询数值
       txt: "", //translate
@@ -72,25 +70,17 @@ export default {
     this.isScroll = true;
     next();
   },
-  created() {
-    this.autoImg = this.$config.autoImg.list;
-  },
+  created() {},
   mounted() {
     this.txt = this.$t("search.search");
-    this.init();
   },
   activated() {
-    this.$bus.$emit("navBar", this.txt);
     this.isScroll = false;
   },
   methods: {
     loadMore() {
       // console.log("滚动");
       this.getUpdate();
-    },
-    //初始化
-    init() {
-      this.$bus.$emit("navBar", this.txt);
     },
     //搜索数据
     searchVal() {
@@ -177,7 +167,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-/* 重置 */
+/*重置*/
 .push_column
   font-size 30px
   padding 10px

@@ -8,7 +8,7 @@
         infinite-scroll-disabled="isScroll"
         infinite-scroll-distance="20"
       >
-        <listMore :autoImg="autoImg" :boxList="bookList" />
+        <listMore :autoImg="this.$config.autoImg.column" :boxList="bookList" />
       </div>
       <loading :loadState="loading" />
       <template v-if="!loading">
@@ -25,7 +25,6 @@ const listMore = () => import("./module/listMore");
 export default {
   data() {
     return {
-      autoImg: "",
       groupId: null,
       isScroll: false, //是否停止滚动
       loadState: false, //接口请求状态
@@ -46,9 +45,7 @@ export default {
     this.isScroll = true;
     next();
   },
-  created() {
-    this.autoImg = this.$config.autoImg.column;
-  },
+  created() {},
   mounted() {
     //console.log("mounted");
     this.def();

@@ -1,6 +1,13 @@
 export default {
   common: {
-    priceUnit: 'sikke'
+    priceUnit: 'sikke',
+    recharge: 'oopar se',
+    pay: 'vetan',
+    balance: 'santulan',
+    singOut: 'prasthaan karen',
+    download: 'manga onalain padhen',
+    install: 'instol karen',
+    register: 'rajistar'
   },
   pay: {
     autoBuy: 'oto agale adhyaay khareeden'
@@ -79,8 +86,8 @@ export default {
     }
   },
   userInfo: {
-    tabs: ['itihaas', 'anshadaan'],
-    suggestions: 'sujhaav',
+    tabList: ['padhane ka rikord', 'mera sangrah'],
+    feedback: 'pratipushti',
     tips: 'lambit vikaas...'
   },
   login: {
@@ -95,6 +102,7 @@ export default {
       wait: 'krpaya prateeksha karen',
       empty: 'khaata ya paasavard khaalee nahin ho sakata'
     },
+    toLogin: 'log in karane ke lie',
     status: {
       success: 'login saphal',
       err: 'login viphal'
@@ -119,6 +127,19 @@ export default {
     code: 'satyaapan kod inaput karen',
     pass: 'krpaya apana paasavard darj karen',
     btnTxt: "poora",
+    gender: ['nar', 'mahila'],
+    genderTxt: 'Seibetsu',
+    toRegister: 'ek khaata banaen',
+    valid: {
+      uname: 'upayogakarta naam',
+      pass: 'paaran shabd',
+      email: 'eemel',
+      valiEmail: 'eemel satyaapit karen',
+      ecode: 'eemel satyaapan kod',
+      age: 'aayu',
+      gender: 'ling',
+      code: 'aamantran sanket'
+    },
     status: {
       success: 'panjeekaran saphal hai',
       warn: 'satyaapan kod truti',

@@ -4,7 +4,7 @@ const lang = {
   en: 'English'
 }
 
-//自适应图片
+// 自适应图片
 const oss = 'x-oss-process=image/auto-orient,1/quality,q_100/resize,m_lfit,limit_1,w_';
 const Wid = window.screen.width;
 const autoImg = {
@@ -17,6 +17,17 @@ const autoImg = {
   chapterView: oss + (Wid <= 768 ? 768 : Wid), //章节详情 auto Height
 }
 
+//download
+const downUrl = '/static/download/MangaLine_20191122.apk';
+
+// 路由
+const Router = {
+  // login: 'userCtrl', //登录路由
+  login: 'login', //登录路由
+  charging: 'new_charging' //充值
+}
+
+
 export default {
-  lang, autoImg
+  lang, autoImg, Router, downUrl
 }

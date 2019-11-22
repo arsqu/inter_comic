@@ -83,7 +83,6 @@ export default {
   activated() {
     console.log("activated");
     this.scrollState[this.isHover.join("")] = false;
-    this.$bus.$emit("navBar", this.$t("index.updateHead"));
   },
   beforeRouteLeave(to, from, next) {
     this.scrollState[this.isHover.join("")] = true;
@@ -104,7 +103,6 @@ export default {
         payTyp: this.$t("index.rankList.payTyp")
       };
       this.defData(); //数据初始化
-      this.$bus.$emit("navBar", this.$t("index.rankHead"));
     },
     //初始值
     defData() {

@@ -71,7 +71,6 @@ export default {
   activated() {
     console.log("activated");
     this.scrollState["d" + this.isDay] = false;
-    this.$bus.$emit("navBar", this.$t("index.updateHead"));
   },
   beforeRouteLeave(to, from, next) {
     // console.log(to, from);
@@ -93,7 +92,6 @@ export default {
       this.isDay = this.isDay || 7;
       this.date = this.$t("index.week");
       this.defData(); // 数据初始化
-      this.$bus.$emit("navBar", this.$t("index.updateHead"));
       // this.loadMore();
     },
     defData() {

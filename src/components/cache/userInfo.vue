@@ -7,7 +7,15 @@
           <img src="/static/img/icon_new/mrtx.gif" />
         </div>
         <div class="infoList">
-          <div class="toLogin" v-if="!isLogin" @click="toLogin">{{$t('login.login')}}</div>
+          <!--  @click="toLogin" -->
+          <!-- <div class="toLogin"  v-if="!isLogin">{{$t('login.login')}}</div> -->
+          <router-link
+            v-if="!isLogin"
+            class="toLogin"
+            tag="div"
+            :to="{name:$config.Router.login}"
+          >{{$t('login.login')}}</router-link>
+          <!-- :to="{name:'userCtrl'}" -->
           <template v-else>
             <div class="login_name">{{uname}}</div>
             <div class="balance">{{$t('detl.hasMoney')}}：{{money}} {{$t('common.priceUnit')}}</div>
@@ -18,7 +26,7 @@
         </div>
       </div>
       <div class="logout" v-if="isLogin" @click="logOut">{{$t('login.logout')}}</div>
-      <router-link class="suggest" tag="div" :to="{name:'suggest'}">{{$t('userInfo.suggestions')}}</router-link>
+      <router-link class="suggest" tag="div" :to="{name:'suggest'}">{{$t('userInfo.feedback')}}</router-link>
     </div>
     <div class="tabTurn">
       <span
@@ -44,7 +52,7 @@ export default {
       uname: "",
       money: "",
       loadState: false //接口请求状态
-    }
+    };
   },
   components: {},
   created() {
@@ -84,9 +92,10 @@ export default {
         // localStorage.setItem("loginUrl", this.$route.fullPath);
       }
     },
-    toLogin() {
-      this.$router.push({ name: "login" });
-    },
+    // toLogin() {
+    //   // this.$router.push({ name: "login" });
+    //   this.$router.push({ name: "userCtrl" });
+    // },
     recharge() {
       this.$router.push({ name: "recharge" });
     },

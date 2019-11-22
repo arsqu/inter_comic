@@ -1,7 +1,6 @@
 <template>
   <div class="viewLayout">
     <!-- 工具栏头 -->
-    <!-- <span class="comicTxt">{{chapter}}</span> -->
     <div class="translateBox">
       <div :class="['chapterBox',!translate?'offsetL':'']">
         <ul class>
@@ -75,17 +74,8 @@ export default {
         total: 0
       },
       chapterList: [], //所有章节
-      chapter: "", // 漫画名
-      headShow: false
+      chapter: "" // 漫画名
     };
-  },
-  beforeRouteLeave(to, from, next) {
-    // 隐藏导航栏
-    if (to.name != "new_view") {
-      this.$bus.$emit("navBar", { show: true });
-      this.body.removeEventListener("click", this.showTools); //点击展示工具栏
-    }
-    next();
   },
   created() {
     var route = this.$route.params; //路由参数
@@ -97,9 +87,7 @@ export default {
   },
   mounted() {
     // console.log("view_mounted");
-    // console.log(route);
     this.price = localStorage.getItem("price") || "";
-    this.body.addEventListener("click", this.showTools); //点击展示工具栏
   },
   methods: {
     //选择章节
@@ -173,13 +161,11 @@ export default {
         if (list[i].id == this.id) {
           if (i - 1 > -1) {
             this.$set(this, "prevChapter", list[i - 1]);
-            // list[i - 1].is_free && (this.prevView = false);
             this.prev = list[i - 1].id;
             this.prevIdx = i - 1;
           }
           if (i + 1 < list.length) {
             this.$set(this, "nextChapter", list[i + 1]);
-            // list[i + 1].is_free && (this.nextView = false);
             this.next = list[i + 1].id;
             this.nextIdx = i + 1;
           }
@@ -190,24 +176,20 @@ export default {
         }
       }
     },
-    //点击出现工具栏
-    showTools(e) {
-      // alert(1);
-      e = e || event;
-      this.headShow = true;
-      clearTimeout(this.timer);
-      this.timer = setTimeout(() => {
-        this.headShow = false;
-      }, 2000);
-    },
     //返回上一层
     reBack() {
       if (this.translate) {
         this.translate = false;
         return;
       }
+      // var params = this.$route.params;
+      // this.$router.push({
+      //   name: "new_detl",
+      //   params: { id: params.bookId }
+      // });
       this.$router.history.go(-1);
     },
+    // 支付
     showBox(opt, idx) {
       // console.log(this.id, idx);
       this.$bus.$emit("comic", {
@@ -312,7 +294,6 @@ export default {
             // console.log(data);
           }
         });
-        this.$bus.$emit("navBar", { show: false });
       }
     },
     //返回章节页
@@ -423,7 +404,7 @@ trans()
   a
     margin 0 10px
     width 50px
-    // height 100%
+    //height 100%
     display flex
     align-items center
   img
@@ -467,7 +448,7 @@ trans()
   overflow hidden
   text-overflow ellipsis
   display inline-block
-/* 漫画容器 */
+/*漫画容器*/
 .imgBox
   position relative
   box-shadow 0 0 20px 5px rgba(0, 0, 0, .5)
@@ -476,7 +457,7 @@ trans()
   cursor pointer
   text-align center
   img
-    // width auto
+    //width auto
     width 100%
   img[lazy='loading']
     width 100%

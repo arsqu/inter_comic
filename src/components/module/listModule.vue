@@ -87,9 +87,9 @@ export default {
     .com_tit
       overflow hidden
       display -webkit-box
-      /* ! autoprefixer: off */
+      /*!autoprefixer: off*/
       -webkit-box-orient vertical
-      /* autoprefixer:on */
+      /*autoprefixer:on*/
       -webkit-line-clamp 2
       word-break break-all
       color #4b566a

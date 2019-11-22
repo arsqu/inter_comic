@@ -1,6 +1,13 @@
 export default {
   common: {
-    priceUnit: 'coins'
+    priceUnit: 'coins',
+    recharge: 'Top Up',
+    pay: 'pay',
+    balance: 'balance',
+    singOut: 'Sign out',
+    download: 'Read manga online',
+    install: 'Install',
+    register: 'Register'
   },
   pay: {
     autoBuy: 'Auto buy next chapter'
@@ -79,8 +86,8 @@ export default {
     }
   },
   userInfo: {
-    tabList: ['history', 'subscription'],
-    suggestions: 'suggestions',
+    tabList: ['Reading record', 'Collection'],
+    feedback: 'Feedback',
     tips: 'To be developed...'
   },
   login: {
@@ -90,6 +97,7 @@ export default {
     register: 'Sign up',
     login: 'Sign in',
     logout: 'sign out',
+    toLogin: 'to Login',
     tips: {
       load: 'logging in',
       wait: 'Please wait',
@@ -119,6 +127,19 @@ export default {
     code: 'enter the verification code',
     pass: 'enter the password',
     btnTxt: "Complete",
+    gender: ['male', 'Female'],
+    genderTxt: 'gender',
+    toRegister: 'Create a account',
+    valid: {
+      uname: 'username',
+      email: 'email',
+      valiEmail: 'Verify email',
+      ecode: 'Email verification code',
+      pass: 'password',
+      age: 'age',
+      gender: 'gender',
+      code: 'invitation code'
+    },
     status: {
       success: 'Registration is successful',
       warn: 'Verification code error',

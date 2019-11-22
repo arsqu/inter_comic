@@ -1,7 +1,7 @@
 <template>
   <!-- 页头 -->
   <div class="top_fixed">
-    <div class="top_bar">
+    <div :class="[showBgIcon?'bg':'','top_bar']">
       <div class="top_title">
         <div class="top_logo">
           <div>
@@ -18,12 +18,14 @@
           <img src="/static/img/icon_new/language.png" alt="language" />
         </span>
         <router-link :to="{name:'search'}" v-show="$route.name!='search'">
-          <img src="/static/img/icon_new/search.png" alt="search" />
+          <img v-show="!showBgIcon" src="/static/img/icon_new/search.png" alt="search" />
+          <img v-show="showBgIcon" src="/static/img/icon_new/search_bg.png" alt="search" />
         </router-link>
         <router-link :to="{name:'main'}" v-show="!showHome">
-          <img src="/static/img/icon_new/home.png" alt="home" />
+          <img v-show="!showBgIcon" src="/static/img/icon_new/home.png" alt="home" />
+          <img v-show="showBgIcon" src="/static/img/icon_new/home_bg.png" alt="home" />
         </router-link>
-        <router-link :to="{name:'userInfo'}" v-show="showHome">
+        <router-link :to="{name:'new_info'}" v-show="showHome">
           <img src="/static/img/icon_new/user.png" alt="userInfo" />
         </router-link>
       </div>
@@ -38,6 +40,7 @@ export default {
   },
   props: {
     loader: Boolean,
+    showBgIcon: Boolean,
     showHome: Boolean,
     comicTxt: String
   },
@@ -77,7 +80,6 @@ export default {
     .top_logo, .top_detl_txt
       font-weight bold
       font-size 38px
-      font-family 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
     .top_logo
       color orange
       .icon_logo
@@ -112,6 +114,16 @@ export default {
     img
       width 100%
       height 100%
+// 背景色
+.top_bar.bg
+  background #FD5C63
+  .top_title
+    .top_detl_txt
+      color #fff
+    .comicTxt
+      font-weight normal
+    .top_logo .icon_back
+      border-color #fff
 </style>
 
 

@@ -11,6 +11,11 @@ function closeToast() {
     toast.close();
 }
 
+function awaitReturn(promise) {
+  // return promise.then(data => [null, data]).catch(err => [err, null]);
+  return promise.then(data => data).catch(err => null);
+}
+
 function replaceUrl(url, param) {
   return url + '.html/' + param.join('/');
 }
@@ -42,6 +47,7 @@ function clearItem() {
 
 export default {
   clearItem, replaceUrl,
+  awaitReturn,
   closeToast, Toast,
   statistics
 }

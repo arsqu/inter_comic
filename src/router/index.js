@@ -1,18 +1,87 @@
+import i18n from '../i18n/index'
+
 export default new VueRouter({
   routes: [
+    // {
+    //   path: 'login.html',
+    //   name: 'login',
+    //   component: () => import('@/components/user/login'),
+    //   meta: {
+    //     title: '登录'
+    //   }
+    // },
+    // {
+    //   path: '/register.html',
+    //   name: 'register',
+    //   component: () => import("/components/user/register"),
+    //   meta: {
+    //     title: '注册'
+    //   }
+    // },
+    // {
+    //   path: '/userInfo.html',
+    //   name: 'userInfo',
+    //   component: () => import('@/components/cache/userInfo'),
+    //   meta: {
+    //     title: '用户信息'
+    //   }
+    // },
+    // {
+    //   path: '/recharge.html',
+    //   name: 'recharge',
+    //   component: () => import('@/components/cache/recharge'),
+    //   meta: {
+    //     title: '充值'
+    //   }
+    // },
+    // {
+    //   path: '/view.html/:bookId/:id',
+    //   name: 'view',
+    //   component: () => import('@/components/cache/view'),
+    //   meta: {
+    //     title: '章节详情(未启用)'
+    //   }
+    // },
+    // {
+    //   path: '/chapter.html/:id',
+    //   name: 'chapter',
+    //   component: () => import('@/components/chapter'),
+    //   meta: {
+    //     title: '目录页(未启用)'
+    //   }
+    // },
+    // {
+    //   path: '/weekList.html',
+    //   name: 'weekList',
+    //   component: () => import('@/components/cache/weekList'),
+    //   meta: {
+    //     keepAlive: true,
+    //     title: "更新时间(未启用)"
+    //   }
+    // },
+    // {
+    //   // path: '/payfor.html/:payUrl',
+    //   path: '/payfor.html/:payForm',
+    //   name: 'payfor(未启用)',
+    //   component: () => import('@/components/cache/payfor'),
+    // },
     {
       path: '/',
       name: 'main',
       component: () => import('@/components/main'),
       meta: {
-        keepAlive: true,
-        title: '首页'
+        keepAlive: true
       }
+    },
+    {
+      path: '/userCtrl.html',
+      name: 'userCtrl',
+      component: () => import('@/components/user/userCtrl') //用户登录注册
     },
     {
       path: '/login.html',
       name: 'login',
-      component: () => import('@/login'),
+      component: () => import('@/components/user/login'),
       meta: {
         title: '登录'
       }
@@ -20,67 +89,36 @@ export default new VueRouter({
     {
       path: '/register.html',
       name: 'register',
-      component: () => import("@/register"),
+      component: () => import('@/components/user/register'),
       meta: {
         title: '注册'
       }
     },
     {
-      path: '/userInfo.html',
-      name: 'userInfo',
-      component: () => import('@/components/userInfo'),
-      meta: {
-        title: '用户信息'
-      }
+      path: '/new_info.html',
+      name: 'new_info',
+      component: () => import('@/components/new_info'),
     },
     {
-      path: '/recharge.html',
-      name: 'recharge',
-      component: () => import('@/components/recharge'),
+      path: '/new_charging.html',
+      name: 'new_charging',
+      component: () => import('@/components/new_charging'), //充值
       meta: {
-        title: '充值'
+        title: i18n.t("recharge.recharge")
       }
     },
     {
       path: '/new_detl.html/:id/:title?',
       name: 'new_detl',
-      component: () => import('@/components/new_detl'),
+      component: () => import('@/components/new_detl'), //漫画详情
       meta: {
-        keepAlive: true,
-        title: '详情页'
-      }
-    }, {
-      path: '/view.html/:bookId/:id',
-      name: 'view',
-      component: () => import('@/components/cache/view'),
-      meta: {
-        title: '章节详情(未启用)'
+        keepAlive: true
       }
     },
     {
       path: '/new_view.html/:bookId/:id',
       name: 'new_view',
-      component: () => import('@/components/new_view'),
-      meta: {
-        title: '章节详情'
-      }
-    },
-    {
-      path: '/chapter.html/:id',
-      name: 'chapter',
-      component: () => import('@/components/chapter'),
-      meta: {
-        title: '目录页(未启用)'
-      }
-    },
-    {
-      path: '/weekList.html',
-      name: 'weekList',
-      component: () => import('@/components/cache/weekList'),
-      meta: {
-        keepAlive: true,
-        title: "更新时间(未启用)"
-      }
+      component: () => import('@/components/new_view') //章节内容
     },
     {
       path: '/new_week.html',
@@ -88,7 +126,7 @@ export default new VueRouter({
       component: () => import('@/components/new_week'),
       meta: {
         keepAlive: true,
-        title: "更新时间"
+        title: i18n.t('index.updateHead')
       }
     },
     {
@@ -97,7 +135,7 @@ export default new VueRouter({
       component: () => import('@/components/ranking'),
       meta: {
         keepAlive: true,
-        title: "排行"
+        title: i18n.t('index.rankHead')
       }
     },
     {
@@ -110,11 +148,11 @@ export default new VueRouter({
       }
     },
     {
-      path: '/suggest.html',
-      name: 'suggest',
-      component: () => import('@/components/suggest'),
+      path: '/feedback.html',
+      name: 'feedback',
+      component: () => import('@/components/feedback'),
       meta: {
-        title: '建议反馈'
+        title: i18n.t('suggest.txt')
       }
     },
     {
@@ -122,15 +160,9 @@ export default new VueRouter({
       name: 'search',
       component: () => import('@/components/search'),
       meta: {
-        title: '搜索',
+        title: i18n.t("search.search"),
         keepAlive: true
       }
-    },
-    {
-      // path: '/payfor.html/:payUrl',
-      path: '/payfor.html/:payForm',
-      name: 'payfor(未启用)',
-      component: () => import('@/components/payfor'),
     },
     {
       path: "/404.html",

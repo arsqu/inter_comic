@@ -6,10 +6,11 @@ import 'amfe-flexible' //自适应
 // import 'babel-polyfill'
 // import 'default-passive-events'
 // import './util/mock' //模拟数据
+import instance from './util/axios'
 import api from './util/api'
-import config from './util/config'
+import config from './util/config' //漫画全局配置
 import i18n from './i18n' //国际化
-import util from './util/util'
+import util from './util/util' //通用方法
 import router from './router'
 import plugin from './plugins' //自定义组件
 import App from './App'
@@ -22,10 +23,11 @@ Vue.use(Lazyload, {
 });
 
 Vue.config.productionTip = false
-axios.defaults.withCredentials = true
-
-Vue.prototype.$axios = axios
-Vue.prototype.$config = Vue.prototype.$config || config
+// console.dir(instance);
+// axios.defaults.withCredentials = true
+// Vue.prototype.$axios = axios
+Vue.prototype.$config = config
+Vue.prototype.$axios = instance
 Vue.prototype.$api = api //请求地址
 Vue.prototype.$util = util //请求地址
 
@@ -33,36 +35,41 @@ Vue.prototype.$util = util //请求地址
 Vue.prototype.$bus = new Vue();
 
 var local = localStorage;
-var idx = 0;
 
-//拦截器
-axios.interceptors.response.use(function (response) {
-  if (response.data.code == 401) {
-    // console.log('未登录');
-    local.setItem('loginTips', ++idx);
-    if (idx < 3) {
-      util.Toast('tips.tiplogin');
-    }
-    util.clearItem();
-    // router.push({ name: 'login' });
-  }
-  return response;
-}, function (error) {
-  return Promise.reject(error);
-});
+// var idx = 0;
+// // //拦截器
+// axios.interceptors.response.use(function (response) {
+//   console.log(response);
+//   if (response.data.code == 401) {
+//     // console.log('未登录');
+//     local.setItem('loginTips', ++idx);
+//     if (idx < 3) {
+//       util.Toast('tips.tiplogin');
+//     }
+//     util.clearItem();
+//     // router.push({ name: 'login' });
+//   }
+//   return response;
+// }, function (error) {
+//   return Promise.reject(error);
+// });
 
 var ch = local.getItem('wap_ch') || 'none',
-  loginView = ['new_detl', 'new_view'], //登录页面 //'userInfo'
+  loginView = ['new_detl', 'new_view'], //需要登录的页面
+  // statistics = ['recharge', 'main', 'userCtrl']; //统计页面
   statistics = ['recharge', 'main', 'register']; //统计页面
 router.beforeEach((to, from, next) => {
   var isLogin = local.getItem('isLogin');
-  // console.log(window.history.length)
-  if (navigator.language.slice(0, 2).indexOf('zh') != -1) { //非中文环境
-    // if (navigator.language.slice(0, 2).indexOf('zh') == -1) { //谷歌中文环境测试
+  // if (to.name == 'userCtrl') {
+  if (to.name == 'login') {
+    local.setItem('loginUrl', from.fullPath);
+  }
+  // if (navigator.language.slice(0, 2).indexOf('zh') != -1) { //非中文环境
+  if (navigator.language.slice(0, 2).indexOf('zh') == -1) { //谷歌中文环境测试
     if (to.name == '406')
       next();
     else
-      next('/406')
+      next('/406');
   } else {
     if (_hmt) {
       if (statistics.indexOf(to.name) != -1) {
@@ -75,7 +82,7 @@ router.beforeEach((to, from, next) => {
       } else {
         console.log(from);
         // local.setItem('loginUrl', to.name);
-        next('/login.html');
+        next({ name: config.Router.login })
       }
     } else {
       next();

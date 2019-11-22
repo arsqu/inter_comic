@@ -31,7 +31,7 @@
 
     <!-- 推荐栏 -->
     <div class="push_item">
-      <column :autoImg="autoImg" :bookList="bookList" />
+      <column :autoImg="this.$config.autoImg.column" :bookList="bookList" />
       <loading :loadState="loadState"></loading>
     </div>
   </div>
@@ -46,13 +46,10 @@ export default {
     return {
       bannerList: [], //广告图
       bookList: [], //首页详情
-      autoImg: "",
       loadState: true //滚动加载提示
     };
   },
-  created() {
-    this.autoImg = this.$config.autoImg.column;
-  },
+  created() {},
   mounted() {
     var href = this.$route.fullPath,
       idx = href.indexOf("?ch="),
@@ -121,7 +118,7 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-/* 公共导航 */
+/*公共导航*/
 .swiper_box
   height 435px
 .nav_list
@@ -151,7 +148,7 @@ export default {
 .push_box .push_column
   padding 25px
   margin 25px 0
-/* 推荐栏 */
+/*推荐栏*/
 .push_item
   background #fbf5f5
   padding-top 45px

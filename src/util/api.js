@@ -46,7 +46,7 @@ const crossUrl = {
 }
 
 function getUrl(obj, key, val) {
-  return new Function('a', 'return null==' + val + '?a.' + key + ':(a.' + key + '=' + val + ',a)')(obj);
+  return new Function('a', 'return null ==' + val + '?a.' + key + ':(a.' + key + '=' + val + ',a)')(obj);
 }
 
 function getData(key, param, config) {
