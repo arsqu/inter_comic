@@ -1,12 +1,6 @@
 <template>
   <div class="userList">
     <span class="back" @click="reBack"></span>
-    <!-- <router-link
-            v-show="!isLogin"
-            class="toLogin"
-            tag="div"
-            :to="{name:$config.Router.login}"
-    >{{$t('login.login')}}</router-link>-->
     <div class="info_bg">
       <!-- <div class="infoBtn" v-show="!isLogin"> -->
       <router-link
@@ -24,6 +18,13 @@
         <div class="infoTop">
           <div class="balance">{{$t('detl.hasMoney')}}：{{money}} {{$t('common.priceUnit')}}</div>
         </div>
+        <div class="infoTop">
+          <div class="balance">{{$t('userInfo.rCode')}}：{{rcode}}</div>
+        </div>
+        <!-- <div v-if="rcode" class="rCode">
+          <span>{{$t('userInfo.rCode')}}</span>
+          <div class="balance">{{rcode}}</div>
+        </div>-->
       </div>
     </div>
     <div class="infoList">
@@ -36,10 +37,10 @@
         </li>
       </ul>
       <ul class="icon_info mt-5">
-        <li class="icon_item disabled readRecord">
+        <li class="icon_item disabled disable_txt readRecord">
           <span>{{$t('userInfo.tabList[0]')}}</span>
         </li>
-        <li class="icon_item disabled collection">
+        <li class="icon_item disabled disable_txt collection">
           <span>{{$t('userInfo.tabList[1]')}}</span>
         </li>
       </ul>
@@ -58,6 +59,7 @@ export default {
       tabList: [],
       //用户信息
       uname: "",
+      rcode: "",
       money: "",
       loadState: false //接口请求状态
     };
@@ -65,6 +67,7 @@ export default {
   components: {},
   created() {
     // console.log("created");
+    this.rcode = localStorage.getItem("rcode");
     this.tabList = this.$t("userInfo.tabList");
   },
   mounted() {
@@ -102,16 +105,9 @@ export default {
         // localStorage.setItem("loginUrl", this.$route.fullPath);
       }
     },
-    // toLogin() {
-    //   // this.$router.push({ name: "login" });
-    //   this.$router.push({ name: "userCtrl" });
-    // },
     recharge() {
       // this.$router.push({ name: "recharge" });
       this.$router.push({ name: this.$config.Router.charging });
-    },
-    toggle(idx) {
-      this.isCur = idx;
     },
     loadData() {
       this.$api.getDataN("hasMoney").then(res => {
@@ -119,9 +115,9 @@ export default {
         if (res.code == 1) {
           var data = res.data;
           localStorage.setItem("money", data.money);
-          localStorage.setItem("uname", data.uname);
+          localStorage.setItem("uname", data.unick);
           this.money = data.money;
-          this.uname = data.uname;
+          this.uname = data.unick;
         } else if (res.code == 401) {
           //服务器登录状态是否过期
           this.isLogin = false;
@@ -133,6 +129,22 @@ export default {
   }
 };
 </script>
+
+<style>
+.login_name {
+  color: #fff;
+  font-size: 33px;
+  padding-left: 25px;
+  width: 77%;
+  overflow: hidden;
+  display: -webkit-box;
+  /* ! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  -webkit-line-clamp: 2;
+  word-break: break-all;
+}
+</style>
 
 <style lang="stylus" scoped>
 pad()
@@ -146,6 +158,14 @@ pad()
   left 0
   right 0
   bottom 0
+.balance
+  border 2px solid #fbecec
+  color #fff
+  display inline-block
+  border-radius 20px
+  margin-top 25px
+  font-size 30px
+  padding 8px 25px
 .infoBtn
   font-size 35px
   cursor pointer
@@ -176,6 +196,16 @@ pad()
     flex-direction column
     justify-content center
     padding 0 40px
+    .rCode
+      display flex
+      align-items center
+      margin-top 25px
+      font-size 30px
+      color #fff
+      .balance
+        margin-top 0
+        border 0 none
+        color #fff
     .info_img
       display flex
       align-items center
@@ -184,30 +214,10 @@ pad()
         width 23%
         height 100%
         border-radius 50%
-      .login_name
-        color #fff
-        font-size 33px
-        padding-left 25px
-        width 77%
-        overflow hidden
-        display -webkit-box
-        /*autoprefixer: off*/
-        -webkit-box-orient vertical
-        /*autoprefixer: on*/
-        -webkit-line-clamp 2
-        word-break break-all
     .infoTop
       font-size 30px
-      .balance
-        //background #fff
-        //color #333
-        border 2px solid #fbecec
-        color #fff
-        display inline-block
-        border-radius 20px
-        margin-top 25px
-        font-size 30px
-        padding 8px 25px
+      display flex
+      justify-content space-between
 .infoList
   pad()
   background #F9F9F9

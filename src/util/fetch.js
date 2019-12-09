@@ -1,6 +1,5 @@
 // import axios from 'axios'
-import instance from './axios'
-
+import instance from './instance'
 //get
 function getData(url, params) {
   return new Promise((resolve, reject) => {

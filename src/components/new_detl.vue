@@ -359,8 +359,9 @@ export default {
       var mediaId = (opt.mediaId = this.params.id);
       // var [err, res] = await this.$util.awaitReturn(this.getChapter(opt));
       var res = await this.$util.awaitReturn(this.getChapter(opt));
+      console.log(res);
       if (res) {
-        if (res.code == 1 && res.data.length > 0) {
+        if (res.code == 1 && res.data.list.length > 0) {
           //已购买章节
           this.$api.getDataN("hasRecord", { mediaId }).then(buy => {
             if (buy.code == 1) {
@@ -429,6 +430,21 @@ export default {
 };
 </script>
 
+<style>
+.comic_info_list .c_tit {
+  font-size: 35px;
+  margin-bottom: 20px;
+  font-weight: bold;
+  overflow: hidden;
+  display: -webkit-box;
+  /* ! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer: on */
+  -webkit-line-clamp: 2;
+  word-break: break-all;
+}
+</style>
+
 <style lang="stylus" scoped>
 .comic_detl
   padding-bottom 110px
@@ -436,7 +452,7 @@ export default {
     position relative
     padding 10px
     img
-      width 10%
+      width 12%
   .comic_info
     height 400px
     width 100%
@@ -477,17 +493,6 @@ export default {
         flex 1
         .c_mar
           margin-bottom 10px
-        .c_tit
-          font-size 35px
-          margin-bottom 20px
-          font-weight bold
-          overflow hidden
-          display -webkit-box
-          /*autoprefixer: off*/
-          -webkit-box-orient vertical
-          /*autoprefixer: on*/
-          -webkit-line-clamp 2
-          word-break break-all
         .c_state
           padding 5px 15px
           border-radius 10px
@@ -565,7 +570,5 @@ export default {
     cursor pointer
     background #ffa500
     color #fff
-    //a
-    //color #fff
 </style>
 

@@ -24,7 +24,7 @@
         <router-view v-if="!$route.meta.keepAlive" />
       </div>
       <!-- modal -->
-      <div :class="['page_modal',isLanguage?'lang':'']" v-show="isModal" @click="closeModal"></div>
+      <div :class="['page_modal',{lang:isLanguage}]" v-show="isModal" @click="closeModal"></div>
       <!-- payfor Chapter -->
       <chapterBox
         :isLogin="isLogin"
@@ -57,11 +57,14 @@
         </div>
         <a :href="$config.downUrl" class="down_btn">{{$t('common.install')}}</a>
       </div>
-      <!-- <app-tabbar/> -->
       <!-- backTop -->
       <div class="backTop" @click="scrollTop"></div>
     </template>
     <router-view v-else />
+    <!-- v-if="
+    $route.name =='main'|| $route.name == 'bookmark'"-->
+    <!-- <TabBar v-if="
+    $route.name =='main'|| $route.name == 'bookmark'" />-->
   </div>
 </template>
 
@@ -87,6 +90,7 @@
     margin-right 25px
   img
     width 13%
+    border-radius 20px
   .down_txt
     font-size 28px
     color #252525
@@ -105,16 +109,17 @@
     display inline-block
     right 10px
     background #FD113A
-    border 2px solid #212121
-    border-radius 15px
-    font-size 13px
+    border 2px solid #643b3b
+    border-radius 50px
+    font-size 25px
     color #F8F8F9
 </style>
 
 <script>
-// import TabBar from "./components/tabbar";
 import Qs from "qs";
+// import TabBar from "./components/tabbar";
 const Header = () => import("@/components/common/header");
+// const TabBar = () => import("@/components/module/tabbar");
 const chapterBox = () => import("@/components/module/chapterBox");
 export default {
   data() {
@@ -134,7 +139,7 @@ export default {
       bookId: null,
       showHome: false,
       chaperId: null,
-      lang: {},
+      lang: {}, //语言
       event: "", //上下章
       chapterIdx: null,
       hasMoney: 0, //余额
@@ -153,7 +158,7 @@ export default {
   components: {
     Header,
     chapterBox
-    //"app-tabbar": TabBar
+    // TabBar
   },
   created() {
     // console.log("app_created");
@@ -204,6 +209,7 @@ export default {
     },
     //功能按钮
     btnFunc() {
+      console.log("功能按钮");
       var txtIdx = this.chapterInfo.txtIdx,
         isLogin = localStorage.getItem("isLogin"),
         checkList = this.checkList;
@@ -215,15 +221,13 @@ export default {
       if (txtIdx == 0 || !isLogin) {
         localStorage.setItem("loginUrl", this.$route.fullPath);
         this.$router.push({ name: this.$config.Router.login });
-        // this.$router.push({ name: "login" });
+        //充值
       } else if (txtIdx == 1) {
-        //recharge
         this.$router.push({ name: this.$config.Router.charging });
-        // this.$router.push({ name: "recharge" });
         this.closeModal();
+        //支付
       } else if (txtIdx == 2) {
         // console.log(this.price, this.chaperId, this.mediaId);
-        // return;
         var opt = {
           chaperId: this.chapterId,
           mediaId: this.bookId,
@@ -240,7 +244,6 @@ export default {
             clearTimeout(this.timer);
             this.timer = setTimeout(this.getMoney, 500); //查看余额
             this.unlock();
-            // msg = "购买成功";
             msg = "detl.payStatus.success";
             console.log("购买成功");
           } else if (res.code == 103) {
@@ -248,12 +251,10 @@ export default {
             // this.$router.push({ name: "recharge" });
             this.$router.push({ name: this.$config.Router.charging });
             this.getMoney(); //查看余额
-            // msg = "余额不足";
             msg = "detl.payStatus.error";
           } else if (res.code == 102) {
             //已购买
             this.unlock();
-            // msg = "已购买";
             msg = "detl.payStatus.warning";
           }
           this.closeModal();
@@ -373,15 +374,15 @@ export default {
       });
       //是否登录
       this.$bus.$on("isLogin", data => {
-        // console.log("onisLogin", data);
+        console.log("onisLogin", data);
         if (data) {
           //已登录
           me.isLogin = true;
-          this.$set(this.chapterInfo, "txtIdx", 1);
+          this.$set(this.chapterInfo, "txtIdx", 1); //更新按钮状态
           var money = +localStorage.getItem("money");
           this.hasMoney = money;
           var price = this.chapterInfo.price;
-          if (money == 0 || money < price) {
+          if ((money == 0 || money < price) && data != "firstLogin") {
             //余额不足检查是否充值
             this.getMoney(price);
           } else if (money >= price) {
@@ -408,7 +409,7 @@ export default {
       this.headShow = true;
       this.loader = true;
       // this.closeApp = false;
-      console.log("watch", this.closeApp);
+      // console.log("watch", this.closeApp);
       var name = route.name, //路由名
         txt = route.meta.title; //标题名
       //显示主页图标
@@ -419,13 +420,19 @@ export default {
       if (name == "new_view") {
         this.headShow = false;
       }
-      //广告
+      //下载app
       var banner = ["main"];
       if (banner.indexOf(name) == -1) {
         this.closeApp = false;
       }
       // 有底色的导航栏
-      var showIcon = ["new_charging", "new_week", "feedback"];
+      var showIcon = [
+        "new_charging",
+        // "new_detl",
+        "new_week",
+        "search",
+        "feedback"
+      ];
       if (showIcon.indexOf(name) != -1) {
         this.showBgIcon = true;
       }
@@ -444,7 +451,6 @@ export default {
         this.loader = false;
         this.comicTxt = txt;
       }
-      //显示广告
     }
   }
 };
@@ -478,7 +484,7 @@ export default {
   padding 0 10px
   border-bottom 5px solid #ff8300
   li
-    padding 15px 10px
+    padding 25px 10px
     color #555
     border-top 1px solid #ddd
     &:first-child

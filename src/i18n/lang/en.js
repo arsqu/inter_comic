@@ -7,7 +7,7 @@ export default {
     singOut: 'Sign out',
     download: 'Read manga online',
     install: 'Install',
-    register: 'Register'
+    register: 'Sign up'
   },
   pay: {
     autoBuy: 'Auto buy next chapter'
@@ -86,13 +86,14 @@ export default {
     }
   },
   userInfo: {
-    tabList: ['Reading record', 'Collection'],
+    tabList: ['Reading record', 'My Favorites'],
     feedback: 'Feedback',
+    rCode: 'Referral Code',
     tips: 'To be developed...'
   },
   login: {
     notAllowed: 'Not logged in',
-    phone: 'enter your mobile number',
+    phone: 'Email address or phone',
     pass: 'enter your password',
     register: 'Sign up',
     login: 'Sign in',
@@ -129,22 +130,45 @@ export default {
     btnTxt: "Complete",
     gender: ['male', 'Female'],
     genderTxt: 'gender',
-    toRegister: 'Create a account',
+    toRegister: 'Create an account',
+    toLogin: 'Already have an account?',
+    toggle: {
+      0: 'Use a phone number instead',
+      1: 'Use your email address instead'
+    },
+    type: {
+      0: 'Enter your email address',
+      1: 'Enter your phone number'
+    },
     valid: {
-      uname: 'username',
-      email: 'email',
-      valiEmail: 'Verify email',
+      uname: 'NickName',
+      email: 'Email',
+      sendEmail: 'Verify email',
+      sendPhone: 'Get code',
+      sendSms: 'Send SMS',
+      phone: 'phone number',
+      smsCode: 'Verification code',
+      phoneErr: 'Please enter the correct phone number',
+      emailErr: 'Please enter the correct email',
       ecode: 'Email verification code',
-      pass: 'password',
-      age: 'age',
-      gender: 'gender',
-      code: 'invitation code'
+      ecodeEmpty: 'Please fill in the verification code in the email address',
+      pass: 'Password',
+      age: 'Age',
+      gender: 'Gender',
+      icode: 'Invitation code'
+    },
+    tips: {
+      sendSms: 'Enter phone number,By clicking "Send SMS" and send SMS to complete register'
     },
     status: {
       success: 'Registration is successful',
+      send: 'Message has been sent',
       warn: 'Verification code error',
-      err: 'registration failed',
-      repeat: 'Do not double registration'
+      err: 'Registration failed',
+      repeat: 'Account has been registered',
+      expires: 'The verification code has not expired, please check the mailbox',
+      expired: 'The Verification code has expired',
+      wait: 'verification code is sent, please wait for 60s to send',
     }
   },
   recharge: {
@@ -161,7 +185,8 @@ export default {
     payTips: {
       toLong: 'Server request timed out,Please try again',
       openUrl: 'Opening payment page, please wait...',
-      txt: 'Whether to continue to recharge',
+      txt: 'You will be redirected to <span class="special">paytm</span> to complete the payment. Do you want to continue?',
+      // txt: 'Whether to continue to recharge',
       pay: 'payfor',
       cancel: 'cancel'
     },

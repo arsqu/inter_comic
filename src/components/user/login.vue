@@ -8,47 +8,52 @@
     </div>
     <div class="contentBox">
       <div class="userForm">
+        <div class="loginTxt">{{$t('login.login')}}</div>
         <div class="login_info">
           <!-- 登录 -->
           <div class="form_box">
-            <div @keyup.13="login">
-              <div class="form_item">
-                <div class="form_icon account">
-                  <input
-                    type="text"
-                    v-model="uname"
-                    autocomplete="uname"
-                    :placeholder="$t('login.phone')"
+            <form>
+              <div @keyup.13="login">
+                <div class="form_item">
+                  <div class="form_icon account">
+                    <input
+                      type="text"
+                      v-model="uname"
+                      autocomplete="uname"
+                      :placeholder="$t('login.phone')"
+                    />
+                  </div>
+                </div>
+                <div class="form_item">
+                  <div class="form_icon password">
+                    <input
+                      type="password"
+                      v-model="upass"
+                      autocomplete="upass"
+                      :placeholder="$t('login.pass')"
+                    />
+                  </div>
+                </div>
+                <div class="login_btn">
+                  <cs-button
+                    round
+                    :nativeType="'button'"
+                    :type="'danger'"
+                    :size="'large'"
+                    :title="$t('login.login')"
+                    :isComplete="toLogin"
+                    :func="login"
                   />
+                  <!-- <span class="login" @click="login">{{$t('login.login')}}</span> -->
                 </div>
               </div>
-              <div class="form_item">
-                <div class="form_icon password">
-                  <input
-                    type="password"
-                    v-model="upass"
-                    autocomplete="upass"
-                    :placeholder="$t('login.pass')"
-                  />
-                </div>
-              </div>
-              <div class="login_btn">
-                <cs-button
-                  round
-                  :type="'danger'"
-                  :size="'large'"
-                  :title="$t('login.login')"
-                  :isComplete="toLogin"
-                  :func="login"
-                />
-                <!-- <span class="login" @click="login">{{$t('login.login')}}</span> -->
-              </div>
-            </div>
+            </form>
           </div>
         </div>
         <router-link
-          class="label_txt"
           tag="div"
+          class="label_txt"
+          replace
           :to="{name:'register'}"
         >{{$t('register.toRegister')}}</router-link>
       </div>
@@ -74,10 +79,10 @@ export default {
   methods: {
     //设置登录状态
     setCache(data) {
-      this.$emit("isLogin", 1); //登录成功
-      localStorage.setItem("isLogin", "1");
+      this.$bus.$emit("isLogin", "firstLogin"); //登录成功
+      localStorage.setItem("isLogin", 1);
       localStorage.setItem("money", data.money);
-      localStorage.setItem("uname", data.uname);
+      localStorage.setItem("uname", data.unick);
     },
     //登录
     login() {
@@ -85,29 +90,50 @@ export default {
         this.$util.Toast("login.tips.wait");
         return;
       }
+      var uname = this.uname;
       //账号密码不为空
-      if (!this.uname || !this.upass) {
+      if (!uname || !this.upass) {
         this.$util.Toast("login.tips.empty");
         return;
       }
+      var opt = {
+        upass: this.upass
+      };
+      if (uname.indexOf("@") != -1) {
+        var reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,}$/; //邮箱格式
+        if (!reg.test(this.uname)) {
+          console.log("邮箱验证失败");
+          this.$util.Toast("register.valid.emailErr");
+          return;
+        }
+        opt.mail = this.uname;
+      } else {
+        var reg = /^\d+$/;
+        if (!reg.test(this.uname)) {
+          console.log("手机验证失败");
+          this.$util.Toast("register.valid.phoneErr");
+          return;
+        }
+        opt.ph = this.uname;
+      }
+      console.log(opt);
       this.toLogin = true;
       this.$util.Toast("login.tips.load");
       this.$api
-        .postDataN(
-          "login",
-          Qs.stringify({ uname: this.uname, upass: this.upass })
-        )
+        .postDataN("login", Qs.stringify(opt))
         .then(res => {
           // console.log(res);
           var msg = "";
           if (res.code == 1) {
+            localStorage.setItem("token", res.tocken);
             var data = res.data;
+            localStorage.setItem("rcode", data.ucode); // 推荐码
             msg = "login.status.success";
             // console.log("登录成功");
-            this.$bus.$emit("isLogin", "1");
             this.setCache(data);
             var path = localStorage.getItem("loginUrl");
-            if (!path || path == "/userCtrl.html") path = "/";
+            if (!path || path == "/login.html" || path == "/register.html")
+              path = "/";
             this.$router.replace({ path });
           } else msg = "login.status.err";
           this.$util.Toast(msg);
@@ -176,9 +202,13 @@ export default {
     .userForm
       margin 0 60px
       background #fff
-      padding 80px 55px 100px
+      padding 50px 55px 30px
       border-radius 15px
       box-shadow 0 0 15px #ddd
+      .loginTxt
+        text-align center
+        color #666
+        margin-bottom 30px
       .form_item
         margin-bottom 30px
         position relative
@@ -195,6 +225,7 @@ export default {
           color #555
           transition all .4s ease
           box-shadow 0 0 15px #ddd
+          -webkit-appearance none
           &.code
             box-sizing border-box
             width 70%
@@ -208,6 +239,7 @@ export default {
             vertical-align middle
         input:focus
           box-shadow 0 0 10px #4bc461
+          border-radius 1px
         .form_icon
           &:before
             content ''

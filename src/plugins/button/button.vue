@@ -1,8 +1,9 @@
 <template>
   <mt-button
-    :class="['btn_def',void 0 != round?'btn_round':'']"
+    :class="['btn_def',{btn_round:!round}]"
     :type="type"
     :size="size"
+    :nativeType="nativeType"
     :disabled="isComplete"
     @click.native="func"
   >
@@ -20,10 +21,6 @@
 
 <script>
 export default {
-  created() {},
-  data() {
-    return {};
-  },
   props: {
     //样式
     type: {
@@ -34,6 +31,10 @@ export default {
     size: {
       type: String,
       default: "small"
+    },
+    nativeType: {
+      type: String,
+      default: "button"
     },
     title: String, //文字
     round: String, //圆角
@@ -59,12 +60,15 @@ export default {
 };
 </script>
 
+<style scoped>
+.load_spinner >>> .mint-spinner-snake {
+  border: 3px solid transparent; /*no*/
+}
+</style>
+
 <style lang="stylus" scoped>
-.load_spinner >>> .mint-spinner-snake
-  border 3px solid transparent /*no*/
 .mint-button >>> .mint-button-text
-  vertical-align middle
-  font-size 30px
+  font-size 35px
 .icon_load1
   display inline-block
   border-radius 50%

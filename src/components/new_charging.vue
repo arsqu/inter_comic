@@ -4,7 +4,8 @@
       <span>{{$t('common.balance')}}</span>
       <span>{{balance}}</span>
     </div>
-    <div class="recharge_box" @keyup.13="recharge">
+    <!-- recharge -->
+    <div class="recharge_box" @keyup.13="askRecharge">
       <div :class="{inpBox:isLogin}">
         <input
           type="text"
@@ -22,18 +23,21 @@
             v-for="(item,idx) in topUpList"
             :key="idx"
             @click="setVal(idx,item)"
-          >{{item}} {{currency}}</li>
+          >
+            <span>{{item}} {{currency}}</span>
+            <span v-if="isLogin">{{exchangeRate * item}} {{$t('common.priceUnit')}}</span>
+          </li>
         </ul>
       </div>
       <!-- button -->
-      <!-- <div class="btn_charging btn_def" @click="recharge">{{$t('common.pay')}}</div> -->
+      <!-- recharge -->
       <cs-button
         round
         :type="'danger'"
         :size="'large'"
         :title="$t('common.pay')"
         :isComplete="post"
-        :func="recharge"
+        :func="askRecharge"
       />
       <!-- tipsBox -->
       <div class="recharge_txt">
@@ -54,12 +58,22 @@
           <router-link :to="{name:$config.Router.login}">{{$t('login.login')}}</router-link>
         </div>
       </div>
-      <!-- payBox -->
+      <div class="paybox" v-show="payment">
+        <div class="payfor">
+          <p v-html="$t('recharge.payTips.txt')"></p>
+          <span :class="[isLoad?'opa':'','pay_txt pay']" @click="askToPay">
+            <span class="load_pic" v-show="isLoad">
+              <img src="/static/img/oval.svg" alt />
+            </span>
+            &nbsp;{{$t('recharge.payTips.pay')}}
+          </span>
+          <span class="pay_txt" @click="cancel">{{$t('recharge.payTips.cancel')}}</span>
+        </div>
+      </div>
+      <!-- true -->
       <div class="paybox" v-show="payBox">
         <div class="payfor">
-          <p>{{$t('recharge.payTips.txt')}}</p>
-          <!-- target="_blank" -->
-          <!-- <a class="pay_txt" @click="payfor" href="javascrjpt:;">{{$t('recharge.payTips.pay')}}</a> -->
+          <p v-html="$t('recharge.payTips.txt')"></p>
           <span :class="[isLoad?'opa':'','pay_txt pay']" @click="payfor">
             <span class="load_pic" v-show="isLoad">
               <img src="/static/img/oval.svg" alt />
@@ -85,9 +99,11 @@ import Qs from "qs";
 export default {
   data() {
     return {
+      paytm: "paytm",
       topUpList: [1, 2, 5, 10, 20, 50], //充值金额
       isCur: -1, //选中充值金额
       payBox: false, //支付框
+      payment: false, //确认并支付
       isLogin: false,
       // isLogin1: false,
       // isLogin2: false,
@@ -170,6 +186,74 @@ export default {
         }
       });
     },
+    askRecharge() {
+      if (!this.isLogin) {
+        this.$util.Toast("tips.toLogin");
+        this.$router.push({ name: this.$config.Router.login });
+        return;
+      }
+      //提示框已经打开
+      if (this.payment) {
+        return;
+      }
+      var money = +this.money,
+        reg = /^\d+$/;
+      //校验充值金额
+      if (!(money && reg.test(money))) {
+        this.money = "";
+        console.dir("金额错误");
+        return;
+      }
+      this.payment = true;
+    },
+    //ask and pay
+    askToPay() {
+      this.$util.Toast("recharge.loading");
+      var ch = localStorage.getItem("wap_ch") || "none";
+      if (this.isLoad) {
+        console.log("请10s后再操作");
+        // this.$util.Toast("recharge.rechargeStatus.wait");
+        return;
+      }
+      // this.$util.Toast("recharge.payTips.openUrl");
+      this.isLoad = true;
+      this.timer && clearTimeout(this.timer);
+      this.timer = setTimeout(_ => {
+        this.isLoad = false;
+        this.$util.Toast("recharge.payTips.toLong");
+      }, 10 * 1000);
+      this.$api
+        .postDataN("recharge", Qs.stringify({ money: this.money }))
+        .then(res => {
+          // console.log(res);
+          var msg = "",
+            status = "";
+          if (res.code == 1) {
+            status = "success";
+            var data = res.data;
+            if (data.code == 200) {
+              this.payReady(data.webPage, 1);
+              // this.payBox = true; //是否确认支付
+            }
+            this.$util.closeToast();
+          } else {
+            msg = "recharge.rechargeStatus.err";
+            status = "error";
+            this.$util.Toast(msg);
+          }
+          this.timer && clearTimeout(this.timer);
+          this.isLoad = false;
+          this.$util.statistics("recharge_" + ch, status); //统计充值数
+        })
+        .catch(err => {
+          status = "error";
+          this.timer && clearTimeout(this.timer);
+          this.isLoad = false;
+          // var form ='<html><head><title>Merchant Check Out Page</title></head><body><center><h1>Please do not refresh this page...</h1></center><input type="hidden" name="code" value="200"><form method="post" action="https://securegw.paytm.in/order/process" name="paytm"><table border="1"><tbody><input type="hidden" name="CALLBACK_URL" value="http://pay.q-av.com/paytm/callback">                ↵               <input type="hidden" name="CHANNEL_ID" value="WAP">↵                ↵               <input type="hidden" name="CHECKSUMHASH" value="U//YaL/5JlqKL9Ggr3zxSiZDn&#43;Auh/y&#43;k1LyZuK&#43;11KToT6qWOE0PbkH24D3hQ6BbNTf/7Hj3jdQBoUTdY2pxwhlGchItMKnHahAuz4Fpz8=">↵                ↵               <input type="hidden" name="CUST_ID" value="10990">↵                ↵               <input type="hidden" name="INDUSTRY_TYPE_ID" value="Retail109">↵                ↵               <input type="hidden" name="MERC_UNQ_REF" value="10448">↵                ↵               <input type="hidden" name="MID" value="KRISTR66279147368735">↵                ↵               <input type="hidden" name="ORDER_ID" value="A0001_201912091147003SW6">↵                ↵               <input type="hidden" name="TXN_AMOUNT" value="1.00">↵                ↵               <input type="hidden" name="WEBSITE" value="DEFAULT">↵                ↵            </tbody>↵         </table>\<script type="text/javascript"\>document.paytm.submit();\<\/script\></form></body></html>';
+          // this.payReady(form, 1);
+          this.$util.Toast("response.err");
+        });
+    },
     payfor() {
       if (this.isLoad) {
         console.log("请3s后再操作");
@@ -183,13 +267,19 @@ export default {
       this.timer = setTimeout(_ => {
         this.isLoad = false;
       }, 3000);
-      document.forms["paytm"].submit();
+      var forms = document.forms["paytm"];
+      if (forms.length > 0) {
+        forms.submit(); //跳转paytm页面
+        return;
+      }
+      console.dir("没有表单", document.forms);
     },
     cancel() {
       this.payBox = false;
+      this.payment = false;
       this.isLoad = false;
     },
-    payReady(form) {
+    payReady(form, autoSubmit) {
       // console.log(form);
       var el = document.getElementById("pay1");
       if (!el) {
@@ -199,6 +289,7 @@ export default {
         div.innerHTML = form;
         document.body.appendChild(div);
       } else el.innerHTML = form;
+      if (autoSubmit) document.forms["paytm"].submit(); //点击后直接支付
     },
     recharge() {
       // console.log("充值");
@@ -242,7 +333,7 @@ export default {
             var data = res.data;
             if (data.code == 200) {
               this.payReady(data.webPage);
-              this.payBox = true;
+              this.payBox = true; //是否确认支付
             }
             this.$util.closeToast();
             //跳转支付页
@@ -265,10 +356,6 @@ export default {
           // var form =
           //   "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'><html><head><title>Merchant Checkout Page</title></head><body><center><h1>Please do not refresh this page...</h1></center><form method='post' action='https://securegw.paytm.in/theia/processTransaction' name='f1'><input type='hidden' name='CALLBACK_URL' value='https://testapi.pay.goldenmob.com/trans/callback/paytm/status'><input type='hidden' name='CHANNEL_ID' value='WAP'><input type='hidden' name='CUST_ID' value='10052'><input type='hidden' name='INDUSTRY_TYPE_ID' value='Retail'><input type='hidden' name='MID' value='KRISTR39074830433502'><input type='hidden' name='ORDER_ID' value='1571317166919'><input type='hidden' name='TXN_AMOUNT' value='100'><input type='hidden' name='WEBSITE' value='WEBPROD'><input type='hidden' name='CHECKSUMHASH' value='6z6GmgmiDjDcxkY9YDLOboBO1I90RLWAkKON/Zm3EX7j3SFp56Wlf4S1TzbGZYcZDpKRLugkCP9LnQzblrSuNsqyzl/IMbfQWD1RCU0Jh/Q='></form>\<script type='text/javascript'\>document.f1.submit();\<\/script></body></html>";
           // this.payReady(form);
-          // this.$router.push({
-          //   name: "payfor",
-          //   params: { payForm: "<!DOCTYPE html PUBLIC '-//W3C//DTD HTML 4.01 Transitional//EN' 'http://www.w3.org/TR/html4/loose.dtd'><html><head><title>Merchant Checkout Page</title></head><body><center><h1>Please do not refresh this page...</h1></center><form method='post' action='https://securegw.paytm.in/theia/processTransaction' name='f1'><input type='hidden' name='CALLBACK_URL' value='https://testapi.pay.goldenmob.com/trans/callback/paytm/status'><input type='hidden' name='CHANNEL_ID' value='WAP'><input type='hidden' name='CUST_ID' value='10052'><input type='hidden' name='INDUSTRY_TYPE_ID' value='Retail'><input type='hidden' name='MID' value='KRISTR39074830433502'><input type='hidden' name='ORDER_ID' value='1571305488062'><input type='hidden' name='TXN_AMOUNT' value='100'><input type='hidden' name='WEBSITE' value='WEBPROD'><input type='hidden' name='CHECKSUMHASH' value='40uH5/ouo6mc/AmckZfepqAoD7yvGEeM/8/n4MkJoLSWchbjrz94CmNqhTKE4gCb8yIUrWuMCpO0GLDlGdkrWD0dNZQQnUbUMF/7/KbYImU='></form>\<script type='text/javascript'\>document.f1.submit();\<\/script\></body></html>" }
-          // });
         });
     }
   }
@@ -276,6 +363,12 @@ export default {
 </script>
 <style lang="stylus" scoped>
 topUpH = 80px
+.paybox >>> .special
+  color #f46b71
+.new_charging >>> .mint-button-icon
+  vertical-align middle
+.new_charging >>> .mint-button-text
+  vertical-align text-bottom
 .load_pic
   width 35px
   height 35px
@@ -302,33 +395,10 @@ topUpH = 80px
       margin-bottom 10px
     span:last-child
       font-size 50px
-.indicatorBox
-  -webkit-transition opacity .2s linear
-  transition opacity .2s linear
-  .indicatorItem
-    top 50%
-    left 50%
-    position fixed
-    -webkit-transform translate(-50%, -50%)
-    transform translate(-50%, -50%)
-    border-radius 5px
-    background rgba(0, 0, 0, .7)
-    color #fff
-    box-sizing border-box
-    text-align center
-    .spinner
-      border-top-color rgb(204, 204, 204)
-      border-left-color rgb(204, 204, 204)
-      border-bottom-color rgb(204, 204, 204)
-      height 32px
-      width 32px
-      -webkit-animation mint-spinner-rotate .8s infinite linear
-      animation mint-spinner-rotate .8s infinite linear
-      border 4px solid transparent
-      border-radius 50%
 .recharge_box .inpBox input
   width 85%
   border-radius 50px 0 0 50px
+  -webkit-appearance none
 .recharge_box
   .topUpList
     display flex
@@ -344,16 +414,20 @@ topUpH = 80px
       border-radius 10px
       padding 12px 0
       background #f0f0f0
+      span
+        display block
+        width 100%
       &.active
         background #fd5c63
         color #fff
+        box-shadow 0 0 10px #fd5c63
   input
     width 100%
     height topUpH
     font-size 30px
     padding-left 25px
     color #666
-    border 1px solid #ddd
+    border 1px solid #ddd /*no*/
     outline 0 none
     transition all .4s ease
     box-shadow 0 0 5px #ddd
@@ -374,24 +448,24 @@ topUpH = 80px
   .paybox
     position fixed
     z-index 100
-    width 100%
+    width calc(100% - 60px)
     top 50%
     margin-top -25%
     .payfor
       background #fff
-      width 60%
+      width 80%
       margin 0 auto
       border 2px solid #ddd
-      padding 20px 10px 40px
+      padding 5px 30px 40px
       -moz-box-shadow 2px 2px 5px #333333
       -webkit-box-shadow 2px 2px 5px #333333
       box-shadow 2px 2px 6px 0 #d7d7d7
-      border-radius 3px
+      border-radius 15px
       font-size 28px
       text-align center
       .pay_txt
         display inline-block
-        padding 10px 20px
+        padding 13px 20px
         border-radius 5px
         margin 0 30px
         cursor pointer
@@ -399,9 +473,12 @@ topUpH = 80px
       &>p
         margin 40px 0
         color #666
-        font-size 32px
+        line-height 45px
+        font-size 35px
+        text-align left
+        padding 0 25px
       &>.pay
-        background #EA0010
+        background #ee4e59
         color #fff
         display inline-block
       &>span

@@ -86,13 +86,14 @@ export default {
     }
   },
   userInfo: {
-    tabList: ['padhane ka rikord', 'mera sangrah'],
+    tabList: ['padhane ka rikord', 'mere pasandeeda'],
     feedback: 'pratipushti',
+    rCode: 'repharal kod',
     tips: 'lambit vikaas...'
   },
   login: {
     notAllowed: 'log in nahin kiya gaya',
-    phone: 'krpaya apana mobail nambar darj karen',
+    phone: 'eemel pata ya phon',
     pass: 'krpaya apana paasavard darj karen',
     register: 'sain ap karen',
     login: 'daakhil karana',
@@ -123,28 +124,51 @@ export default {
   },
   register: {
     register: 'sain ap karen',
-    account: 'ek khaata sankhya inaput karen',
-    code: 'satyaapan kod inaput karen',
-    pass: 'krpaya apana paasavard darj karen',
+    account: 'ek khaata sankhya darj karen',
+    code: 'satyaapan kod darj karen',
+    pass: 'paasavard darj kare',
     btnTxt: "poora",
     gender: ['nar', 'mahila'],
-    genderTxt: 'Seibetsu',
-    toRegister: 'ek khaata banaen',
+    genderTxt: 'ling',
+    toRegister: 'khaata banaen',
+    toLogin: 'kya aapake paas pahale se ek khaata maujood hai?',
+    toggle: {
+      0: 'isake bajaay fon nambar ka upayog karen',
+      1: 'isake bajaay apane eemel pate ka upayog karen'
+    },
+    type: {
+      0: 'apana eemel pata darj karen',
+      1: 'apana doorabhaash kramaank darj karen'
+    },
     valid: {
-      uname: 'upayogakarta naam',
-      pass: 'paaran shabd',
+      uname: 'upanaam',
       email: 'eemel',
-      valiEmail: 'eemel satyaapit karen',
+      sendEmail: 'eemel satyaapit karen',
+      sendPhone: 'kod praapt karen',
+      sendSms: 'sandesh bhejo',
+      phone: 'fon nambar',
+      smsCode: 'pushti sankhya',
+      phoneErr: 'krpaya sahee fon nambar darj karen',
+      emailErr: 'krpaya sahee eemel pata darj karen',
       ecode: 'eemel satyaapan kod',
+      ecodeEmpty: 'krpaya eemel mein satyaapan kod bharen',
+      pass: 'paaran shabd',
       age: 'aayu',
       gender: 'ling',
-      code: 'aamantran sanket'
+      icode: 'aamantran sanket'
+    },
+    tips: {
+      sendSms: 'fon nambar darj karen,"esemes bhejen" par klik karake aur rajistar poora karane ke lie esemes bhejen'
     },
     status: {
       success: 'panjeekaran saphal hai',
+      send: 'sandesh bheja ja chuka hai',
       warn: 'satyaapan kod truti',
-      err: 'panjeekaran viphal raha',
-      repeat: 'dabal panjeekaran na karen'
+      err: 'panjeekaran viphal',
+      repeat: 'khaata panjeekrt kiya gaya hai',
+      expires: 'satyaapan kod kee samay seema samaapt nahin huee hai, krpaya melaboks dekhen',
+      expired: 'satyaapan kod samaapt ho gaya hai',
+      wait: 'satyaapan kod bheja gaya hai, krpaya 60 ke dashak ke lie prateeksha karen',
     }
   },
   recharge: {
@@ -161,7 +185,8 @@ export default {
     payTips: {
       toLong: 'sarvar anurodh samay samaapt ho gaya,krpaya punah prayaas karen',
       openUrl: 'bhugataan prshth khul raha hai, krpaya prateeksha karen ...',
-      txt: 'chaahe reechaarj jaaree rakhana hai',
+      txt: 'bhugataan poora karane ke lie aapako <span class="special">paytm</span> par punarnirdeshit kiya jaega. kya aap jaaree rakhana chaahate hain?',
+      // txt: 'chaahe reechaarj jaaree rakhana hai',
       pay: 'ke lie bhugataan',
       cancel: 'radd karana'
     },

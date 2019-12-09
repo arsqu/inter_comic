@@ -1,5 +1,8 @@
 <template>
   <div class="suggest">
+    <!-- <div>
+      <a href="sms:10086?body=测试">测试短信</a>
+    </div> -->
     <div class="form_box">
       <div class="form_item">
         <label></label>

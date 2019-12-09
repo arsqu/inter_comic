@@ -1,12 +1,10 @@
 import fetch from './fetch'
 
 /*** 生产环境 ***/
-// var comUrl = '';
-// var nextUrl = 'http://mangaline.net:8088';
+// 'http://mangaline.net:8088' 
 
 /*** 测试环境 ***/
-// var comUrl = '/go',
-//   nextUrl = '/java';
+// '/go' '/java'
 
 /***  mock测试 ***/
 // var comUrl = '/test'; //mock数据
@@ -19,8 +17,7 @@ var base = '/api/v1';
 
 const crossUrl = {
   'login': '/ulogin/loginUser',
-  'logout': '/mediaUser/delLogin',
-  'register': '/ulogin/addMediaUser',
+  'logout': '/ulogin/delLogin',
   'code': '/ulogin/code',
   'hasMoney': '/ulogin/UserMoney',
   'recharge': '/pay/recharge',
@@ -33,6 +30,10 @@ const crossUrl = {
   },
   suggest: {
     post: '/feedb/addFeedBack'
+  },
+  register: {
+    create: '/ulogin/addMediaUser',
+    getCode: '/ulogin/getCode'
   },
   'getBookList': base + '/home',
   'getMore': base + "/groupList",

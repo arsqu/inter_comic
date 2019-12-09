@@ -144,7 +144,6 @@ export default {
             }
             // console.log("拼接");
             //更新分页参数
-            console.log(page.page);
             this.$set(this, "page", {
               count: 10,
               page: ++page.page,
