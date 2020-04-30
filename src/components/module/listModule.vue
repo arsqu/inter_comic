@@ -66,6 +66,14 @@ export default {
 };
 </script>
 
+<style>
+.com_tit {
+  /* ! autoprefixer: off */
+  -webkit-box-orient: vertical;
+  /* autoprefixer:on */
+}
+</style>
+
 <style lang="stylus" scoped>
 .com_lists
   display flex
@@ -87,9 +95,6 @@ export default {
     .com_tit
       overflow hidden
       display -webkit-box
-      /* ! autoprefixer: off */
-      -webkit-box-orient vertical
-      /* autoprefixer:on */
       -webkit-line-clamp 2
       word-break break-all
       color #4b566a

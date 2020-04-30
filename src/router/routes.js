@@ -100,6 +100,19 @@ export default new VueRouter({
       component: () => import('@/components/new_info'),
     },
     {
+      path: '/new_infos.html',
+      name: 'new_infos',
+      component: () => import('@/components/new_infos'),
+    },
+    {
+      path: '/info_detl.html',
+      name: 'info_detl',
+      component: () => import('@/components/info_detl'),
+      meta: {
+        title: i18n.t("infoDetl.title")
+      },
+    },
+    {
       path: '/new_charging.html',
       name: 'new_charging',
       component: () => import('@/components/new_charging'), //充值
@@ -166,6 +179,30 @@ export default new VueRouter({
       component: () => import('@/components/search'),
       meta: {
         title: i18n.t("search.search"),
+        keepAlive: true
+      }
+    },
+    {
+      path: '/guide.html',
+      name: 'guide',
+      component: () => import('@/components/doc/guide'),
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/policy.html',
+      name: 'policy',
+      component: () => import('@/components/doc/policy'),
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/refund.html',
+      name: 'refund',
+      component: () => import('@/components/doc/refund'),
+      meta: {
         keepAlive: true
       }
     },

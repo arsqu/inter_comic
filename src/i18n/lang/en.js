@@ -79,17 +79,21 @@ export default {
     end: 'Already to the end'
   },
   view: {
-    'tips': {
-      'pay': 'Currently paid chapter',
-      'first': 'Already the first page',
-      'last': 'Already the last page'
+    tips: {
+      pay: 'Currently paid chapter',
+      first: 'Already the first page',
+      last: 'Already the last page'
     }
   },
   userInfo: {
     tabList: ['Reading record', 'My Favorites'],
     feedback: 'Feedback',
     rCode: 'Referral Code',
-    tips: 'To be developed...'
+    info: "Profile",
+    // tips: 'To be developed...'
+    tips: {
+      toLogin: 'Sign in for more features'
+    }
   },
   login: {
     notAllowed: 'Not logged in',
@@ -194,6 +198,22 @@ export default {
       success: 'Recharge successful',
       err: 'Recharge failed',
       wait: 'Please click again after 2 seconds'
+    }
+  },
+  infoDetl: {
+    title: 'Profile',
+    nick: 'nickName',
+    balance: 'balance',
+    code: 'Invitation code',
+    mail: 'email',
+    phone: 'phone',
+    gender: 'gender',
+    genderType: {
+      m: 'male',
+      w: 'female'
+    },
+    func: {
+      autoBuy: 'Automatic purchase'
     }
   },
   response: {

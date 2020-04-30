@@ -1,18 +1,10 @@
-// 语言
-const lang = {
-  hi: 'Hindee',
-  en: 'English'
-}
-
 // 自适应图片
 const oss = 'x-oss-process=image/auto-orient,1/quality,q_100/resize,m_lfit,limit_1,w_';
 const Wid = window.screen.width;
 const autoImg = {
   swiper: oss + Wid,
-  // column: oss + ~~(Wid / 3), //index
   column: oss + ~~(Wid >= 768 ? Wid / 3 : Wid), //index
   gaussian: oss + 365, //new_detl 固定宽度
-  // list: oss + 165, //listModule 固定宽度
   list: oss + ~~(Wid >= 768 ? Wid / 2 : Wid), //listModule 固定宽度
   chapterView: oss + (Wid <= 768 ? 768 : Wid), //章节详情 auto Height
 }
@@ -40,9 +32,6 @@ var browser = {
 
 // alert(navigator.userAgent)
 
-//download
-const downUrl = '/static/download/MangaLine_20191122.apk';
-
 // 路由
 const Router = {
   // login: 'userCtrl', //登录路由
@@ -50,6 +39,54 @@ const Router = {
   charging: 'new_charging' //充值
 }
 
+const Header = {
+  headerShow: ['new_view', 'new_infos'],
+  customTxt: [
+    "groupItem", "new_detl", "new_view", "new_info", "userCtrl", "login", "register", "main"
+  ],
+  colorIcon: [
+    "new_charging",
+    "new_week",
+    "info_detl",
+    "search",
+    "feedback"
+  ]
+}
+
+const Tabbar = {
+  hideTab: ['new_detl', 'new_view', 'info_detl', 'groupItem', 'newInfo', 'feedback', 'login', 'register', '406', 'notFound']
+}
+
 export default {
-  lang, autoImg, Router, downUrl
+  autoImg,
+  Router,
+  //语言包
+  lang: {
+    hi: 'Hindee',
+    en: 'English'
+  },
+  //需要登录显示的页面
+  loginView: [
+    // 'new_detl', 
+    'new_view'
+  ],
+  tabItem: {
+    bookmark: [''],
+  },
+  // 不显示Header
+  headerShow: Header.headerShow,
+  // 有底色的导航栏
+  colorIcon: Header.colorIcon,
+  // 自定义标题文字
+  customTxt: Header.customTxt,
+  // 是否显示Tabbar
+  showTabbar: false,
+  // 不显示Tabbar
+  hideTab: Tabbar.hideTab,
+  // 是否显示下载apk
+  showDownload: false,
+  // 下载显示的区域
+  isDown: ['main'],
+  //'main'
+  downUrl: '/static/download/MangaLine_20191122.apk' //apk下载地址
 }

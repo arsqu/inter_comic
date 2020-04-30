@@ -59,6 +59,7 @@ export default {
   },
   activated() {
     console.log("缓存触发");
+    console.log(this.$route.name);
     this.$bus.$emit("navBar", false);
     this.$bus.$emit("loading", false); //关闭loading加载效果
   },
@@ -116,6 +117,7 @@ export default {
   }
 };
 </script>
+
 
 <style lang="stylus" scoped>
 /*公共导航*/

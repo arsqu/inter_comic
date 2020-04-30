@@ -1,38 +1,33 @@
+/* reset */
+
 html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, pre, code, del, em, img, q, small, strong, sub, sup, b, i, dl, dt, dd, ol, ul, li, form, label, table, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, footer, header, menu, nav, section, audio, video {
   margin: 0;
   padding: 0;
-  background: transparent;
+  /*Mobile end click flicker*/
+  -webkit-tap-highlight-color: transparent;
+}
+
+* {
+  box-sizing: border-box;
 }
 
 html, body {
   background: #fff;
   cursor: pointer;
-}
-
-html {
-  height: 100%;
-}
-
-body {
+  /* -webkit-overflow-scrolling: touch; */
   -webkit-text-size-adjust: 100%;
   font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
-}
-
-* {
-  box-sizing: border-box;
-  /*Mobile end click flicker*/
-  -webkit-tap-highlight-color: transparent;
+  height: 100%;
 }
 
 /* ios */
 
-input[type="button"], input[type="submit"], input[type="file"], button {
-  cursor: pointer;
+input, textarea {
+  -webkit-appearance: none;
 }
 
-.mint-cell-wrapper, .mint-cell:last-child {
-  background-image: none;
-  box-sizing: border-box
+input[type="button"], input[type="submit"], input[type="file"], button {
+  cursor: pointer;
 }
 
 .disable_txt {
@@ -83,6 +78,49 @@ a, button, input {
   -webkit-tap-highlight-color: rgba(255, 0, 0, 0);
 }
 
+.opac {
+  opacity: .6;
+}
+
+/*backTop*/
+
+.backTop {
+  border: 1px solid #ddd;
+  position: fixed;
+  z-index: 100;
+  background: #fff;
+  width: 0;
+  height: 0;
+  right: 25px;
+  bottom: 10%;
+  transition: all .4s ease;
+  opacity: 0;
+  border-radius: 50%;
+  /*display: none;*/
+  box-shadow: 0 0 5px #f7f7f7;
+}
+
+.backTop:after {
+  border-top: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-color: #666;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 20px;
+  width: 20px;
+  margin-top: -6px;
+  margin-left: -10px;
+  transform: rotate(-45deg);
+  content: '';
+}
+
+.backTop.show {
+  width: 90px;
+  height: 90px;
+  opacity: 1;
+}
+
 .back {
   z-index: 100;
   border-top: 3px solid transparent;
@@ -124,52 +162,6 @@ a, button, input {
   height: 64px;
 }
 
-/* main */
-
-.icon_language {
-  background: url('/static/img/css_sprites.png') -10px -10px;
-}
-
-.icon_update {
-  background: url('/static/img/css_sprites.png') -94px -10px;
-}
-
-.icon_rank {
-  background: url('/static/img/css_sprites.png') -178px -178px;
-}
-
-.icon_home {
-  background: url('/static/img/css_sprites.png') -10px -94px;
-}
-
-.icon_home_view {
-  background: url('/static/img/css_sprites.png') -94px -94px;
-}
-
-.icon_list {
-  background: url('/static/img/css_sprites.png') -178px -10px;
-}
-
-.icon_lock {
-  background: url('/static/img/css_sprites.png') -178px -94px;
-}
-
-.icon_next {
-  background: url('/static/img/css_sprites.png') -10px -178px;
-}
-
-.icon_prev {
-  background: url('/static/img/css_sprites.png') -94px -178px;
-}
-
-.icon_search {
-  background: url('/static/img/css_sprites.png') -262px -10px;
-}
-
-.icon_user {
-  background: url('/static/img/css_sprites.png') -262px -94px;
-}
-
 /* 按钮样式 */
 
 .btn {
@@ -202,37 +194,6 @@ a, button, input {
   background: #3478F6;
 }
 
-/* swipe 组件样式*/
-
-.mint-swipe-indicators {
-  bottom: 45px;
-}
-
-.mint-swipe-indicator {
-  background: #fff;
-  opacity: 1;
-}
-
-.mint-swipe-indicator.is-active {
-  width: 18px;
-  border-radius: 10px;
-  background: #FF9A66;
-}
-
-.mint-swipe-indicator {
-  width: 10px;
-  height: 10px;
-}
-
-/* spinner 组件 */
-
-.page-infinite-loading {
-  text-align: center;
-  height: 80px;
-  line-height: 80px;
-  font-size: 30px;
-}
-
 .r_loading {
   display: inline-block;
   vertical-align: middle;
@@ -246,4 +207,62 @@ a, button, input {
   font-size: 28px;
   padding: 20px;
   text-align: center;
+}
+
+/* download */
+
+.downloadApp {
+  background: #fff;
+  box-shadow: 0 0 12px #c9bebe;
+  position: fixed;
+  bottom: 0;
+  display: flex;
+  width: 100%;
+  z-index: 99;
+  padding: 20px 20px 20px 25px;
+  align-items: center;
+  justify-content: center;
+}
+
+.downloadApp i.close {
+  background: url('/static/img/icon_new/s_close.png') no-repeat;
+  height: 40px;
+  width: 40px;
+  z-index: 10;
+  cursor: pointer;
+  background-size: 100%;
+  margin-right: 25px;
+}
+
+.downloadApp img {
+  width: 13%;
+  border-radius: 20px;
+}
+
+.downloadApp .down_txt {
+  font-size: 28px;
+  color: #252525;
+  padding-top: 10px;
+  flex: 1;
+  padding: 10px 20px;
+}
+
+.downloadApp .down_txt p:last-child {
+  padding-top: 10px;
+  color: #666;
+}
+
+.downloadApp .down_btn {
+  width: 150px;
+  height: 60px;
+  line-height: 60px;
+  text-align: center;
+  top: 15px;
+  display: inline-block;
+  right: 10px;
+  background: #FD113A;
+  border: 2px solid #643b3b;
+  border-radius: 50px;
+  font-size: 25px;
+  color: #F8F8F9;
 }

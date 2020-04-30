@@ -191,7 +191,7 @@ export default {
     },
     // 支付
     showBox(opt, idx) {
-      // console.log(this.id, idx);
+      console.log(opt, idx);
       this.$bus.$emit("comic", {
         bookId: this.bookId,
         chapterId: opt.id,
@@ -222,27 +222,21 @@ export default {
       var chapterList = localStorage.getItem("cache_chapter");
       this.chapterList =
         typeof chapterList == "string" ? JSON.parse(chapterList) : chapterList;
-      if (!this.prev) {
+      var prevIdx = this.currentIdx - 1,
+        prev = this.chapterList[prevIdx];
+      if (prevIdx < 0) {
         this.$util.Toast("view.tips.first");
         return;
       }
-      if (
-        this.chapterList[this.prevIdx] &&
-        this.chapterList[this.prevIdx].is_free
-      ) {
+      if (prev && prev.is_free) {
         this.$util.Toast("view.tips.pay");
-        this.showBox(this.prevChapter, this.prevIdx);
+        this.showBox(prev, prevIdx);
         return;
       }
-      if (this.prev !== null && this.prev !== "" && this.currentIdx - 1 >= 0) {
-        this.$router.push({
-          name: "new_view",
-          params: { id: this.prev, bookId }
-        });
-      } else {
-        this.$util.Toast("view.tips.first");
-      }
-      console.log("prev");
+      this.$router.push({
+        name: "new_view",
+        params: { id: prev.id, bookId }
+      });
     },
     //查看下一章
     viewNext() {
@@ -251,33 +245,21 @@ export default {
       var chapterList = localStorage.getItem("cache_chapter");
       this.chapterList =
         typeof chapterList == "string" ? JSON.parse(chapterList) : chapterList;
-      if (!this.next) {
+      var nextIdx = this.currentIdx + 1,
+        next = this.chapterList[nextIdx];
+      if (nextIdx >= this.chapterList.length) {
         this.$util.Toast("view.tips.last");
         return;
       }
-      if (
-        this.chapterList[this.nextIdx] &&
-        this.chapterList[this.nextIdx].is_free
-      ) {
+      if (next && next.is_free) {
         this.$util.Toast("view.tips.pay");
-        this.showBox(this.nextChapter, this.nextIdx);
+        this.showBox(next, nextIdx);
         return;
       }
-      if (
-        this.next !== null &&
-        this.next !== "" &&
-        this.currentIdx + 1 < this.chapterList.length
-      ) {
-        // console.log("查看下一章", id, bookId);
-        this.$router.push({
-          name: "new_view",
-          params: { id: this.next, bookId }
-        });
-      } else {
-        // console.log(this.currentIdx);
-        this.$util.Toast("view.tips.last");
-      }
-      console.log("next");
+      this.$router.push({
+        name: "new_view",
+        params: { id: next.id, bookId }
+      });
     },
     //获取漫画图文
     getBookDetl() {

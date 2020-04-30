@@ -54,8 +54,10 @@ export default {
           break;
         case "Info":
           this.selected = "Info";
-          if (this.$route.name != "new_info") {
-            this.$router.push({ name: "new_info" });
+          // var info = 'new_info';
+          var info = "new_infos";
+          if (this.$route.name != info) {
+            this.$router.push({ name: info });
           }
           break;
       }
@@ -68,6 +70,18 @@ export default {
         this.clear(state);
         if (this.o["is" + state]) this.$set(this.o, ["is" + state], !1);
       }
+    },
+    defSel() {
+      var state = this.$route.name;
+      console.log(state);
+      this.selected = "Main";
+      this.clear(state);
+      if (state == "bookmark") {
+        this.selected = "Storage";
+      }
+      if (this.o["is" + this.selected])
+        this.$set(this.o, ["is" + this.selected], !1);
+      // if (this.o["is" + state]) this.$set(this.o, ["is" + state], !1);
     },
     //默认选中tabbar
     defTab() {
@@ -86,13 +100,8 @@ export default {
   },
   created() {
     console.log("tabbar初始化");
-    this.defTab();
+    this.defSel();
+    // this.defTab();
   }
 };
 </script>
-
-<style lang="stylus" scoped>
-.cusTab >>> .mint-tab-item.is-selected
-  color #FF8D75
-</style>
-

@@ -1,0 +1,47 @@
+/* cell */
+
+.mint-cell-wrapper, .mint-cell:last-child {
+  background-image: none;
+  box-sizing: border-box
+}
+
+/* swipe */
+
+.mint-swipe-indicators {
+  bottom: 45px;
+}
+
+.mint-swipe-indicator {
+  background: #fff;
+  opacity: 1;
+}
+
+.mint-swipe-indicator.is-active {
+  width: 18px;
+  border-radius: 10px;
+  background: #FF9A66;
+}
+
+.mint-swipe-indicator {
+  width: 10px;
+  height: 10px;
+}
+
+/* spinner */
+
+.page-infinite-loading {
+  text-align: center;
+  height: 80px;
+  line-height: 80px;
+  font-size: 30px;
+}
+
+/* tabbar */
+
+.cusTab.mint-tabbar.is-fixed {
+  z-index: 99;
+}
+
+.cusTab .mint-tab-item.is-selected {
+  color: #FF8D75;
+}

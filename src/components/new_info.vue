@@ -12,7 +12,7 @@
       <!-- </div> -->
       <div class="info_box" v-show="isLogin">
         <div class="info_img">
-          <img src="/static/img/icon_new/mrtx.gif" />
+          <img src="/static/img/icon_new/iAccount.png" />
           <div class="login_name">{{uname}}</div>
         </div>
         <div class="infoTop">
@@ -29,12 +29,15 @@
     </div>
     <div class="infoList">
       <ul class="icon_info">
-        <li class="icon_item recharge" @click="recharge">
+        <router-link class="icon_item profile" tag="li" :to="{name:'info_detl'}" v-show="isLogin">
+          <span>{{$t('userInfo.info')}}</span>
+        </router-link>
+        <li class="icon_item recharge" tag="li" @click="recharge">
           <span>{{$t('common.recharge')}}</span>
         </li>
-        <li class="icon_item feedback">
-          <router-link tag="span" :to="{name:'feedback'}">{{$t('userInfo.feedback')}}</router-link>
-        </li>
+        <router-link class="icon_item feedback" tag="li" :to="{name:'feedback'}">
+          <span>{{$t('userInfo.feedback')}}</span>
+        </router-link>
       </ul>
       <ul class="icon_info mt-5">
         <li class="icon_item disabled disable_txt readRecord">
@@ -57,7 +60,6 @@ export default {
       isCur: 1,
       isLogin: false,
       tabList: [],
-      //用户信息
       uname: "",
       rcode: "",
       money: "",
@@ -110,21 +112,29 @@ export default {
       this.$router.push({ name: this.$config.Router.charging });
     },
     loadData() {
-      this.$api.getDataN("hasMoney").then(res => {
-        // console.log(res);
-        if (res.code == 1) {
-          var data = res.data;
-          localStorage.setItem("money", data.money);
-          localStorage.setItem("uname", data.unick);
-          this.money = data.money;
-          this.uname = data.unick;
-        } else if (res.code == 401) {
-          //服务器登录状态是否过期
+      this.$api
+        .getDataN("hasMoney")
+        .then(res => {
+          // console.log(res);
+          if (res.code == 1) {
+            var data = res.data;
+            data.upass = "";
+            localStorage.setItem("money", data.money);
+            localStorage.setItem("uname", data.unick);
+            localStorage.setItem("userInfo", JSON.stringify(data));
+            this.money = data.money;
+            this.uname = data.unick;
+          } else if (res.code == 401) {
+            //服务器登录状态是否过期
+            this.isLogin = false;
+            // localStorage.setItem("loginUrl", this.$route.fullPath);
+            this.$util.clearItem();
+          }
+        })
+        .catch(err => {
           this.isLogin = false;
-          // localStorage.setItem("loginUrl", this.$route.fullPath);
           this.$util.clearItem();
-        }
-      });
+        });
     }
   }
 };
@@ -182,14 +192,16 @@ pad()
   border-radius 50px
   background #fb8a8a
   color #fff
-  position absolute
-  bottom 10%
-  padding 25px 0
+  //position absolute
+  position fixed
+  bottom 5%
+  height 80px
+  line-height 80px
   margin 0 50px
   width calc(100% - 100px)
   text-align center
 .info_bg
-  padding 20% 50px
+  padding 18% 50px
   background-image linear-gradient(to right, #FD63A1, #FF708B, #FF7582, #FE875D)
   .info_box
     display flex
@@ -220,7 +232,8 @@ pad()
       justify-content space-between
 .infoList
   pad()
-  background #F9F9F9
+  padding-bottom calc(5% + 160px)
+  //background #F9F9F9
   .icon_info
     background #fff
     box-shadow 0 0 5px #ddd
@@ -246,6 +259,21 @@ pad()
         left 0
         margin-top -20px
         margin-left 20px
+      &:not(.disabled):after
+        content ''
+        width 40px
+        height 40px
+        display inline-block
+        position absolute
+        top 50%
+        right 0
+        margin-top -20px
+        margin-left 20px
+        background url('/static/img/icon_new/arrow_right.png')
+        background-size 100%
+      &.profile:before
+        background url('/static/img/icon_new/profile.png')
+        background-size 100%
       &.recharge:before
         background url('/static/img/icon_new/recharge.png')
         background-size 100%

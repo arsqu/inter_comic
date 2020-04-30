@@ -105,8 +105,6 @@ export default {
       payBox: false, //支付框
       payment: false, //确认并支付
       isLogin: false,
-      // isLogin1: false,
-      // isLogin2: false,
       balance: "", //余额
       money: "", //充值金额
       exchangeRate: "", //兑换比例

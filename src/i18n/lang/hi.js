@@ -89,7 +89,11 @@ export default {
     tabList: ['padhane ka rikord', 'mere pasandeeda'],
     feedback: 'pratipushti',
     rCode: 'repharal kod',
-    tips: 'lambit vikaas...'
+    info: 'profail',
+    // tips: 'lambit vikaas...',
+    tips: {
+      toLogin: 'adhik suvidhaon ke lie sain in karen'
+    }
   },
   login: {
     notAllowed: 'log in nahin kiya gaya',
@@ -194,6 +198,22 @@ export default {
       success: 'richaarj saphal',
       err: 'richaarj phel ho gaya',
       wait: 'krpaya 2 sekand ke baad phir se klik karen'
+    }
+  },
+  infoDetl: {
+    title: 'profail',
+    nick: 'nichnamai',
+    balance: 'balanchai',
+    code: 'nimantran kod',
+    mail: 'eemel',
+    phone: 'phon',
+    gender: 'ling',
+    genderType: {
+      m: 'purush',
+      w: 'mahila'
+    },
+    func: {
+      autoBuy: ' svachaalit khareed'
     }
   },
   response: {

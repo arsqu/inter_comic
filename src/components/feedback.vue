@@ -2,7 +2,7 @@
   <div class="suggest">
     <!-- <div>
       <a href="sms:10086?body=测试">测试短信</a>
-    </div> -->
+    </div>-->
     <div class="form_box">
       <div class="form_item">
         <label></label>
@@ -113,12 +113,27 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
-.suggest
+inp()
   width 100%
-  height calc(100vh - 100px)
-  padding 20px
-  position relative
-  background #F9F9F9
+  border 0 none
+  padding 5px 10px
+  font-size 30px
+  color #666
+  border-radius 10px
+  transition all .6s ease
+  box-shadow 0 0 6px #ddd
+  outline 0 none
+  &:focus 
+    box-shadow 0 0 6px #4bc461
+.suggest
+  padding 0 20px
+  position absolute
+  background #f9f9f9
+  left 0
+  right 0
+  bottom 0
+  top 0
+  margin-top 110px
   .form_box
     .form_item
       label
@@ -127,34 +142,17 @@ export default {
         font-size 28px
         padding 10px 0 10px 10px
       input
-        border 0 none
-        width 100%
-        padding 5px 10px
+        inp()
         height 70px
-        outline 0 none
-        transition all .6s ease
-        border-radius 10px
-        box-shadow 0 0 6px #ddd
-        &:focus
-          box-shadow 0 0 6px #4bc461
     .content
-      width 100%
-      border 0 none
-      padding 10px
+      inp()
       min-height 250px
-      transition all .6s ease
-      outline 0 none
-      color #666
-      box-shadow 0 0 6px #ddd
-      &:focus
-        box-shadow 0 0 6px #4bc461
   .prompt_txt
     font-size 30px
     color #eb2727
   .postBtn
-    width calc(100% - 40px)
-    position absolute
-    bottom 12%
+    width 100%
+    margin-top 50px
     &>span
       background #fd183d
       color #fff

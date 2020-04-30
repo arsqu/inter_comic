@@ -1,5 +1,5 @@
-// import mintUiCom from './mintUiCom' //局部引入mintUi
 import './assets/css/common.css' //公共样式
+import './assets/css/resetui.css' //重置样式
 import 'amfe-flexible' //自适应
 // import 'babel-polyfill'
 // import 'default-passive-events'
@@ -19,7 +19,7 @@ Vue.use(Lazyload, {
   // error: '/static/img/404.png',
   // loading: '/static/img/404.png'
 });
-console.dir(instance);
+// console.dir(instance);
 
 Vue.config.productionTip = false
 Vue.prototype.$axios = instance

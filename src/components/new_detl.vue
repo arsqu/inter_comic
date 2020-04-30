@@ -34,7 +34,7 @@
       </div>
     </div>
     <!-- download app -->
-    <div class="downloadApp" v-if="closeApp">
+    <div class="downloadApp" v-if="closeApp && $config.showDownload">
       <!-- <i class="close" @click="close"></i> -->
       <i class="close" @click="close"></i>
       <img src="/static/img/win-logo.png" alt />
@@ -304,9 +304,8 @@ export default {
       this.$set(this.autoSize, "het", oHet);
     },
     sendMsg() {
-      this.$bus.$off("chapter");
       //解锁
-      this.$bus.$on("chapter", data => {
+      this.$bus.$off("chapter").$on("chapter", data => {
         console.log("new_detl,onchapter", data);
         if (data.chapterId) {
           this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);

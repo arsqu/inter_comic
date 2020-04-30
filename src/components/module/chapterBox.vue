@@ -1,6 +1,7 @@
 <template>
   <!-- 弹出框 -->
   <!-- v-show="isRecharge" -->
+  <!-- <div class="recharge show"> -->
   <div :class="['recharge',isRecharge?'show':'']">
     <img class="close" @click="closeModal" src="/static/img/icon_new/win-cross.png" />
     <div class="rechargeDetl">
@@ -46,14 +47,12 @@ export default {
   },
   created() {
     this.btnTxt = this.$t("detl.btnTxt");
-    this.init();
     // console.log(this.chapterInfo);
   },
   activated() {
     console.log("activated");
   },
   methods: {
-    init() {},
     btnFunc() {
       this.$emit("btnFunc", 1);
     },
@@ -72,14 +71,21 @@ export default {
   & >>> .mint-checklist-title
     margin 0
   background #fff
-  // z-index 200
+  //z-index 200
   z-index -1
   position fixed
   bottom -100%
   width 100%
+  height 0
+  // width 0
+  transform translate3d(0, 100%, 0)
   transition all .4s ease
+  // transition all .4s ease
   &.show
     bottom 0
+    transform translate3d(0, 0, 0)
+    height auto
+    // width 100%
     z-index 200
   & > .close
     width 30px

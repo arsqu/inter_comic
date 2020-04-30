@@ -13,6 +13,8 @@ import fetch from './fetch'
 var env = process.env;
 var comUrl = env.SERVER_GO,
   nextUrl = env.SERVER_JAVA;
+// 老漫画后台 http://mangaline.net:8088
+// 新漫画后台 http://149.129.174.240:8088/
 var base = '/api/v1';
 
 const crossUrl = {

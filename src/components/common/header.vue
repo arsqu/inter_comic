@@ -1,7 +1,7 @@
 <template>
   <!-- 页头 -->
   <div class="top_fixed">
-    <div :class="[showBgIcon?'bg':'','top_bar']">
+    <div :class="[{zIndex},showBgIcon?'bg':'','top_bar']">
       <div class="top_logo">
         <span class="icon_logo" v-show="loader">Mangaline</span>
         <div class="top_detl_txt" v-show="!loader">
@@ -10,7 +10,7 @@
         </div>
       </div>
       <div class="top_tools">
-        <span v-show="showHome" @click="changeWords">
+        <span v-show="showHome" @click="selLanguage">
           <img :src="iconFile+'/language.png'" alt="language" />
         </span>
         <router-link :to="{name:'search'}" v-show="$route.name!='search'">
@@ -21,7 +21,8 @@
           <img v-show="!showBgIcon" :src="iconFile+'/home.png'" alt="home" />
           <img v-show="showBgIcon" :src="iconFile+'/home_bg.png'" alt="home" />
         </router-link>
-        <router-link :to="{name:'new_info'}" v-show="showHome">
+        <!-- <router-link :to="{name:'new_info'}" v-show="showHome"> -->
+        <router-link :to="{name:'new_infos'}" v-show="showHome">
           <img :src="iconFile+'/user.png'" alt="userInfo" />
         </router-link>
       </div>
@@ -38,6 +39,7 @@ export default {
   },
   props: {
     loader: Boolean,
+    zIndex: Boolean,
     showBgIcon: Boolean,
     showHome: Boolean,
     comicTxt: String
@@ -48,8 +50,9 @@ export default {
       this.$router.go(-1);
     },
     //切换语言
-    changeWords() {
-      this.$bus.$emit("isLanguage", 1);
+    selLanguage() {
+      console.log("selLanguage");
+      this.$bus.$emit("isLangBox", true);
     }
   }
 };
@@ -72,6 +75,8 @@ export default {
   padding 0 25px
   display flex
   align-items center
+  &.zIndex
+    z-index 101
   .top_logo, .top_detl_txt
     font-weight bold
     font-size 38px
