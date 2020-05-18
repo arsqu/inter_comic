@@ -20,6 +20,12 @@ function replaceUrl(url, param) {
   return url + '.html/' + param.join('/');
 }
 
+function getQueryString(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) return unescape(r[2]); return null;
+}
+
 function Toast(txt, trans) {
   if (txt) {
     i18n = i18n || window.vm.$i18n;
@@ -47,6 +53,7 @@ function clearItem() {
 
 export default {
   clearItem, replaceUrl,
+  getQueryString,
   awaitReturn,
   closeToast, Toast,
   statistics

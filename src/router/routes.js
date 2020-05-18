@@ -182,10 +182,18 @@ export default new VueRouter({
         keepAlive: true
       }
     },
+    // {
+    //   path: '/guide.html',
+    //   name: 'guide',
+    //   component: () => import('@/components/doc/guide'),
+    //   meta: {
+    //     keepAlive: true
+    //   }
+    // },
     {
       path: '/guide.html',
       name: 'guide',
-      component: () => import('@/components/doc/guide'),
+      component: () => import('@/components/doc/guide_1'),
       meta: {
         keepAlive: true
       }
@@ -194,6 +202,14 @@ export default new VueRouter({
       path: '/policy.html',
       name: 'policy',
       component: () => import('@/components/doc/policy'),
+      meta: {
+        keepAlive: true
+      }
+    },
+    {
+      path: '/about.html',
+      name: 'about',
+      component: () => import('@/components/doc/about'),
       meta: {
         keepAlive: true
       }

@@ -30,6 +30,17 @@ var browser = {
   language: (navigator.browserLanguage || navigator.language).toLowerCase()
 }
 
+function getQueryString(name) {
+  var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+  var r = window.location.search.substr(1).match(reg);
+  if (r != null) return unescape(r[2]); return null;
+}
+
+var inApp = getQueryString('isApp');
+if (inApp) {
+  localStorage.setItem('isApp', '1')
+}
+
 // alert(navigator.userAgent)
 
 // 路由
@@ -83,7 +94,8 @@ export default {
   showTabbar: false,
   // 不显示Tabbar
   hideTab: Tabbar.hideTab,
-  // 是否显示下载apk
+  // 是否显示下载apk(根据url的isApp参判断是否在webview中)
+  // showDownload: (localStorage.getItem('isApp') || getQueryString('isApp')) ? false : true,
   showDownload: false,
   // 下载显示的区域
   isDown: ['main'],

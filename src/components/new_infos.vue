@@ -47,8 +47,9 @@
       </ul>
     </div>
     <div class="label_box">
-      <router-link :to="{name:'guide'}">TERMS OF USE</router-link>
+      <router-link :to="{name:'guide'}">Terms and Conditions</router-link>
       <router-link :to="{name:'policy'}">Privacy Policy</router-link>
+      <router-link :to="{name:'about'}">About</router-link>
       <router-link :to="{name:'refund'}">Refund and Cancellation Policy</router-link>
     </div>
     <div class="logOut" v-show="isLogin" @click="logOut">{{$t('common.singOut')}}</div>

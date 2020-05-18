@@ -11,7 +11,8 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-const env = require('../config/prod.env')
+// const env = require('../config/prod.env')
+const env = config.build[process.env.ENV_CONFIG + 'Env'] //根据不同环境打包
 
 const webpackConfig = merge(baseWebpackConfig, {
   externals: {
@@ -29,7 +30,8 @@ const webpackConfig = merge(baseWebpackConfig, {
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
-    path: config.build.assetsRoot,
+    // path: config.build.assetsRoot,
+    path: path.resolve(__dirname, '../dist/' + env.OUT_PUT),
     filename: utils.assetsPath('js/[name].[chunkhash].js?version=' + env.APP_VERSION),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js?version=' + env.APP_VERSION)
   },
@@ -68,7 +70,9 @@ const webpackConfig = merge(baseWebpackConfig, {
     // you can customize output by editing /index.html
     // see https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
-      filename: config.build.index,
+      // filename: config.build.index,
+      // index: path.resolve(__dirname, '../dist/index.html'),
+      filename: path.resolve(__dirname, '../dist/' + env.OUT_PUT + '/index.html'),
       template: 'index.html',
       inject: true,
       minify: {

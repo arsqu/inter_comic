@@ -7,11 +7,14 @@
   "scripts": {
     "dev": "webpack-dev-server --inline --host 0.0.0.0 --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
-    "build": "node build/build.js"
+    "build": "node build/build.js",
+    "build:manga": "cross-env NODE_ENV=mangaEnviroment ENV_CONFIG=manga node build/build.js",
+    "build:xulin": "cross-env NODE_ENV=xulinEnviroment ENV_CONFIG=xulin node build/build.js"
   },
   "dependencies": {
     "amfe-flexible": "^2.2.1",
     "axios": "^0.18.0",
+    "cross-env": "^7.0.2",
     "default-passive-events": "^1.0.10",
     "mint-ui": "^2.2.13",
     "vue": "^2.5.2",

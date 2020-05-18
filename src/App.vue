@@ -119,6 +119,8 @@ export default {
     window.addEventListener("scroll", this.showBtn); //监听滚动显示按钮
   },
   methods: {
+    // 获取参数
+    getParam() {},
     //关闭
     close() {
       console.log("close");

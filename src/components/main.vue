@@ -29,6 +29,8 @@
       </ul>
     </div>
 
+    <!-- <div class="mt-3">{{href}}</div> -->
+
     <!-- 推荐栏 -->
     <div class="push_item">
       <column :autoImg="this.$config.autoImg.column" :bookList="bookList" />
@@ -44,6 +46,7 @@ const column = () => import("./module/column");
 export default {
   data() {
     return {
+      href: location.href,
       bannerList: [], //广告图
       bookList: [], //首页详情
       loadState: true //滚动加载提示
@@ -120,6 +123,8 @@ export default {
 
 
 <style lang="stylus" scoped>
+// .mt-3
+//   margin-top 50px
 /*公共导航*/
 .swiper_box
   height 435px
