@@ -13,18 +13,34 @@
     </div>
     <div>
       <i class="icon icon_phone"></i>
-      <span class="phone_call">+91-9370954921</span>
+      <span class="phone_call">{{phone}}</span>
     </div>
     <div>
       <i class="icon icon_email"></i>
-      <span>customer service: cs@muzeglobal.com</span>
+      <span>customer service: cs@{{suffix}}</span>
     </div>
     <div>
       <i class="icon"></i>
-      <span>business: bd@muzeglobal.com</span>
+      <span>business: bd@{{suffix}}</span>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+  data() {
+    return {
+      phone: "",
+      suffix: "",
+    };
+  },
+  mounted() {
+    var siteDir = this.$project.siteDetl;
+    this.phone = siteDir.phone;
+    this.suffix = siteDir.mail;
+  },
+};
+</script>
 
 <style lang="stylus" scoped>
 .docView
@@ -55,6 +71,7 @@
       color #fff
       font-size 43px
     color #8C8989
+    vertical-align middle
     font-size 35px
   .icon
     vertical-align middle

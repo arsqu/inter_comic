@@ -1,9 +1,10 @@
 
 var toast, i18n;
 
+// 渠道号 状态
 function statistics(ch, status) {
   if (_hmt)
-    _hmt.push(["_trackEvent", ch, status]); //充值失败数
+    _hmt.push(["_trackEvent", ch, status]);
 }
 
 function closeToast() {
@@ -52,7 +53,8 @@ function clearItem() {
 }
 
 export default {
-  clearItem, replaceUrl,
+  clearItem,
+  replaceUrl,
   getQueryString,
   awaitReturn,
   closeToast, Toast,

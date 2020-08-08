@@ -1,9 +1,13 @@
 'use strict';
 module.exports = {
-  NODE_ENV: '"mangaEnvironment"',
-  APP_VERSION: '1.36', //2020/5/05
+  NODE_ENV: '"mangaEnviron"',
+  APP_VERSION: '1.46', // 2020/7/28 15:57
   ENV_CONFIG: '"manga"',
-  OUT_PUT: "'mangaline'",
+  OUT_PUT: "'Mangaline'",
+  PRO_DIFF: {
+    title: "Mangaline"
+  },
+  APP_DOWN: true,
   API_BASE: '""',
   SERVER_GO: '""',
   SERVER_JAVA: '"http://mangaline.net:8088"' //旧漫画网站

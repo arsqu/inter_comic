@@ -1,21 +1,13 @@
-# comic_project
+# 漫画
 
-> A Vue.js project (印度漫画)
+## 更新日志
 
-## Build Setup
 
-``` bash
-# install dependencies
-npm install
+#### 2020/07/24 (1.43)
++ 需付费章节的弹窗中去掉自动勾选"自动购买下一章按钮"(勾选后不会弹窗)
 
-# serve with hot reload at localhost:8080
-npm run dev
-
-# build for production with minification
-npm run build
-
-# build for production and view the bundle analyzer report
-npm run build --report
-```
-
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+#### 2020/07/23 (1.41)
++ 百度统计`pv`从统计登录、注册、充值三个页改为统计所有页面
++ 注册时根据渠道区分,没有渠道号时网站默认为`ch001`,`apk`注册默认为`ch002`
++ 渠道名去掉`ch`前缀
++ 注册完自动登录,个人信息`unick`字段改为`uname`

@@ -12,6 +12,11 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
+const env = require('../config/dev.' + process.env.ENV_CONFIG)
+
+console.log('```````````````````````````````env```````````````````````````````')
+console.log(env)
+console.log('```````````````````````````````env```````````````````````````````')
 
 const devWebpackConfig = merge(baseWebpackConfig, {
   module: {
@@ -46,7 +51,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   },
   plugins: [
     new webpack.DefinePlugin({
-      'process.env': require('../config/dev.env')
+      // 'process.env': require('../config/dev.env')
+      'process.env': env
     }),
     new webpack.HotModuleReplacementPlugin(),
     new webpack.NamedModulesPlugin(), // HMR shows correct file names in console on update.
@@ -54,6 +60,10 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     // https://github.com/ampedandwired/html-webpack-plugin
     new HtmlWebpackPlugin({
       filename: 'index.html',
+      // title: process.env.ENV_CONFIG,
+      title: env.PRO_DIFF.title,
+      shareImg: process.env.ENV_CONFIG == 'manga' ? '/static/img/share.jpg' : '/static/img/def_share.jpg',
+      // shareImg: '/static/img/def_share.jpg',
       template: 'index.html',
       inject: true
     }),
@@ -85,8 +95,8 @@ module.exports = new Promise((resolve, reject) => {
           messages: [`Your application is running here: http://${devWebpackConfig.devServer.host}:${port}`],
         },
         onErrors: config.dev.notifyOnErrors
-        ? utils.createNotifierCallback()
-        : undefined
+          ? utils.createNotifierCallback()
+          : undefined
       }))
 
       resolve(devWebpackConfig)

@@ -4,11 +4,14 @@ const utils = require('./utils')
 const config = require('../config')
 const vueLoaderConfig = require('./vue-loader.conf')
 
-function resolve (dir) {
+function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
-
+console.log('``````````````````````````````````````````````````````````````')
+console.log(process.env.OUT_PUT)
+console.log(resolve('src/assets/' + process.env.OUT_PUT))
+console.log('``````````````````````````````````````````````````````````````')
 
 module.exports = {
   context: path.resolve(__dirname, '../'),
@@ -22,11 +25,15 @@ module.exports = {
       ? config.build.assetsPublicPath
       : config.dev.assetsPublicPath
   },
+  //  + process.env.OUT_PUT
   resolve: {
     extensions: ['.js', '.vue', '.json'],
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
+      '@assets': resolve('@/assets'),
+      'x': resolve('src/assets/' + process.env.OUT_PUT),
+      '@util': resolve('@/util')
     }
   },
   module: {

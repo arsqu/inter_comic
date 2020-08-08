@@ -9,12 +9,9 @@ import fetch from './fetch'
 /***  mock测试 ***/
 // var comUrl = '/test'; //mock数据
 // var nextUrl = '/test'; //mock数据
-
-var env = process.env;
-var comUrl = env.SERVER_GO,
-  nextUrl = env.SERVER_JAVA;
-// 老漫画后台 http://mangaline.net:8088
-// 新漫画后台 http://149.129.174.240:8088/
+// var env = process.env
+var comUrl = process.env.SERVER_GO,
+  nextUrl = process.env.SERVER_JAVA;
 var base = '/api/v1';
 
 const crossUrl = {
@@ -34,6 +31,7 @@ const crossUrl = {
     post: '/feedb/addFeedBack'
   },
   register: {
+    // create: '/ulogin/addMediaUser',
     create: '/ulogin/addMediaUser',
     getCode: '/ulogin/getCode'
   },
@@ -65,11 +63,13 @@ function postData(key, param, config) {
 function getDataN(key, param, config) {
   var url = getUrl(crossUrl, key);
   // console.log(nextUrl + url);
+  // nextUrl = '/test';
   return fetch.getData(nextUrl + url, param, config);
 }
 
 function postDataN(key, param, config) {
   var url = getUrl(crossUrl, key);
+  // nextUrl = '/test';
   return fetch.postData(nextUrl + url, param, config);
 }
 

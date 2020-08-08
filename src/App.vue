@@ -38,18 +38,10 @@
         :checkList="checkList"
         :chapterInfo="chapterInfo"
         @checkChange="checkChange"
+        @closeModal="closeModal"
         @btnFunc="btnFunc"
       />
-      <!-- 下载app -->
-      <div class="downloadApp" v-if="showApp && $config.showDownload">
-        <i class="close" @click="close"></i>
-        <img src="/static/img/win-logo.png" alt />
-        <div class="down_txt">
-          <p class>Mangeline</p>
-          <p class>{{$t('common.download')}}</p>
-        </div>
-        <a :href="$config.downUrl" class="down_btn">{{$t('common.install')}}</a>
-      </div>
+      <downBox :showApp="showApp" />
       <!-- loading -->
       <div class="page_loading" v-show="loading">
         <img src="/static/img/whole_page.gif" />
@@ -67,16 +59,18 @@
 <script>
 import Qs from "qs";
 // import TabBar from "./components/tabbar";
-const Header = () => import("@/components/common/header");
-const TabBar = () => import("@/components/module/tabbar");
+import Header from "@/components/common/header";
+import TabBar from "@/components/module/tabbar";
+const downBox = () => import("@/components/module/downBox");
 const langBox = () => import("@/components/module/langBox");
 const chapterBox = () => import("@/components/module/chapterBox");
 export default {
   components: {
     Header,
     TabBar,
+    downBox,
     chapterBox,
-    langBox
+    langBox,
   },
   data() {
     return {
@@ -87,9 +81,9 @@ export default {
         title: "",
         txtIdx: "",
         orderNo: "",
-        price: ""
+        price: "",
       },
-      checkList: [], //是否自动购买
+      checkList: false, //是否自动购买
       catalogue: [], //章节列表
       timer: null, //支付成功延迟获取金额
       zIndex: null,
@@ -107,7 +101,7 @@ export default {
 
       headShow: true, //是否显示header
       showBgIcon: false, //白色图标
-      loader: true //网站路由标题或主标题切换
+      loader: true, //网站路由标题或主标题切换
     };
   },
   created() {},
@@ -119,15 +113,9 @@ export default {
     window.addEventListener("scroll", this.showBtn); //监听滚动显示按钮
   },
   methods: {
-    // 获取参数
-    getParam() {},
-    //关闭
-    close() {
-      console.log("close");
-      this.showApp = false;
-    },
     //勾选自动支付
     checkChange(val) {
+      console.log(val);
       if (val) {
         this.checkList = true;
         return;
@@ -136,11 +124,11 @@ export default {
     },
     //功能按钮
     btnFunc() {
-      console.log("功能按钮");
+      console.log("功能按钮", this.checkList);
       var txtIdx = this.chapterInfo.txtIdx,
         isLogin = localStorage.getItem("isLogin"),
         checkList = this.checkList;
-      localStorage.removeItem("autoBuy");
+      // localStorage.removeItem("autoBuy");
       if (this.checkList) {
         localStorage.setItem("autoBuy", 1);
       }
@@ -158,11 +146,11 @@ export default {
         var opt = {
           chaperId: this.chapterId,
           mediaId: this.bookId,
-          money: this.chapterInfo.price
+          money: this.chapterInfo.price,
         };
         // console.log(this.chapterInfo.price);
         //购买章节
-        this.$api.postDataN("buyChapter", Qs.stringify(opt)).then(res => {
+        this.$api.postDataN("buyChapter", Qs.stringify(opt)).then((res) => {
           console.log(res);
           var msg = "";
           var data = res.data;
@@ -200,7 +188,7 @@ export default {
       this.$bus.$emit("chapter", {
         chapterId: this.chapterId,
         chapterIdx: this.chapterIdx,
-        is_free: 0
+        is_free: 0,
       });
       var catalogue = localStorage.getItem("cache_chapter");
       catalogue = catalogue ? JSON.parse(catalogue) : null;
@@ -236,7 +224,7 @@ export default {
       } else this.btn.className = this.btn.className.replace(/(^| )show/g, "");
     },
     getMoney(price) {
-      this.$api.getDataN("hasMoney").then(res => {
+      this.$api.getDataN("hasMoney").then((res) => {
         // console.log(res);
         if (res.code == 1) {
           var data = res.data;
@@ -255,7 +243,7 @@ export default {
     //接收eventBus 变化
     getMsg() {
       // 页头
-      this.$bus.$on("navBar", data => {
+      this.$bus.$on("navBar", (data) => {
         // console.log("onnavBar", data);
         // 切换标题
         this.loader = true;
@@ -265,12 +253,12 @@ export default {
         }
       });
       // 页面loading效果
-      this.$bus.$on("loading", data => {
+      this.$bus.$on("loading", (data) => {
         // console.log("onloading", data);
         this.loading = data;
       });
       // 语言框
-      this.$bus.$on("isLangBox", data => {
+      this.$bus.$on("isLangBox", (data) => {
         if (data) {
           this.showModal(() => {
             this.zIndex = data;
@@ -283,20 +271,28 @@ export default {
         this.isModal = false;
       });
       //查看付费章节
-      this.$bus.$on("recharge", data => {
+      this.$bus.$on("recharge", (data) => {
         console.log("onrecharge", data);
-        this.checkList = true;
-        if (data == 1) {
+        this.checkList = false;
+        // if (data == 1) {
+        //   this.showModal(() => {
+        //     this.isRecharge = true;
+        //   });
+        // } else if (data == "autoBuy" || localStorage.getItem("autoBuy")) {
+        //   console.log("自动购买");
+        //   this.btnFunc();
+        // }
+        if (localStorage.getItem("autoBuy") || data == "autoBuy") {
+          console.log("自动购买");
+          this.btnFunc();
+        } else if (data == 1) {
           this.showModal(() => {
             this.isRecharge = true;
           });
-        } else if (data == "autoBuy") {
-          console.log("自动购买");
-          this.btnFunc();
         }
       });
       // 查看漫画
-      this.$bus.$on("comic", data => {
+      this.$bus.$on("comic", (data) => {
         console.log("oncomic", data);
         this.bookId = data.bookId;
         this.chapterId = data.chapterId;
@@ -304,11 +300,11 @@ export default {
         this.chapterInfo = Object.assign({}, this.chapterInfo, {
           title: data.title,
           orderNo: data.orderNo,
-          price: data.price
+          price: data.price,
         });
       });
       //是否登录
-      this.$bus.$on("isLogin", data => {
+      this.$bus.$on("isLogin", (data) => {
         console.log("onisLogin", data);
         if (data) {
           //已登录
@@ -333,7 +329,7 @@ export default {
     },
     scrollTop() {
       window.scrollTo(0, 0);
-    }
+    },
   },
   watch: {
     $route(to, from) {
@@ -342,18 +338,20 @@ export default {
         config = this.$config;
       this.showHome = false;
       this.showBgIcon = false;
+      this.showApp = false;
       this.headShow = true;
       this.loader = true;
-      this.showApp = false;
       // console.log("watch", route.name);
       var name = route.name, //路由名
         txt = route.meta.title; //标题名
+      console.log("缓存");
       //显示网站名
       if (name == "main") {
         this.showHome = true;
       }
-      console.log(name);
       // console.log("watch", name);
+      console.log(config.isDown, name);
+      //== "new_detl"
       if (config.isDown.indexOf(name) != -1) {
         this.showApp = true;
       }
@@ -367,34 +365,44 @@ export default {
         this.loader = false;
         this.comicTxt = txt;
       }
-    }
-  }
+    },
+  },
 };
 </script>
 
 
 <style lang="stylus" scoped>
-.cusTab
-  height 110px
-.page_layout
-  transition opacity .6s ease-out
-  &.showTab
-    padding-bottom 124px /*110 + 7*2*/
-//loading加载中
-.page_loading
-  position absolute
-  top 0
-  left 0
-  bottom 0
-  right 0
-  z-index 10
-  background #fff
-  img
-    width 250px
-    height 250px
-    position absolute
-    top 50%
-    left 50%
-    margin -125px 0 0 -125px
+.cusTab {
+  height: 110px;
+}
+
+.page_layout {
+  transition: all 0.6s linear;
+
+  &.showTab {
+    padding-bottom: 124px; /* 110 + 7*2 */
+  }
+}
+
+// loading加载中
+.page_loading {
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 10;
+  background: #fff;
+
+  // background rgba(250,250,250,.85)
+  img {
+    width: 250px;
+    height: 250px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: -125px 0 0 -125px;
+  }
+}
 </style>
 

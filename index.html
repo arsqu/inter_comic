@@ -3,26 +3,25 @@
 
 <head>
   <meta charset="utf-8">
-  <title>Mangaline</title>
+  <!-- 漫画可以放大屏幕2倍查看 -->
   <!-- , user-scalable=no -->
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0" />
+  <title><%= htmlWebpackPlugin.options.title %></title>
   <meta name="format-detection" content="telephone=no" />
-  <meta name="format-detection" content="email=no"/> 
-  <!-- <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" /> -->
+  <meta name="format-detection" content="email=no" />
   <!-- ios -->
   <!-- 
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="mobile-web-app-capable" content="yes" /> -->
   <!-- share -->
-  <meta itemprop="image" content="/static/img/share.jpg">
-  <meta itemprop="name" content="Mangaline">
+  <!-- <meta itemprop="image" content="/static/img/share.jpg"> -->
+  <meta itemprop="image" content="<%= htmlWebpackPlugin.options.shareImg %>">
+  <meta itemprop="name" content="<%= htmlWebpackPlugin.options.title %>">
   <meta name="keywords" content="Savita bhabhi,manga,cartoon,mature,free,India cartoon,Japanese cartoon,Korean cartoon">
   <meta itemprop="description" name="description"
-    content="Read manga online including Savita Bhabhi updated at Managaline every week.  Our aim is to bring the latest high quality manga not only from India local  but also from Korea,Japan and China for Indian Manga readers">
+    content="Read manga online including Savita Bhabhi updated at <%= htmlWebpackPlugin.options.title %> every week. Our aim is to bring the latest high quality manga not only from India local but also from Korea,Japan and China for Indian Manga readers">
   <link rel="stylesheet" href="https://cdn.bootcss.com/mint-ui/2.2.13/style.min.css">
-  <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mint-ui/2.2.13/style.min.css"> -->
   <script>
-    // http://mangaline.net/
     var _hmt = _hmt || [];
     (function () {
       var hm = document.createElement("script");
@@ -31,21 +30,35 @@
       s.parentNode.insertBefore(hm, s);
     })();
   </script>
+  <script>
+    (function () {
+      var siteMap = {
+        'www.aimghub.com': 'Mangahub'
+      }
+      var hostname = location.hostname,
+        siteDetl = siteMap[hostname] || siteMap['www.' + hostname];
+      if (siteDetl) {
+        document.title = siteDetl
+        document.querySelector('meta[itemprop="name"]').content = siteDetl
+        document.querySelector('meta[itemprop="description"]').content =
+          document.querySelector('meta[itemprop="description"]').content = 'Read manga online including Savita Bhabhi updated at Mangahub every week. Our aim is to bring the latest high quality manga not only from India local but also from Korea,Japan and China for Indian Manga readers'
+      }
+    })()
+  </script>
 </head>
 
 <body>
   <div id="app"></div>
-  <script src="https://cdn.bootcss.com/vue/2.6.10/vue.min.js"></script>
+  <script src="/static/cache/vue.min.js"></script>
   <script>!window.Vue && document.write('\<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"\>\<\/script\>')</script>
-  <script src="https://cdn.bootcss.com/vue-router/3.1.3/vue-router.min.js"></script>
+  <script src="/static/cache/vue-router.min.js"></script>
   <script>!window.VueRouter && document.write('\<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.1.3/vue-router.min.js"\>\<\/script\>')</script>
-  <script src="https://cdn.bootcss.com/babel-polyfill/7.6.0/polyfill.min.js"></script>
+  <script src="/static/cache/polyfill.min.js"></script>
   <script>!window._babelPolyfill && document.write('\<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js"\>\<\/script\>')</script>
-  <script src="https://cdn.bootcss.com/mint-ui/2.2.13/index.js"></script>
+  <script src="/static/cache/index.js"></script>
   <script>!window.MINT && document.write('\<script src="https://cdnjs.cloudflare.com/ajax/libs/mint-ui/2.2.13/index.js"\>\<\/script\>')</script>
-  <script src="https://cdn.bootcss.com/axios/0.19.0/axios.min.js"></script>
+  <script src="/static/cache/axios.min.js"></script>
   <script>!window.axios && document.write('\<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"\>\<\/script\>')</script>
-  <!-- <script src="https://cdn.bootcss.com/vue-router/3.0.6/vue-router.min.js"></script> -->
 </body>
 
 </html>

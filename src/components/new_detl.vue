@@ -34,16 +34,7 @@
       </div>
     </div>
     <!-- download app -->
-    <div class="downloadApp" v-if="closeApp && $config.showDownload">
-      <!-- <i class="close" @click="close"></i> -->
-      <i class="close" @click="close"></i>
-      <img src="/static/img/win-logo.png" alt />
-      <a class="down_txt">
-        <p class>Mangeline</p>
-        <p class>{{$t('common.download')}}</p>
-      </a>
-      <a :href="$config.downUrl" class="down_btn">{{$t('common.install')}}</a>
-    </div>
+    <downBox :showApp="true" />
     <!-- 导航详情 -->
     <div class="comic_desc">
       <div class="navbar_list">
@@ -100,9 +91,10 @@
 </style>
 
 <script>
-const column = () => import("./module/column");
+// const column = () => import("./module/column");
 const gaussian = () => import("./module/gaussian");
 const category = () => import("./module/category");
+const downBox = () => import("./module/downBox");
 export default {
   data() {
     return {
@@ -113,11 +105,10 @@ export default {
       bookId: null,
       autoImg: "",
       loadState: false,
-      closeApp: true,
       params: {
         //路由参数
         id: null,
-        title: ""
+        title: "",
       },
       orderNo: "",
       price: "", //章节价格
@@ -130,7 +121,7 @@ export default {
       page: {
         offset: 0,
         limit: 500,
-        total: 0
+        total: 0,
       },
       //图书详情
       bookList: {},
@@ -144,51 +135,52 @@ export default {
               id: "1",
               src: "/static/img/book/test_2.jpg",
               title: "航海王",
-              update: "更新 第842话"
+              update: "更新 第842话",
             },
             {
               id: "2",
               src:
                 "http://mhfm5tel.cdndm5.com/50/49920/20190506223857_320x246_38.jpg",
               title: "被勇者队伍开除的驭兽使、邂逅了最强种的猫耳少女",
-              update: "更新 第842话"
+              update: "更新 第842话",
             },
             {
               id: "3",
               src:
                 "http://mhfm2tel.cdndm5.com/22/21224/20151216083500_180x240_22.jpg",
               title: "月光下的异世界之旅",
-              update: "更新 第842话"
+              update: "更新 第842话",
             },
             {
               id: "4",
               src:
                 "http://mhfm1tel.cdndm5.com/34/33898/20161123163507_320x246_47.jpg",
               title: "异世界迷宫探索者",
-              update: "更新 第842话"
+              update: "更新 第842话",
             },
             {
               id: "5",
               src:
                 "http://mhfm3tel.cdndm5.com/34/33771/20180727110326_180x240.jpg",
               title: "妖神记",
-              update: "更新 第842话"
+              update: "更新 第842话",
             },
             {
               id: "6",
               src: "/static/img/book/test_1.jpg",
               title: "一念时光6",
-              update: "更新 第842话"
-            }
-          ]
-        }
-      ]
+              update: "更新 第842话",
+            },
+          ],
+        },
+      ],
     };
   },
   components: {
-    "app-list": column,
+    // "app-list": column,
+    downBox,
     gaussian,
-    category
+    category,
   },
   beforeRouteEnter(to, from, next) {
     localStorage.setItem("detl_from", "");
@@ -201,11 +193,11 @@ export default {
   created() {
     this.tabList = [
       {
-        title: this.$t("column.detl")
+        title: this.$t("column.detl"),
       },
       {
-        title: this.$t("column.catalog")
-      }
+        title: this.$t("column.catalog"),
+      },
     ];
     this.autoImg = this.$config.autoImg.gaussian;
     this.$bus.$emit("loading", true);
@@ -238,10 +230,6 @@ export default {
     this.init();
   },
   methods: {
-    close() {
-      console.log("close");
-      this.closeApp = false;
-    },
     //查看漫画详情
     viewDetl() {
       var opt = this.catalogue[0];
@@ -255,7 +243,7 @@ export default {
           chapterIdx: 0,
           title: opt.title,
           orderNo: opt.order_no,
-          price: this.price
+          price: this.price,
         });
         //已登录
         if (localStorage.getItem("isLogin")) {
@@ -263,14 +251,22 @@ export default {
         } else {
           this.$bus.$emit("isLogin", 0);
         }
-        this.$bus.$emit("recharge", 1);
+        var autoBuy = localStorage.getItem("autoBuy") || false;
+        //自动购买
+        console.log("new_detl", "autoBuy");
+        if (autoBuy) {
+          this.$bus.$emit("recharge", "autoBuy");
+        } else {
+          this.$bus.$emit("recharge", 1);
+        }
+        // this.$bus.$emit("recharge", 1);
         return;
       }
       localStorage.setItem("bookId", bookId);
       this.$router.push({
         // name: "view",
         name: "new_view",
-        params: { bookId, id }
+        params: { bookId, id },
       });
     },
     checkLogin() {
@@ -305,14 +301,14 @@ export default {
     },
     sendMsg() {
       //解锁
-      this.$bus.$off("chapter").$on("chapter", data => {
+      this.$bus.$off("chapter").$on("chapter", (data) => {
         console.log("new_detl,onchapter", data);
         if (data.chapterId) {
           this.$set(this.catalogue[data.chapterIdx], "is_free", data.is_free);
           //付款成功后跳转
           this.$router.push({
             name: "new_view",
-            params: { id: data.chapterId, bookId: this.bookId }
+            params: { id: data.chapterId, bookId: this.bookId },
           });
           localStorage.setItem("bookId", this.bookId);
           localStorage.setItem("cache_chapter", JSON.stringify(this.catalogue));
@@ -325,7 +321,7 @@ export default {
       return new Promise((resolve, reject) => {
         this.$api
           .getData("getAllChapter", opt)
-          .then(res => {
+          .then((res) => {
             if (res.code == 1) {
               var data = res.data;
               // console.log(data.list);
@@ -344,7 +340,7 @@ export default {
             }
             resolve(false);
           })
-          .catch(err => {
+          .catch((err) => {
             this.loadState = false;
             this.$bus.$emit("loading", false);
             console.log("server error");
@@ -362,12 +358,12 @@ export default {
       if (res) {
         if (res.code == 1 && res.data.list.length > 0) {
           //已购买章节
-          this.$api.getDataN("hasRecord", { mediaId }).then(buy => {
+          this.$api.getDataN("hasRecord", { mediaId }).then((buy) => {
             if (buy.code == 1) {
               var buy = buy.data;
               if (buy.length > 0) {
                 this.catalogue.map((chapter, idx) => {
-                  buy.map(has => {
+                  buy.map((has) => {
                     if (chapter.id == has.chaperId) {
                       //已购买章节置为免费
                       this.$set(this.catalogue[idx], "is_free", 0);
@@ -397,7 +393,7 @@ export default {
       // console.log("请求数据");
       this.$api
         .getData("getDetail", { id })
-        .then(res => {
+        .then((res) => {
           // console.log(res);
           if (res.code == 1) {
             var data = res.data,
@@ -412,10 +408,10 @@ export default {
             this.$bus.$emit("navBar", detl.title);
           }
         })
-        .catch(err => {
+        .catch((err) => {
           console.log("server error");
         });
-    }
+    },
   },
   watch: {
     $route: {
@@ -423,9 +419,9 @@ export default {
         if (from.name == "new_view") this.from = "new_view";
         else this.from = "";
       },
-      deep: true
-    }
-  }
+      deep: true,
+    },
+  },
 };
 </script>
 
@@ -445,6 +441,13 @@ export default {
 </style>
 
 <style lang="stylus" scoped>
+.c_state
+  padding 5px 15px
+  border-radius 10px
+  display inline-block
+  color #fff
+  &.done
+    background #d37777
 .comic_detl
   padding-bottom 110px
   .downloadApp
@@ -492,14 +495,6 @@ export default {
         flex 1
         .c_mar
           margin-bottom 10px
-        .c_state
-          padding 5px 15px
-          border-radius 10px
-          display inline-block
-          background #d5ae3f
-          color #fff
-          .done
-            background #d37777
 /*tab栏*/
 .comic_desc
   font-size 25px
@@ -519,11 +514,9 @@ export default {
       text-align center
       box-shadow 0 5px 15px 0 #f6f1f1
     .active a
-      color #ffa500
       height 100%
       display inline-block
       padding 0 25px
-      border-bottom 5px solid #ffa500
       margin-top 2.5px
   /*章节详情*/
   .container_item

@@ -1,7 +1,4 @@
 import util from './util'
-import config from './config';
-import Qs from 'qs'
-
 
 const instance = axios.create({
   withCredentials: true,
@@ -13,12 +10,6 @@ var idx = 0;
 //请求拦截
 instance.interceptors.request.use(request => {
   var token = localStorage.getItem('token');
-  // s = token.split(':'),
-  // k = s[0], v = s[1];
-  // console.log(token);
-  // if (request.method == 'post') {
-  //   request.data = Qs.stringify(request.data);
-  // }
   if (token) {
     request.headers['tocken'] = token;
   }

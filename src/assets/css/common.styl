@@ -1,0 +1,222 @@
+textAlign(arrow)
+  text-align arrow
+.text-left
+  textAlign(left)
+.text-center
+  textAlign(center)
+.text-right
+  textAlign(right)
+$offMax = 5
+for $c in 0 .. $offMax
+  $percent = ($c * 10px)
+  .pt-{$c}
+    padding-top $percent
+  .pr-{$c}
+    padding-right $percent
+  .pl-{$c}
+    padding-left $percent
+  .pb-{$c}
+    padding-bottom $percent
+  .mt-{$c}
+    margin-top $percent
+  .mr-{$c}
+    margin-right $percent
+  .mb-{$c}
+    margin-bottom $percent
+  .ml-{$c}
+    margin-left $percent
+/*reset*/
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, pre, code, del, em, img, q, small, strong, sub, sup, b, i, dl, dt, dd, ol, ul, li, form, label, table, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, footer, header, menu, nav, section, audio, video
+  margin 0
+  padding 0
+  /*Mobile end click flicker*/
+  -webkit-tap-highlight-color transparent
+*
+  box-sizing border-box
+html, body
+  background #fff
+  cursor pointer
+  /*-webkit-overflow-scrolling: touch;*/
+  -webkit-text-size-adjust 100%
+  font-family Helvetica Neue, Helvetica, Arial, sans-serif
+  height 100%
+/*ios*/
+input, textarea
+  -webkit-appearance none
+input[type='button'], input[type='submit'], input[type='file'], button
+  cursor pointer
+.disable_txt
+  -webkit-user-select none
+  -khtml-user-select none
+  -moz-user-select none
+  -ms-user-select none
+  user-select none
+img
+  display inline-block
+  height auto
+  width 100%
+  border 0 none
+a
+  text-decoration none
+  color #666
+li
+  list-style none
+p
+  word-wrap break-word
+.clearfix:after
+  content ''
+  display block
+  height 0
+  clear both
+  visibility hidden
+.clearfix
+  zoom 1
+.mb-0
+  margin-bottom 0 !important
+a, button, input
+  -webkit-tap-highlight-color rgba(255, 0, 0, 0)
+.opac
+  opacity .6
+.icon_back
+  z-index 100
+  border-top 4px solid transparent
+  border-right 4px solid transparent
+  height 45px
+  width 45px
+  padding 0 15px
+  vertical-align middle
+  transform rotate(-135deg)
+  display inline-block
+/*backTop*/
+.backTop
+  border 1px solid #ddd
+  position fixed
+  z-index 100
+  background #fff
+  width 0
+  height 0
+  right 25px
+  bottom 10%
+  transition all .4s ease
+  opacity 0
+  border-radius 50%
+  /*display: none;*/
+  box-shadow 0 0 5px #f7f7f7
+.backTop:after
+  border-top 3px solid transparent
+  border-right 3px solid transparent
+  border-color #666
+  position absolute
+  left 50%
+  top 50%
+  height 20px
+  width 20px
+  margin-top -6px
+  margin-left -10px
+  transform rotate(-45deg)
+  content ''
+.backTop.show
+  width 90px
+  height 90px
+  opacity 1
+.back
+  z-index 100
+  border-top 3px solid transparent
+  border-right 3px solid transparent
+  border-color #fff
+  height 30px
+  width 30px
+  vertical-align middle
+  -webkit-transform rotate(-135deg)
+  transform rotate(-135deg)
+  display inline-block
+  position absolute
+  left 5%
+  top 3%
+  padding 15px
+.over_ellipsis
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
+/*图标样式*/
+.icon
+  display inline-block
+  width 64px
+  height 64px
+/*按钮样式*/
+.btn
+  border-radius 20px
+  width 90px
+  height 35px
+  border 0 none
+  outline 0 none
+  background #f0f0f6
+  text-align center
+  line-height 35px
+.btn_def
+  color #fff
+  text-align center
+  border 0 none
+  outline 0 none
+  height 80px
+  cursor pointer
+.btn_round
+  border-radius 50px
+.btn_bl
+  color #fff
+  background #3478F6
+.r_loading
+  display inline-block
+  vertical-align middle
+  margin-right 15px
+/*loading*/
+.prompt_week
+  color #555
+  font-size 28px
+  padding 20px
+  text-align center
+/*download*/
+.downloadApp
+  background #fff
+  box-shadow 0 0 12px #c9bebe
+  position fixed
+  bottom 0
+  display flex
+  width 100%
+  z-index 200
+  padding 20px 20px 20px 25px
+  align-items center
+  justify-content center
+.downloadApp i.close
+  background url('/static/img/icon_new/s_close.png') no-repeat
+  height 40px
+  width 40px
+  z-index 10
+  cursor pointer
+  background-size 100%
+  margin-right 25px
+.downloadApp img
+  width 13%
+  border-radius 20px
+.downloadApp .down_txt
+  font-size 28px
+  color #252525
+  padding-top 10px
+  flex 1
+  padding 10px 20px
+.downloadApp .down_txt p:last-child
+  padding-top 10px
+  color #666
+.downloadApp .down_btn
+  width 150px
+  height 60px
+  line-height 60px
+  text-align center
+  top 15px
+  display inline-block
+  right 10px
+  background #FD113A
+  border 2px solid #643b3b
+  border-radius 50px
+  font-size 25px
+  color #F8F8F9

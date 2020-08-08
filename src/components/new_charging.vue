@@ -33,7 +33,6 @@
       <!-- recharge -->
       <cs-button
         round
-        :type="'danger'"
         :size="'large'"
         :title="$t('common.pay')"
         :isComplete="post"
@@ -41,7 +40,7 @@
       />
       <!-- tipsBox -->
       <div class="recharge_txt">
-        <span>{{$t('recharge.tips')}}:</span>
+        <span class="link_span">{{$t('recharge.tips')}}:</span>
         <br />
         1. {{$t('recharge.payRate')}}
         <span
@@ -55,7 +54,7 @@
         <br />
         4. {{$t('recharge.info.3')}}
         <div class="login_tips" v-if="!isLogin">
-          <router-link :to="{name:$config.Router.login}">{{$t('login.login')}}</router-link>
+          <router-link class="link_span" :to="{name:$config.Router.login}">{{$t('login.login')}}</router-link>
         </div>
       </div>
       <div class="paybox" v-show="payment">
@@ -80,13 +79,6 @@
             </span>
             &nbsp;{{$t('recharge.payTips.pay')}}
           </span>
-          <!-- <cs-button
-            :type="'danger'"
-            :size="'small'"
-            :title="$t('recharge.payTips.pay')"
-            :isComplete="isLoad"
-            :func="payfor"
-          />-->
           <span class="pay_txt" @click="cancel">{{$t('recharge.payTips.cancel')}}</span>
         </div>
       </div>
@@ -100,7 +92,7 @@ export default {
   data() {
     return {
       paytm: "paytm",
-      topUpList: [1, 2, 5, 10, 20, 50], //充值金额
+      topUpList: this.$project.topUpList, //充值金额
       isCur: -1, //选中充值金额
       payBox: false, //支付框
       payment: false, //确认并支付
@@ -131,17 +123,18 @@ export default {
       this.isCur = idx;
       this.money = val;
     },
-    getCookie(name) {
-      var arr,
-        reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
-      if ((arr = document.cookie.match(reg))) return unescape(arr[2]);
-      else return null;
-    },
+    // checkLogin() {
+    //   var isLogin = localStorage.getItem("isLogin") || this.isLogin;
+    //   if (!this.isLogin) {
+    //     this.isLogin = false;
+    //     this.$util.Toast("tips.toLogin");
+    //     localStorage.setItem("loginUrl", this.$route.fullPath);
+    //     // this.$router.push({ name: "login" });
+    //   }
+    // },
     checkLogin() {
       var isLogin = localStorage.getItem("isLogin");
       this.isLogin = true;
-      // this.isLogin1 = this.getCookie("isLogin") ? true : "无法获取";
-      // this.isLogin2 = isLogin ? true : "无法获取";
       //未登录
       if (!isLogin) {
         this.isLogin = false;
@@ -204,7 +197,7 @@ export default {
       }
       this.payment = true;
     },
-    //ask and pay
+    // 弹窗询问后支持
     askToPay() {
       this.$util.Toast("recharge.loading");
       var ch = localStorage.getItem("wap_ch") || "none";
@@ -220,8 +213,12 @@ export default {
         this.isLoad = false;
         this.$util.Toast("recharge.payTips.toLong");
       }, 10 * 1000);
+      var opt = {
+        money: this.money
+      };
+      ch && (opt.chCode = ch);
       this.$api
-        .postDataN("recharge", Qs.stringify({ money: this.money }))
+        .postDataN("recharge", Qs.stringify(opt))
         .then(res => {
           // console.log(res);
           var msg = "",
@@ -289,6 +286,7 @@ export default {
       } else el.innerHTML = form;
       if (autoSubmit) document.forms["paytm"].submit(); //点击后直接支付
     },
+    // 直接支付
     recharge() {
       // console.log("充值");
       if (!this.isLogin) {
@@ -318,8 +316,11 @@ export default {
         this.$util.Toast("recharge.payTips.toLong");
         this.post = false; //允许再次请求支付
       }, 10 * 1000); //10s后提示
+      var opt = { money };
+      ch && (opt.chCode = ch);
+      console.log(opt);
       this.$api
-        .postDataN("recharge", Qs.stringify({ money }))
+        .postDataN("recharge", Qs.stringify(opt))
         .then(res => {
           // console.log(res);
           this.btntimer && clearTimeout(this.btntimer);
@@ -403,7 +404,7 @@ topUpH = 80px
     padding 20px 0
     flex-wrap wrap
     font-size 35px
-    justify-content space-around
+    //justify-content space-around
     text-align center
     li
       width calc(100% / 3 - 20px)
@@ -416,9 +417,7 @@ topUpH = 80px
         display block
         width 100%
       &.active
-        background #fd5c63
         color #fff
-        box-shadow 0 0 10px #fd5c63
   input
     width 100%
     height topUpH
@@ -470,7 +469,6 @@ topUpH = 80px
         box-sizing border-box
       &>p
         margin 40px 0
-        color #666
         line-height 45px
         font-size 35px
         text-align left
@@ -481,13 +479,11 @@ topUpH = 80px
         display inline-block
       &>span
         background #E3E3E3
-        color #666
   .recharge_txt
     padding 20px 25px
     font-size 30px
     color #666
     .login_tips>a
-      color red
       font-size 35px
       padding 10px
       text-decoration underline
@@ -495,7 +491,6 @@ topUpH = 80px
       text-align center
     span
       &:first-child
-        color #de0000
         font-size 35px
     .unit
       color #fd5c63

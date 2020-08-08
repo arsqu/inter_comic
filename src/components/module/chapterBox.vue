@@ -38,11 +38,11 @@ export default {
     chapterInfo: Object,
     isRecharge: Boolean,
     isLogin: Boolean,
-    hasMoney: Number
+    hasMoney: Number,
   },
   data() {
     return {
-      btnTxt: []
+      btnTxt: [],
     };
   },
   created() {
@@ -61,8 +61,8 @@ export default {
     },
     closeModal() {
       this.$emit("closeModal", 1);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -77,15 +77,15 @@ export default {
   bottom -100%
   width 100%
   height 0
-  // width 0
+  //width 0
   transform translate3d(0, 100%, 0)
   transition all .4s ease
-  // transition all .4s ease
+  //transition all .4s ease
   &.show
     bottom 0
     transform translate3d(0, 0, 0)
     height auto
-    // width 100%
+    //width 100%
     z-index 200
   & > .close
     width 30px

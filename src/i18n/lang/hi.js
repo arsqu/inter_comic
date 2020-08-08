@@ -203,6 +203,7 @@ export default {
   infoDetl: {
     title: 'profail',
     nick: 'nichnamai',
+    uname: "upayogakarta naam",
     balance: 'balanchai',
     code: 'nimantran kod',
     mail: 'eemel',

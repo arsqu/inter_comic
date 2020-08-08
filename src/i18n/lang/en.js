@@ -203,6 +203,7 @@ export default {
   infoDetl: {
     title: 'Profile',
     nick: 'nickName',
+    uname: "userName",
     balance: 'balance',
     code: 'Invitation code',
     mail: 'email',

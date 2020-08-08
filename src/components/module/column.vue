@@ -70,39 +70,39 @@ export default {
   padding 25px 10px
   margin-bottom 10px
   background #fff
+  .push_more
+    cursor pointer
+    font-size 28px
+    position relative
+    padding-right 30px
+    font-weight 600
+    cursor pointer
+    &:after
+      width 16px
+      height 16px
+      border-top 3px solid transparent
+      border-right 3px solid transparent
+      position absolute
+      right 0
+      top 50%
+      margin-top -8px
+      margin-right 8px
+      transform rotate(45deg)
+      content ''
+      display block
   .push_txt
     display flex
     align-items center
     padding 0 10px
     .push_title
-      border-left 5px solid #ffa500
+      // border-left 5px solid
+      border-left-style solid
+      border-left-width 5px
       padding 0 15px
       font-size 30px
       font-weight bold
       color #333
       flex 1
-    .push_more
-      cursor pointer
-      font-size 28px
-      position relative
-      padding-right 30px
-      font-weight 600
-      cursor pointer
-      color #e19416
-      &:after
-        width 16px
-        height 16px
-        border-top 3px solid transparent
-        border-right 3px solid transparent
-        border-color #e19416
-        position absolute
-        right 0
-        top 50%
-        margin-top -8px
-        margin-right 8px
-        transform rotate(45deg)
-        content ''
-        display block
   .push_book
     padding-top 20px
     .book_list

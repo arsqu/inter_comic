@@ -234,8 +234,6 @@ export default {
     text-align center
     margin 15px 0
     border-right 1px solid #ddd
-    &.active
-      color orange
     &:nth-child(3n)
       border-right 0 none
 </style>

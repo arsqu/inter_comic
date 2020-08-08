@@ -6,10 +6,13 @@
   "private": true,
   "scripts": {
     "dev": "webpack-dev-server --inline --host 0.0.0.0 --progress --config build/webpack.dev.conf.js",
-    "start": "npm run dev",
+    "dev:manga": "cross-env ENV_CONFIG=manga OUT_PUT=Mangaline webpack-dev-server --inline --host 0.0.0.0 --progress --config build/webpack.dev.conf.js",
+    "dev:xulin": "cross-env ENV_CONFIG=xulin OUT_PUT=Xulinad webpack-dev-server --inline --host 0.0.0.0 --progress --config build/webpack.dev.conf.js",
+    "dev:movie": "cross-env ENV_CONFIG=movie OUT_PUT=Movie webpack-dev-server --inline --host 0.0.0.0 --progress --config build/webpack.dev.conf.js",
     "build": "node build/build.js",
-    "build:manga": "cross-env NODE_ENV=mangaEnviroment ENV_CONFIG=manga node build/build.js",
-    "build:xulin": "cross-env NODE_ENV=xulinEnviroment ENV_CONFIG=xulin node build/build.js"
+    "build:manga": "cross-env NODE_ENV=mangaEnviron ENV_CONFIG=manga OUT_PUT=Mangaline node build/build.js",
+    "build:xulin": "cross-env NODE_ENV=xulinEnviron ENV_CONFIG=xulin OUT_PUT=Xulinad node build/build.js",
+    "build:movie": "cross-env NODE_ENV=movieEnviron ENV_CONFIG=movie OUT_PUT=Movie node build/build.js"
   },
   "dependencies": {
     "amfe-flexible": "^2.2.1",
@@ -33,6 +36,7 @@
     "babel-preset-env": "^1.3.2",
     "babel-preset-stage-2": "^6.22.0",
     "chalk": "^2.0.1",
+    "clean-webpack-plugin": "^3.0.0",
     "compression-webpack-plugin": "^1.1.11",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.0",

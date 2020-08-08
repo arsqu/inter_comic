@@ -11,7 +11,6 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-// const env = require('../config/prod.env')
 const env = config.build[process.env.ENV_CONFIG + 'Env'] //根据不同环境打包
 
 const webpackConfig = merge(baseWebpackConfig, {
@@ -25,13 +24,14 @@ const webpackConfig = merge(baseWebpackConfig, {
     rules: utils.styleLoaders({
       sourceMap: config.build.productionSourceMap,
       extract: true,
+      extract: env.OUT_PUT == 'Xulinad' ? true : false,
       usePostCSS: true
     })
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
   output: {
     // path: config.build.assetsRoot,
-    path: path.resolve(__dirname, '../dist/' + env.OUT_PUT),
+    path: path.resolve(__dirname, '../dist/' + process.env.OUT_PUT),
     filename: utils.assetsPath('js/[name].[chunkhash].js?version=' + env.APP_VERSION),
     chunkFilename: utils.assetsPath('js/[id].[chunkhash].js?version=' + env.APP_VERSION)
   },
@@ -72,8 +72,10 @@ const webpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       // filename: config.build.index,
       // index: path.resolve(__dirname, '../dist/index.html'),
-      filename: path.resolve(__dirname, '../dist/' + env.OUT_PUT + '/index.html'),
+      filename: path.resolve(__dirname, '../dist/' + process.env.OUT_PUT + '/index.html'),
       template: 'index.html',
+      title: env.PRO_DIFF.title,
+      shareImg: process.env.ENV_CONFIG == 'manga' ? '/static/img/share.jpg' : '/static/img/def_share.jpg',
       inject: true,
       minify: {
         removeComments: true,

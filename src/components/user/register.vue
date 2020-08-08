@@ -1,9 +1,13 @@
 <template>
-  <div class="userBox">
+  <div class="userBox signup">
     <span class="back" @click="reBack"></span>
     <div class="userForm">
       <h5 class="head_txt">{{$t('common.register')}}</h5>
-      <h5 class="link_span mb-3" @click="toggleType">{{$t('register.toggle')[type]}}</h5>
+      <h5
+        v-if="$project.register.showPhone"
+        class="link_span mb-3"
+        @click="toggleType"
+      >{{$t('register.toggle')[type]}}</h5>
       <!-- 注册 -->
       <div @keyup.13="register">
         <form>
@@ -18,7 +22,7 @@
             </div>
           </div>
           <!-- 邮箱注册 -->
-          <div v-show="!type">
+          <div v-show="!type && !$project.register.simple">
             <div class="form_item">
               <div class="form_icon OTP eamil">
                 <input
@@ -28,9 +32,9 @@
                   :class="['code',{error:emailStatus['email']}]"
                   :placeholder="$t('register.valid.email')"
                 />
-                <span :class="{valid:showValidEmail}" @click="getMail">
-                  <span v-show="showValidEmail">{{$t('register.valid.sendEmail')}}</span>
-                  <span v-show="timeValidEmail">{{timeLast}}</span>
+                <span :class="[showValidEmail?'':'valid','btn_def']" @click="getMail">
+                  <a href="javascript:;" v-show="showValidEmail">{{$t('register.valid.sendEmail')}}</a>
+                  <a href="javascript:;" v-show="timeValidEmail">{{timeLast}}</a>
                 </span>
               </div>
             </div>
@@ -60,7 +64,7 @@
                   autocomplete="phone"
                   :placeholder="$t('register.valid.phone')"
                 />
-                <span class="valid">
+                <span class="btn_def">
                   <a
                     :href="'sms:'+mPhone+'?&body=3rdmg_'+(Math.random()+1)"
                   >{{$t('register.valid.sendSms')}}</a>
@@ -68,35 +72,6 @@
               </div>
             </div>
             <div class="tips_info">{{$t('register.tips.sendSms')}}</div>
-            <!-- <div class="form_item">
-            <div class="form_icon OTP phone">
-              <input
-                class="code"
-                type="text"
-                v-model="phone"
-                autocomplete="phone"
-                :placeholder="$t('register.valid.phone')"
-              />
-              <span :class="{valid:showValidPhone}" @click="getPhone">
-                <span v-show="showValidPhone">{{$t('register.valid.sendPhone')}}</span>
-                <span v-show="timeValidPhone">{{phoneTimeLast}}</span>
-              </span>
-            </div>
-            </div>-->
-            <!-- <div class="form_item">
-            <div class="form_icon OTP">
-              <input
-                class="code"
-                type="text"
-                v-model="smsCode"
-                autocomplete="smsCode"
-                :placeholder="$t('register.valid.smsCode')"
-              />
-              <span class="valid">
-                <a :href="'sms:'+mPhone+'?body=3rdmg'">Send</a>
-              </span>
-            </div>
-            </div>-->
           </div>
           <div class="form_item">
             <div class="form_icon password">
@@ -136,16 +111,15 @@
           </div>
           <div class="login_btn">
             <cs-button
-              class="register"
-              round
+              :plain="true"
               :nativeType="'button'"
-              :type="'danger'"
               :size="'large'"
-              :color="'#F0656B'"
+              :spinColor="'#f46b71'"
               :title="$t('register.btnTxt')"
               :isComplete="toRegister"
               :func="register"
             />
+            <!-- true -->
           </div>
         </form>
       </div>
@@ -167,7 +141,7 @@
           v-for="(item,idx) in phoneCode"
           :key="idx"
           @click="setPhoneCode(item.code)"
-        >{{item.code}}</li>
+        >+ {{item.code}}</li>
       </ul>
     </mt-popup>
   </div>
@@ -180,13 +154,13 @@ export default {
   data() {
     return {
       type: 0, //注册
-      mPhone: "8800212873",
+      mPhone: "8800212873", // 短信发送的位置
       toRegister: false, //防止按钮频繁点击
-      showValidEmail: true, //发送请求文字
-      timeValidEmail: false, //倒计时文字
-      showValidPhone: true, //发送请求文字
-      timeValidPhone: false, //倒计时文字
-      popupVisible: false, //显示手机区码
+      showValidEmail: true, // 邮箱验证
+      timeValidEmail: false,
+      showValidPhone: true, // 手机验证
+      timeValidPhone: false,
+      popupVisible: false, // 弹出手机区码
       phoneCode: [],
       genderI18n: [], //性别
       sendSMS: false, //发送短信
@@ -217,6 +191,7 @@ export default {
   created() {
     this.genderI18n = this.$t("register.gender");
     this.phoneCode = phoneCode;
+    console.log(this.$project);
   },
   activated() {
     // console.log("app_activated");
@@ -273,14 +248,16 @@ export default {
               6: "wait"
             };
           msg = "register.status." + status[res.code];
+          console.log(res);
           if (res.code == 1) {
             // this.smsCode = res.phcode;
-          } else {
-            // if (!this.type) {
-            //   clearInterval(this.timer);
-            //   this.showValidEmail = true;
-            //   this.timeValidEmail = false;
-            // }
+          } else if (res.code == 4) {
+            // 邮箱注册时
+            if (!this.type) {
+              clearInterval(this.timer);
+              this.showValidEmail = true;
+              this.timeValidEmail = false;
+            }
           }
           this.$util.Toast(msg);
         })
@@ -359,44 +336,53 @@ export default {
         this.$util.Toast("login.tips.empty");
         return;
       }
-      if (this.type == 0) {
-        var reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,}$/; //邮箱格式
-        if (!this.email || !reg.test(this.email)) {
-          console.log("邮箱验证失败");
-          this.$util.Toast("register.valid.emailErr");
-          return;
-        }
-        //邮箱码
-        if (!this.ecode) {
-          this.$util.Toast("register.valid.ecodeEmpty");
-          return;
-        }
-      } else {
-        //手机码
-        var reg = /^\d+$/; //邮箱格式
-        if (!this.phone || !reg.test(this.phone)) {
-          console.log("手机验证失败");
-          this.$util.Toast("register.valid.phoneErr");
-          return;
+      // 是否开启简易注册流程
+      if (!this.$project.register.simple) {
+        if (this.type == 0) {
+          var reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,}$/; //邮箱格式
+          if (!this.email || !reg.test(this.email)) {
+            console.log("邮箱验证失败");
+            this.$util.Toast("register.valid.emailErr");
+            return;
+          }
+          //邮箱码
+          if (!this.ecode) {
+            this.$util.Toast("register.valid.ecodeEmpty");
+            return;
+          }
+        } else {
+          //手机码
+          var reg = /^\d+$/; //手机格式
+          if (!this.phone || !reg.test(this.phone)) {
+            console.log("手机验证失败");
+            this.$util.Toast("register.valid.phoneErr");
+            return;
+          }
         }
       }
       this.toRegister = true;
-      var local = localStorage;
-      var ch = local.getItem("wap_ch") || "none";
+      var l = localStorage,
+        ch = l.getItem("wap_ch");
       var opt = {
-        cid: 1,
-        unick: this.uname,
+        cid: 1, // 国别,印度固定为1(根据运营项目所在国家变动)
         upass: this.upass
       };
-      if (this.gender) {
-        opt.sex = this.genderI18n.indexOf(this.gender) == 0 ? "m" : "w";
+      // unick 为用户名,uname 为账号,简易注册下传账号,否则传用户名
+      if (this.$project.register.simple) {
+        opt.uname = this.uname;
+      } else {
+        opt.unick = this.uname;
       }
-      if (this.age) {
-        opt.birthday = this.age;
+      this.gender &&
+        (opt.sex = this.genderI18n.indexOf(this.gender) == 0 ? "m" : "w");
+      this.age && (opt.birthday = this.age);
+      this.icode && (opt.ycode = this.icode);
+      // ch ? (opt.chCode = ch);
+      if (!ch) {
+        // (001 网站 002 apk包)
+        ch = localStorage.getItem("isApp") ? "ch002" : "ch001";
       }
-      if (this.icode) {
-        opt.ycode = this.icode;
-      }
+      opt.chCode = ch;
       if (this.type == 0) {
         opt.mail = this.email;
         opt.code = this.ecode;
@@ -406,10 +392,11 @@ export default {
         // opt.code = this.smsCode;
         opt.type = "ph";
       }
+      var autoLogin = process.env.ENV_CONFIG == "manga";
       this.$api
         .postDataN("register.create", Qs.stringify(opt))
         .then(res => {
-          var msg = "", //统计注册状态
+          var msg = "", //注册状态
             //提示信息
             tips = {
               1: "success",
@@ -421,10 +408,14 @@ export default {
           if (res.code == 1) {
             var data = res.data;
             status = "success";
-            local.setItem("uname", data.unick);
-            local.setItem("money", data.money);
+            l.setItem("uname", data.unick);
+            l.setItem("money", data.money);
             this.uname = data.uname;
             this.clearData();
+            // 只有mangaline时自动登录
+            if (autoLogin) {
+              this.toLogin(opt);
+            }
             // this.$router.push({ name: this.$config.Router.login });
             // this.$util.statistics("register_" + ch, status); //统计代码
           } else if (res.code == 4) {
@@ -444,19 +435,59 @@ export default {
           console.log(err);
         });
     },
+    //设置登录状态
+    setCache(data) {
+      this.$bus.$emit("isLogin", "firstLogin"); //登录成功
+      localStorage.setItem("isLogin", 1);
+      localStorage.setItem("money", data.money);
+      localStorage.setItem("uname", data.unick);
+    },
+    toLogin(opt) {
+      console.log("登录");
+      this.$api
+        .postDataN("login", Qs.stringify(opt))
+        .then(res => {
+          // console.log(res);
+          var msg = "";
+          if (res.code == 1) {
+            localStorage.setItem("token", res.tocken);
+            var data = res.data;
+            // 没有提供个人信息接口,登录时将推荐码存起来
+            localStorage.setItem("rcode", data.ucode);
+            msg = "login.status.success";
+            // console.log("登录成功");
+            this.setCache(data);
+            // this.$router.push()
+            // // 登录后自动跳转登录前的页面
+            var path = localStorage.getItem("loginUrl");
+            if (!path || path == "/login.html" || path == "/register.html")
+              path = "/";
+            this.$router.replace({ path });
+          } else msg = "login.status.err";
+          this.$util.Toast(msg);
+          // this.toLogin = false;
+        })
+        .catch(err => {
+          // this.toLogin = false;
+          this.$util.Toast("login.status.err");
+          console.log(err);
+        });
+    },
     reBack() {
       this.$router.go(-1);
     }
   }
 };
 </script>
-
 <style lang="stylus" scoped>
 .codeList
   overflow scroll !important
   height 300px
   padding 10px 25px
-  color #666
+  li
+    padding-bottom 3px
+.valid
+  background #b5b5b5
 .userBox >>> .mint-popup-bottom
   top 50%
   right auto
@@ -473,19 +504,15 @@ export default {
   .mint-radiolist-label
     padding 0
     font-size 30px
-    color #666
   .mint-radio-input:checked+.mint-radio-core
     background-color #F15F65
     border-color #F15F65
 .userBox
-  background #f4fdff
   height 100%
   width 100%
-  background-image linear-gradient(to right, #fd5c63, #e7646a, #f25f65, #ee6d72)
   position absolute
   .tips_info
     font-size 27px
-    color #f16066
     padding 0 10px
     margin-bottom 30px
   .mb-3
@@ -494,10 +521,8 @@ export default {
     font-size 30px
     text-align center
     text-decoration underline
-    color #F16066
   .label_txt
     font-size 28px
-    color #666
     padding-top 20px
     text-align center
   .userForm
@@ -517,13 +542,7 @@ export default {
     overflow-y auto
     .head_txt
       text-align center
-      color #666
       font-size 45px
-      padding-bottom 30px
-    .head_tip
-      text-align center
-      color #666
-      font-size 26px
       padding-bottom 30px
     .form_item
       margin-bottom 25px
@@ -543,12 +562,10 @@ export default {
             display inline-block
             box-shadow 0 0 15px #ddd
             height 100%
-            color #000
             font-size 26px
             font-weight bold
             font-style normal
             position absolute
-            color #666
             top 0
             left 0
             i
@@ -566,13 +583,8 @@ export default {
           text-align center
           word-break break-all
           vertical-align top
-          background #b5b5b5
-          color #fff
-          &.valid
+          &.valid a
             color #fff
-            background #EF6268
-            a
-              color #fff
       input
         width 100%
         border 0 none
@@ -610,6 +622,8 @@ export default {
           margin-left 20px
         &.OTP
           font-size 0
+          a
+            color #fff
         &.eamil:before
           background url('/static/img/icon_new/email.png')
           background-size 100%
@@ -629,27 +643,4 @@ export default {
         &.invitation:before
           background url('/static/img/icon_new/invitation.png')
           background-size 100%
-    .login_btn
-      text-align center
-      span
-        display inline-block
-        border-radius 40px
-        padding 15px 0
-        text-align center
-        font-size 35px
-        border 2px solid #fd5c63
-      .login
-        color #fff
-        width 100%
-        background #fd5c63
-      .register
-        color #fd5c63
-        width 100%
-        border 2px solid #fd5c63
-        background #fff
-@media (min-width: 768px) and (max-width: 1024px)
-  //.userBox .userForm
-  //height 90%
-  //.userBox .userForm .form_item input
-  //height 70px
 </style>

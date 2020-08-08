@@ -3,7 +3,15 @@
   <div class="top_fixed">
     <div :class="[{zIndex},showBgIcon?'bg':'','top_bar']">
       <div class="top_logo">
-        <span class="icon_logo" v-show="loader">Mangaline</span>
+        <!-- {{siteName}} -->
+        <!-- <span class="icon_logo" v-show="loader">Mangaline</span> -->
+        <span class="icon_logo" v-show="loader">
+          <!-- <template v-if="$config.share"> -->
+          <template v-if="$project.share">
+            <img class="logo" :src="iconFile + '/logo.png'" />
+          </template>
+          <span v-else>{{siteName}}</span>
+        </span>
         <div class="top_detl_txt" v-show="!loader">
           <span class="icon_back" @click="reBack"></span>
           <span class="comicTxt over_ellipsis">{{comicTxt}}</span>
@@ -34,6 +42,7 @@
 export default {
   data() {
     return {
+      siteName: "",
       iconFile: "/static/img/icon_new"
     };
   },
@@ -45,6 +54,13 @@ export default {
     comicTxt: String
   },
   created() {},
+  mounted() {
+    // var output = process.env.OUT_PUT;
+    // var config = this.$config;
+    // var siteName = config.siteDetl.siteName;
+    // this.siteName = siteName || output;
+    this.siteName = this.$project.siteName;
+  },
   methods: {
     reBack() {
       this.$router.go(-1);
@@ -60,6 +76,9 @@ export default {
 
 <style lang="stylus" scoped>
 /*页头*/
+.logo
+  width 45px
+  height 45px
 .top_fixed
   height 100px
 .top_bar
@@ -81,7 +100,6 @@ export default {
     font-weight bold
     font-size 38px
   .top_logo
-    color #ffa500
     width 90%
     overflow hidden
     .icon_logo
@@ -95,17 +113,6 @@ export default {
         width 85%
         vertical-align middle
         display inline-block
-      .icon_back
-        z-index 100
-        border-top 4px solid transparent
-        border-right 4px solid transparent
-        border-color orange
-        height 45px
-        width 45px
-        padding 0 15px
-        vertical-align middle
-        transform rotate(-135deg)
-        display inline-block
   .top_tools
     display flex
     position relative
@@ -118,15 +125,13 @@ export default {
       width 100%
       height 100%
 //背景色
-.top_bar.bg
-  background #FD5C63
-  .top_logo
-    .top_detl_txt
-      color #fff
-    .comicTxt
-      font-weight normal
-    .icon_back
-      border-color #fff
+.top_bar.bg .top_logo
+  .top_detl_txt
+    color #fff
+  .comicTxt
+    font-weight normal
+  .icon_back
+    border-color #fff !important
 </style>
 
 

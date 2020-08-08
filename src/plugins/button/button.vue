@@ -1,16 +1,18 @@
 <template>
   <mt-button
-    :class="['btn_def',{btn_round:!round}]"
+    :class="['btn_def','btn_color',{btn_round:!round}]"
     :type="type"
     :size="size"
+    :plain="plain"
     :nativeType="nativeType"
     :disabled="isComplete"
     @click.native="func"
   >
     <mt-spinner
-      class="load_spinner"
+      class="load_spinner icon-fill"
       v-show="isComplete"
-      :color="color"
+      :color="spinColor"
+      v-if="isComplete"
       :size="loadSize"
       :type="loadType"
       slot="icon"
@@ -26,6 +28,10 @@ export default {
     type: {
       type: String,
       default: "default"
+    },
+    plain: {
+      type: Boolean,
+      default: false
     },
     //尺寸
     size: {
@@ -52,9 +58,9 @@ export default {
       default: "20"
     },
     //颜色
-    color: {
+    spinColor: {
       type: String,
-      default: "#fff"
+      default: "#ffffff"
     }
   }
 };
@@ -70,20 +76,6 @@ export default {
 .mint-button >>> .mint-button-text
   font-size 35px
   vertical-align middle
-.icon_load1
   display inline-block
-  border-radius 50%
-  border 3px solid #fff
-  border-top-color transparent
-  animation circAnimate 1s infinite linear
-  vertical-align text-bottom
-  transform-origin center
-  &.danger
-    border-color #F0656B
-    border-top-color transparent
-@keyframes circAnimate
-  from
-    transform rotate(0)
-  to
-    transform rotate(359deg)
+  padding-left 10px
 </style>

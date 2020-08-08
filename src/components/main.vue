@@ -54,10 +54,11 @@ export default {
   },
   created() {},
   mounted() {
-    var href = this.$route.fullPath,
-      idx = href.indexOf("?ch="),
-      ch = href.slice(idx + 4);
-    if (ch) localStorage.setItem("wap_ch", "ch" + ch); //渠道号
+    // var href = this.$route.fullPath,
+    //   idx = href.indexOf("?ch="),
+    //   ch = href.slice(idx + 4);
+    var ch = this.$util.getQueryString("ch");
+    if (ch) localStorage.setItem("wap_ch", ch); //渠道号
     this.init(); //初始化
   },
   activated() {
@@ -123,8 +124,6 @@ export default {
 
 
 <style lang="stylus" scoped>
-// .mt-3
-//   margin-top 50px
 /*公共导航*/
 .swiper_box
   height 435px

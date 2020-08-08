@@ -202,17 +202,17 @@ export default {
       text-align center
       height 80px
       line-height 80px
-    li.active
-      background #f7f7f7
-      color #ffa500
-      font-size 32px
-    li.active:after
-      content ''
-      display block
-      border-top 8px solid #ffa500
-      position absolute
-      bottom -8px
-      width 100%
+      &.active
+        background #f7f7f7
+        font-size 32px
+        &:after
+          content ''
+          display block
+          border-top-width 8px
+          border-top-style solid
+          position absolute
+          bottom -8px
+          width 100%
 .update_box
   padding-top 85px
 </style>

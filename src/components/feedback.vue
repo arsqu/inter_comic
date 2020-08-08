@@ -25,7 +25,6 @@
       </mt-button>-->
       <cs-button
         round
-        :type="'danger'"
         :size="'large'"
         :disabled="disabled"
         :title="$t('post.txt')"

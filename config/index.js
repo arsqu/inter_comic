@@ -14,14 +14,21 @@ module.exports = {
         target: 'http://192.168.1.103:86',//后端接口地址
         changeOrigin: true,//是否允许跨越
         pathRewrite: {
-          '^/go': '',//重写,
+          '^/go': ''
         }
       },
       '/java': {
-        target: 'http://localhost:8873',//后端接口地址
-        changeOrigin: true,//是否允许跨越
+        target: 'http://localhost:8873',
+        changeOrigin: true,
         pathRewrite: {
-          '^/java': '',//重写,
+          '^/java': ''
+        }
+      },
+      '/test': {
+        target: 'http://192.168.1.112:8099',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/test': ''
         }
       }
     },
@@ -48,8 +55,9 @@ module.exports = {
   },
   build: {
     // Template for index.html
-    mangaEnv: require('./manga.env'), //add
-    xulinEnv: require('./xulin.env'), //add
+    mangaEnv: require('./manga.env'),
+    xulinEnv: require('./xulin.env'),
+    movieEnv: require('./movie.env'),
     index: path.resolve(__dirname, '../dist/index.html'),
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist/'),

@@ -30,14 +30,16 @@ var browser = {
   language: (navigator.browserLanguage || navigator.language).toLowerCase()
 }
 
+
+// 获取url参数
 function getQueryString(name) {
   var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
   var r = window.location.search.substr(1).match(reg);
   if (r != null) return unescape(r[2]); return null;
 }
 
-var inApp = getQueryString('isApp');
-if (inApp) {
+// 是否为Apk包
+if (getQueryString('isApp')) {
   localStorage.setItem('isApp', '1')
 }
 
@@ -79,7 +81,7 @@ export default {
   //需要登录显示的页面
   loginView: [
     // 'new_detl', 
-    'new_view'
+    // 'new_view'
   ],
   tabItem: {
     bookmark: [''],
@@ -94,9 +96,8 @@ export default {
   showTabbar: false,
   // 不显示Tabbar
   hideTab: Tabbar.hideTab,
-  // 是否显示下载apk(根据url的isApp参判断是否在webview中)
-  // showDownload: (localStorage.getItem('isApp') || getQueryString('isApp')) ? false : true,
-  showDownload: false,
+  // 是否显示下载apk 并根据url的isApp参判断是否在webview中运行
+  showDownload: process.env.APP_DOWN ? ((getQueryString('isApp') || localStorage.getItem('isApp')) ? false : true) : false,
   // 下载显示的区域
   isDown: ['main'],
   //'main'

@@ -4,9 +4,13 @@
       <img src="/static/img/icon_new/iAccount.png" />
     </div>
     <div class="infoDetl">
-      <div class="label_form">
+      <!-- <div class="label_form">
         <label class="label_txt">{{$t('infoDetl.nick')}}</label>
         <div class="label_item">{{userInfo.unick}}</div>
+      </div>-->
+      <div class="label_form">
+        <label class="label_txt">{{$t('infoDetl.uname')}}</label>
+        <div class="label_item">{{userInfo.uname}}</div>
       </div>
       <div class="label_form">
         <label class="label_txt">{{$t('infoDetl.balance')}}</label>
@@ -47,7 +51,7 @@ export default {
     return {
       value: false,
       isLogin: false,
-      userInfo: {}
+      userInfo: {},
     };
   },
   components: {},
@@ -63,9 +67,9 @@ export default {
     switchBtn(v) {
       if (v) {
         localStorage.removeItem("autoBuy");
-        return;
+      } else {
+        localStorage.setItem("autoBuy", 1);
       }
-      localStorage.setItem("autoBuy");
     },
     reBack() {
       this.$router.go(-1);
@@ -81,8 +85,8 @@ export default {
         console.log("未登录");
         this.$router.push({ name: $config.Router.login });
       }
-    }
-  }
+    },
+  },
 };
 </script>
 

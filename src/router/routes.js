@@ -1,4 +1,8 @@
 import i18n from '../i18n/index'
+import guide from '@/components/doc/guide_1'
+import policy from '@/components/doc/policy'
+import about from '@/components/doc/about'
+import refund from '@/components/doc/refund'
 
 export default new VueRouter({
   routes: [
@@ -193,7 +197,8 @@ export default new VueRouter({
     {
       path: '/guide.html',
       name: 'guide',
-      component: () => import('@/components/doc/guide_1'),
+      // component: () => import('@/components/doc/guide_1'),
+      component: guide,
       meta: {
         keepAlive: true
       }
@@ -201,7 +206,8 @@ export default new VueRouter({
     {
       path: '/policy.html',
       name: 'policy',
-      component: () => import('@/components/doc/policy'),
+      // component: () => import('@/components/doc/policy'),
+      component: policy,
       meta: {
         keepAlive: true
       }
@@ -209,7 +215,8 @@ export default new VueRouter({
     {
       path: '/about.html',
       name: 'about',
-      component: () => import('@/components/doc/about'),
+      // component: () => import('@/components/doc/about'),
+      component: about,
       meta: {
         keepAlive: true
       }
@@ -217,7 +224,8 @@ export default new VueRouter({
     {
       path: '/refund.html',
       name: 'refund',
-      component: () => import('@/components/doc/refund'),
+      // component: () => import('@/components/doc/refund'),
+      component: refund,
       meta: {
         keepAlive: true
       }

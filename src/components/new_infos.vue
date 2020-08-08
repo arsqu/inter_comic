@@ -1,11 +1,13 @@
 <template>
   <div class="userList">
     <div class="info_bg">
-      <span class="back" v-if="!$config.showTabbar" @click="reBack"></span>
+      <span class="back icon_fill" v-if="!$config.showTabbar" @click="reBack"></span>
       <template v-if="!isLogin">
+        <!-- btn_def -->
+        <!-- <button></button> -->
         <router-link
-          tag="div"
-          class="infoBtn"
+          tag="button"
+          class="infoBtn btn_def btn_radius"
           :to="{name:$config.Router.login}"
         >{{$t('login.login')}}</router-link>
         <div class="loginTxt">{{$t('userInfo.tips.toLogin')}}</div>
@@ -164,7 +166,6 @@ export default {
 
 <style lang="stylus" scoped>
 .back
-  border-color #EF6A6A
   position relative
   left 0
   top 0
@@ -183,7 +184,6 @@ pad()
     font-size 28px
 .loginTxt
   text-align center
-  color #666
   padding-top 10px
   font-size 30px
 .mt-5
@@ -202,14 +202,9 @@ pad()
   padding 15px 25px
 .infoBtn
   font-size 35px
-  cursor pointer
-  border-radius 50px
-  color #666
-  background #fc4058
-  color #fff
-  padding 15px 0
-  margin 0 150px
-  text-align center
+  margin 0 auto
+  display block
+  width 320px
 .logOut
   font-size 35px
   cursor pointer
@@ -249,7 +244,7 @@ pad()
 .infoList
   //pad()
   padding-top 30px
-  // padding-bottom calc(220px + 30px) //110+30+80
+  //padding-bottom calc(220px + 30px) //110+30+80
   padding-bottom calc(220px) //110+30+80
   //padding-bottom calc(130px + 30px) //110+30+80
   .icon_info

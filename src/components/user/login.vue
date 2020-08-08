@@ -2,8 +2,13 @@
   <div class="userBox">
     <div class="userLogo">
       <span class="back" @click="reBack"></span>
-      <!-- <img src="/static/img/login.png" /> -->
-      <img src="/static/img/login/uugai.com-1573702886176.png" />
+      <!-- <img class="logo" src="~x/image/logo/mLogo.png" /> -->
+      <!-- <img
+        class="logo"
+        :src="require('@/assets/Mangaline/image/logo/mLogo.png')"
+      />-->
+      <!-- '+ ($config.siteDir || process.env.OUT_PUT) +' -->
+      <img class="logo" :src="dir" />
       <div class="over_pic"></div>
     </div>
     <div class="contentBox">
@@ -34,7 +39,7 @@
                     />
                   </div>
                 </div>
-                <div class="login_btn">
+                <div class="login_btn mt-3">
                   <cs-button
                     round
                     :nativeType="'button'"
@@ -44,7 +49,6 @@
                     :isComplete="toLogin"
                     :func="login"
                   />
-                  <!-- <span class="login" @click="login">{{$t('login.login')}}</span> -->
                 </div>
               </div>
             </form>
@@ -66,16 +70,27 @@ import Qs from "qs";
 export default {
   data() {
     return {
+      dir: "",
       uname: "",
       upass: "",
-      toLogin: false
+      toLogin: false,
     };
   },
   created() {},
-  activated() {
-    // console.log("app_activated");
+  activated() {},
+  mounted() {
+    var siteDir = this.$project.siteDetl,
+      output = process.env.OUT_PUT;
+    // 渠道推广时不显示名字
+    if (this.$project.share) {
+      this.dir = require("@/assets/img/share/mLogo.png");
+    } else {
+      // 非渠道推广根据打包参名和域名区分
+      this.dir = require("@/assets/" +
+        (siteDir.webDir || output) +
+        "/image/logo/mLogo.png");
+    }
   },
-  mounted() {},
   methods: {
     //设置登录状态
     setCache(data) {
@@ -91,46 +106,54 @@ export default {
         return;
       }
       var uname = this.uname;
-      //账号密码不为空
       if (!uname || !this.upass) {
         this.$util.Toast("login.tips.empty");
         return;
       }
       var opt = {
-        upass: this.upass
+        upass: this.upass,
       };
-      if (uname.indexOf("@") != -1) {
-        var reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,}$/; //邮箱格式
-        if (!reg.test(this.uname)) {
-          console.log("邮箱验证失败");
-          this.$util.Toast("register.valid.emailErr");
-          return;
+      // 简易流程使用账号登录否则使用邮箱或手机登录
+      if (!this.$project.register.simple) {
+        if (uname.indexOf("@") != -1) {
+          var reg = /^\w[-\w.+]*@([A-Za-z0-9][-A-Za-z0-9]+\.)+[A-Za-z]{2,}$/; //邮箱格式
+          if (!reg.test(this.uname)) {
+            console.log("邮箱验证失败");
+            this.$util.Toast("register.valid.emailErr");
+            return;
+          }
+          opt.mail = this.uname;
+        } else {
+          var reg = /^\d+$/;
+          if (!reg.test(this.uname)) {
+            console.log("手机验证失败");
+            this.$util.Toast("register.valid.phoneErr");
+            return;
+          }
+          opt.ph = this.uname;
         }
-        opt.mail = this.uname;
       } else {
-        var reg = /^\d+$/;
-        if (!reg.test(this.uname)) {
-          console.log("手机验证失败");
-          this.$util.Toast("register.valid.phoneErr");
-          return;
-        }
-        opt.ph = this.uname;
+        opt.uname = this.uname;
       }
-      console.log(opt);
       this.toLogin = true;
       this.$util.Toast("login.tips.load");
+      // // 渠道号
+      // var ch = localStorage.getItem("wap_ch");
+      // ch && (opt.chCode = ch);
       this.$api
         .postDataN("login", Qs.stringify(opt))
-        .then(res => {
+        .then((res) => {
           // console.log(res);
           var msg = "";
           if (res.code == 1) {
             localStorage.setItem("token", res.tocken);
             var data = res.data;
-            localStorage.setItem("rcode", data.ucode); // 推荐码
+            // 没有提供个人信息接口,登录时将推荐码存起来
+            localStorage.setItem("rcode", data.ucode);
             msg = "login.status.success";
             // console.log("登录成功");
             this.setCache(data);
+            // 登录后自动跳转登录前的页面
             var path = localStorage.getItem("loginUrl");
             if (!path || path == "/login.html" || path == "/register.html")
               path = "/";
@@ -139,15 +162,16 @@ export default {
           this.$util.Toast(msg);
           this.toLogin = false;
         })
-        .catch(err => {
+        .catch((err) => {
           this.toLogin = false;
+          this.$util.Toast("server error");
           console.log(err);
         });
     },
     reBack() {
       this.$router.go(-1);
-    }
-  }
+    },
+  },
 };
 </script>
 
@@ -167,10 +191,8 @@ export default {
     margin-top 5%
   .userLogo
     text-align center
-    //background-image linear-gradient(to right, #9bebeb, #6fe9d9, #7fe1d5, #aef0e2)
-    background-image linear-gradient(to right, #fd5c63, #e7646a, #f25f65, #ee6d72)
     height 35%
-    img
+    .logo
       height 100%
       width auto
       display block
@@ -262,23 +284,4 @@ export default {
           &.password:before
             background url('/static/img/icon_new/password.png')
             background-size 100%
-      .login_btn
-        margin-top 10%
-        text-align center
-        span
-          display inline-block
-          border-radius 40px
-          padding 15px 0
-          text-align center
-          font-size 35px
-          border 2px solid #fd5c63
-        .login
-          color #fff
-          width 100%
-          background #fd5c63
-        .register
-          color #fd5c63
-          width 100%
-          border 2px solid #fd5c63
-          background #fff
 </style>
