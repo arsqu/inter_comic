@@ -1,8 +1,8 @@
 // mangaline注册流程简化, 取消邮箱验证, 账号密码即可注册(2020/7/20)
 const register = {
-  // 目前暂未开通短信通道,不开放手机注册
-  showPhone: process.env.ENV_CONFIG == 'manga' ? false : true,
-  simple: process.env.ENV_CONFIG == 'manga' ? true : false
+  // mangaline 使用账号登录(uname),否则手机或邮箱登录
+  showPhone: process.env.ENV_CONFIG == 'mangaCh' ? false : true,
+  simple: process.env.ENV_CONFIG == 'mangaCh' ? true : false
 }
 
 // 获取url参数
@@ -23,42 +23,45 @@ if (getQueryString('ch')) {
  * outPut 本地文件夹
  * siteName 域名
  */
+const env = process.env.OUT_PUT
+
 const siteMap = {
-  "www.mangaline.com": {
-    phone: '+91 93709 54921',
-    siteName: "Mangaline",
-    webDir:'Mangaline',
-    mail: 'aimghub.com'
-  },
-  "www.xulinad.com": {
-    phone: '+91 93709 54921',
+  // "www.mangaline.com": {
+  //   phone: '+91 93709 54921',
+  //   siteName: "Mangaline",
+  //   webDir: 'Mangaline',
+  //   mail: ['bd@mangaline.com', 'cs@mangaline.com']
+  // },
+  "xulin": {
     siteName: "Manga",
-    outPut: "Xulinad",
-    webDir:'Xulinad',
-    mail: 'xulinad.com',
-    topUpList: [100, 200, 500, 1000, 2000, 5000, 10000, 20000, 50000]
+    phone: '+91 93709 54921',
+    mail: ['cs@xulinad.com', 'bd@xulinad.com']
   },
-  "www.aimghub.com": {
+  "pmanga": {
+    siteName: "aimghub",
     phone: '+91 74291 32896',
-    siteName: "Mangahub",
-    webDir: "Mangahub",
-    mail: 'aimghub.com'
+    mail: ['cs@aimghub.com', 'bd@aimghub.com']
   },
+  "novel": {
+    siteName: "Storyind",
+    phone: '+91 74280 81833',
+    mail: ['help@storyind.com', 'contact@storyind.com']
+  },
+  // 测试地址
   "192.168.1.103": {
-    phone: '1555151',
-    siteName: "Mangahub",
-    mail: 'test123.com'
+    siteName: "novel",
+    phone: '+91 19216 81103',
+    mail: ['test@123.com', 'test@456.com']
   }
 }
 
-const siteDetl = siteMap[location.hostname] || siteMap['www.' + location.hostname] || {};
+const siteDetl = siteMap[env] || {}
 
 export default {
-  simple: true,
   register,
   // 是否为渠道推广
   share: localStorage.getItem('isShare') || null,
-  siteDetl,
-  siteName: siteDetl.siteName || process.env.OUT_PUT,
-  topUpList: siteDetl.topUpList || [10, 20, 50, 100, 200, 500],
+  siteDetl, // 目录
+  siteName: siteDetl.siteName || '', // 网站名
+  topUpList: siteDetl.topUpList || [10, 20, 50, 100, 200] //充值额度
 }

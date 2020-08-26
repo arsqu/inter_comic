@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title><%= htmlWebpackPlugin.options.title %></title>
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=2.0"
+    />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="format-detection" content="email=no" />
+    <!-- ios -->
+    <!-- 
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="mobile-web-app-capable" content="yes" /> -->
+    <!-- share -->
+    <meta
+      itemprop="image"
+      content="<%= htmlWebpackPlugin.options.shareImg %>"
+    />
+    <meta itemprop="name" content="<%= htmlWebpackPlugin.options.title %>" />
+    <% if(process.env.ENV_CONFIG != 'novel'){ %>
+    <meta
+      name="keywords"
+      content="Savita bhabhi,manga,cartoon,mature,free,India cartoon,Japanese cartoon,Korean cartoon"
+    />
+    <meta
+      itemprop="description"
+      name="description"
+      content="Read manga online updated at <%= htmlWebpackPlugin.options.title %> every week. Our aim is to bring the latest high quality manga not only from India local but also from Korea,Japan and China for Indian Manga readers"
+    />
+    <% }else{ %>
+    <meta
+      name="keywords"
+      content="novel,story,free novel,historical novel ,modern novel,sentimental novel,fantasy novel,hot online novel"
+    />
+    <meta
+      itemprop="description"
+      name="description"
+      content="Many kinds of novels are updated every day and you will always find something you like.Our goal is to bring the latest high quality novels to Indian readers, not only from India, but also from all over the world. We hope you enjoy our novels."
+    />
+    <% } %>
+    <link rel="stylesheet" href="/static/cache/style.min.css" />
+  </head>
+
+  <body>
+    <div id="app"></div>
+    <script src="/static/cache/vue.min.js"></script>
+    <script>
+      !window.Vue &&
+        document.write(
+          '\<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.10/vue.min.js"\>\<\/script\>'
+        );
+    </script>
+    <script src="/static/cache/vue-router.min.js"></script>
+    <script>
+      !window.VueRouter &&
+        document.write(
+          '\<script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/3.1.3/vue-router.min.js"\>\<\/script\>'
+        );
+    </script>
+    <script src="/static/cache/polyfill.min.js"></script>
+    <script>
+      !window._babelPolyfill &&
+        document.write(
+          '\<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-polyfill/7.6.0/polyfill.min.js"\>\<\/script\>'
+        );
+    </script>
+    <script src="/static/cache/index.js"></script>
+    <script>
+      !window.MINT &&
+        document.write(
+          '\<script src="https://cdnjs.cloudflare.com/ajax/libs/mint-ui/2.2.13/index.js"\>\<\/script\>'
+        );
+    </script>
+    <script src="/static/cache/axios.min.js"></script>
+    <script>
+      !window.axios &&
+        document.write(
+          '\<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.0/axios.min.js"\>\<\/script\>'
+        );
+    </script>
+  </body>
+</html>

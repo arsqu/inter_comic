@@ -8,15 +8,11 @@ function resolve(dir) {
   return path.join(__dirname, '..', dir)
 }
 
-console.log('``````````````````````````````````````````````````````````````')
-console.log(process.env.OUT_PUT)
-console.log(resolve('src/assets/' + process.env.OUT_PUT))
-console.log('``````````````````````````````````````````````````````````````')
-
 module.exports = {
   context: path.resolve(__dirname, '../'),
   entry: {
-    app: './src/main.js'
+    // app: './src/main.js'
+    app: `./src/${process.env.OUT_PUT}/main.js`
   },
   output: {
     path: config.build.assetsRoot,
@@ -32,7 +28,8 @@ module.exports = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       '@assets': resolve('@/assets'),
-      'x': resolve('src/assets/' + process.env.OUT_PUT),
+      '@components': resolve('@/components'),
+      'x': resolve(`src/${process.env.OUT_PUT}`),
       '@util': resolve('@/util')
     }
   },

@@ -1,7 +1,7 @@
 <template>
   <p v-show="loadState" class="page-infinite-loading">
-    <mt-spinner type="fading-circle" class="r_loading" />
-    {{$t('tips.loading')}}...
+    <mt-spinner :type="type" class="r_loading" :color="color" />
+    {{ $t("tips.loading") }}...
   </p>
 </template>
 
@@ -11,8 +11,12 @@ export default {
     return {};
   },
   props: {
+    color: String,
+    type: {
+      type: String,
+      default: "fading-circle"
+    },
     loadState: Boolean
   }
 };
 </script>
-

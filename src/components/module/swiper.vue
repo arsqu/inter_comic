@@ -6,9 +6,12 @@
       </p>
     </template>
     <mt-swipe :auto="3000">
-      <mt-swipe-item class="slide" v-for="(item,idx) in bannerList" :key="idx">
+      <mt-swipe-item class="slide" v-for="(item, idx) in bannerList" :key="idx">
         <div class="def_view">
-          <img v-lazy="item.group_img+'?'+autoImg" @click="tar_href(item.id,item.title)" />
+          <img
+            v-lazy="item.group_img + '?' + autoImg"
+            @click="tar_href(item.id, item.title)"
+          />
         </div>
       </mt-swipe-item>
     </mt-swipe>
@@ -46,7 +49,9 @@ export default {
 <style lang="stylus" scoped>
 .page-swipe
   position relative
+  width: 100%;
 .page-swipe .mint-swipe
+  width: 100%;
   height 435px
   color #fff
   font-size 30px
@@ -61,5 +66,3 @@ export default {
   height 100%
   cursor pointer
 </style>
-
-

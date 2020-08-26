@@ -1,18 +1,12 @@
 import fetch from './fetch'
 
-/*** 生产环境 ***/
-// 'http://mangaline.net:8088' 
-
-/*** 测试环境 ***/
-// '/go' '/java'
-
 /***  mock测试 ***/
 // var comUrl = '/test'; //mock数据
 // var nextUrl = '/test'; //mock数据
 // var env = process.env
 var comUrl = process.env.SERVER_GO,
   nextUrl = process.env.SERVER_JAVA;
-var base = '/api/v1';
+var base = process.env.ENV_CONFIG == 'novel' ? '' : '/api/v1'
 
 const crossUrl = {
   'login': '/ulogin/loginUser',
@@ -31,7 +25,6 @@ const crossUrl = {
     post: '/feedb/addFeedBack'
   },
   register: {
-    // create: '/ulogin/addMediaUser',
     create: '/ulogin/addMediaUser',
     getCode: '/ulogin/getCode'
   },

@@ -20,6 +20,8 @@ export default {
       hot: 'garam',
       selected: 'chayanit'
     },
+    category: 'vargeekaran',
+    free: 'ni: shulk',
     update: 'adyatan karen',
     updateHead: 'adyatan samay saarinee',
     date: ["somavaar", "mangalavaar", "budhavaar", "guroovaar", "shukravaar", "shanivaar", "ravivaar"],
@@ -82,6 +84,8 @@ export default {
     tips: {
       pay: 'vartamaan mein bhugataan kiya gaya adhyaay',
       first: "pahale se hee pahala prshth",
+      maxFont: 'pahale se hee sabase bada font',
+      minFont: 'pahale se hee sabase chhota font',
       last: 'pahale se hee antim prshth'
     }
   },
@@ -90,6 +94,7 @@ export default {
     feedback: 'pratipushti',
     rCode: 'repharal kod',
     info: 'profail',
+    seemore: 'login ke baad dekhen',
     // tips: 'lambit vikaas...',
     tips: {
       toLogin: 'adhik suvidhaon ke lie sain in karen'
@@ -154,8 +159,8 @@ export default {
       smsCode: 'pushti sankhya',
       phoneErr: 'krpaya sahee fon nambar darj karen',
       emailErr: 'krpaya sahee eemel pata darj karen',
-      ecode: 'eemel satyaapan kod',
-      ecodeEmpty: 'krpaya eemel mein satyaapan kod bharen',
+      ecode: 'satyaapan kod',
+      ecodeEmpty: 'krpaya satyaapan kod bharen',
       pass: 'paaran shabd',
       age: 'aayu',
       gender: 'ling',

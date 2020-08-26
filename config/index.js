@@ -3,35 +3,63 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
+const env = process.env.ENV_CONFIG
+
+const proxyTable = {
+  '/go': {
+    target: 'http://192.168.1.103:86',//后端接口地址
+    changeOrigin: true,//是否允许跨越
+    pathRewrite: {
+      '^/go': ''
+    }
+  },
+  '/manga': {
+    target: 'http://localhost:8874',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/manga': ''
+    }
+  },
+  '/mangaCh': {
+    target: 'http://localhost:8873',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/mangaCh': ''
+    }
+  },
+  '/novel': {
+    target: 'http://localhost:8875',
+    changeOrigin: true,
+    pathRewrite: {
+      '^/novel': ''
+    }
+  }
+}
+
 
 module.exports = {
   dev: {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      '/go': {
-        target: 'http://192.168.1.103:86',//后端接口地址
-        changeOrigin: true,//是否允许跨越
-        pathRewrite: {
-          '^/go': ''
-        }
-      },
-      '/java': {
-        target: 'http://localhost:8873',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/java': ''
-        }
-      },
-      '/test': {
-        target: 'http://192.168.1.112:8099',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/test': ''
-        }
-      }
-    },
+    proxyTable,
+    // proxyTable: {
+    //   '/go': {
+    //     target: 'http://192.168.1.103:86',//后端接口地址
+    //     changeOrigin: true,//是否允许跨越
+    //     pathRewrite: {
+    //       '^/go': ''
+    //     }
+    //   },
+    //   '/java': {
+    //     // target: 'http://localhost:8873',
+    //     target: 'http://localhost:8875',
+    //     changeOrigin: true,
+    //     pathRewrite: {
+    //       '^/java': ''
+    //     }
+    //   }
+    // },
     // Various Dev Server settings
     host: '0.0.0.0', // can be overwritten by process.env.HOST
     port: 8055, // can be overwritten by process.env.PORT, if port is in use, a free one will be determined
@@ -42,25 +70,23 @@ module.exports = {
     /**
      * Source Maps
      */
-
     // https://webpack.js.org/configuration/devtool/#development
     devtool: 'cheap-module-eval-source-map',
-
     // If you have problems debugging vue-files in devtools,
     // set this to false - it *may* help
     // https://vue-loader.vuejs.org/en/options.html#cachebusting
     cacheBusting: true,
-
     cssSourceMap: true
   },
   build: {
     // Template for index.html
     mangaEnv: require('./manga.env'),
     xulinEnv: require('./xulin.env'),
-    movieEnv: require('./movie.env'),
-    index: path.resolve(__dirname, '../dist/index.html'),
+    pmangaEnv: require('./pmanga.env'),
+    novelEnv: require('./novel.env'),
+    index: path.resolve(__dirname, `../dist/${env}/index.html`),
     // Paths
-    assetsRoot: path.resolve(__dirname, '../dist/'),
+    assetsRoot: path.resolve(__dirname, `../dist/${env}/`),
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     // assetsPublicPath: './',

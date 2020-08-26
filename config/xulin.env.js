@@ -1,9 +1,10 @@
 'use strict';
 module.exports = {
-  NODE_ENV: '"xulinEnviron"',
-  APP_VERSION: '1.39', // 2020/7/28 17:57
-  ENV_CONFIG: '"xulin"',
-  OUT_PUT: "'Xulinad'",
+  NODE_ENV: '"production"',
+  APP_VERSION: '1.40', // 2020/08/26
+  ENV_CONFIG: '"manga"',
+  OUT_PUT: "'xulin'",
+  productionGzip: true,
   PRO_DIFF: {
     title: "Manga"
   },

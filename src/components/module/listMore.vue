@@ -1,21 +1,22 @@
 <template>
   <div class="list_module">
-    <template v-if="boxList&&boxList.length>0">
+    <template v-if="boxList && boxList.length > 0">
       <ul class="book_list">
         <li
           class="book_detl"
-          v-for="(detl,idx) in boxList"
+          v-for="(detl, idx) in boxList"
           :key="idx"
-          @click="tar_href(detl.id,detl.title)"
+          @click="tar_href(detl.id, detl.title)"
         >
           <div class="book_pto">
-            <img v-lazy="detl.show_img+'?'+autoImg" alt />
+            <img v-lazy="detl.show_img + '?' + autoImg" alt />
           </div>
           <div class="book_desc">
-            <span class="book_txt over_ellipsis">{{detl.title}}</span>
-            <span
-              class="book_update"
-            >{{$t('show.case')}} {{$t('index.week')[detl.week_no-1]}} {{$t('show.update')}}</span>
+            <span class="book_txt over_ellipsis">{{ detl.title }}</span>
+            <span class="book_update"
+              >{{ $t("show.case") }} {{ $t("index.week")[detl.week_no - 1] }}
+              {{ $t("show.update") }}</span
+            >
           </div>
         </li>
       </ul>
@@ -40,9 +41,6 @@ export default {
     // console.log(this.boxList);
   },
   methods: {
-    loadMore() {
-      console.log("测试滚动");
-    },
     //跳转详情页
     tar_href(id, title) {
       // console.log("跳转详情页");
@@ -73,7 +71,7 @@ export default {
           position absolute
           height 100%
           width 100%
-          border-radius 10px
+          // border-radius 10px
       .book_txt
         display block
         font-size 28px
@@ -89,5 +87,3 @@ export default {
         color #777
         text-align center
 </style>
-
-

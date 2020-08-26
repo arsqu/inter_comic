@@ -2,12 +2,18 @@ export default {
   common: {
     priceUnit: 'coins',
     recharge: 'Top Up',
-    pay: 'pay',
-    balance: 'balance',
+    pay: 'Pay',
+    balance: 'Balance',
     singOut: 'Sign out',
     download: 'Read manga online',
     install: 'Install',
     register: 'Sign up'
+  },
+  doc: {
+    guide: 'Terms and Conditions',
+    policy: 'Privacy Policy',
+    about: 'Contact',
+    refund: 'Refund and Cancellation Policy'
   },
   pay: {
     autoBuy: 'Auto buy next chapter'
@@ -20,14 +26,16 @@ export default {
       hot: 'Hot',
       selected: 'Selected'
     },
-    update: 'update',
-    updateHead: 'update timetable',
+    update: 'Update',
+    updateHead: 'Update Timetable',
     date: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday", "Sunday"],
     week: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'],
     rank: 'Ranking',
+    free: 'Free',
+    category: 'Category',
     rankHead: 'Ranking List',
     rankList: {
-      flag: ["", "Daily Clicks", "Weekly Clicks", "Monthly Clicks", "Total Clicks"],
+      flag: ["Paily Clicks", "Daily Clicks", "Weekly Clicks", "Monthly Clicks", "Total Clicks"],
       isOver: ["Ongoing", "Completed"],
       payTyp: ["Free List", "Pay List"]
     }
@@ -37,28 +45,28 @@ export default {
     auth: 'Author',
     country: 'Country',
     read: 'Reading',
-    chapterPrice: 'price',
-    hasMoney: 'balance',
+    chapterPrice: 'Price',
+    hasMoney: 'Balance',
     coins: 'coins',
-    btnTxt: ['sign in', 'top up', 'pay'],
-    emptyChapter: 'empty content',
+    btnTxt: ['Sign in', 'Top Up', 'Pay'],
+    emptyChapter: 'Empty content',
     payRead: 'Read after paying',
     loginRead: 'This section is a paid chapter, please login first',
     payStatus: {
-      success: 'payment successful',
-      warning: 'episode bought',
-      error: 'insufficient balance'
+      success: 'Payment Successful',
+      warning: 'Episode Bought',
+      error: 'Insufficient Balance'
     }
   },
   //当前栏目下没有漫画
   column: {
     detl: 'Details',
     summary: 'Summary',
-    catalog: 'chapter',
+    catalog: 'Chapter',
     noTitle: 'Untitled',
     noDesc: 'No description',
-    chapter: 'chapter',
-    footer: 'Read Now'
+    chapter: 'Chapter',
+    footer: 'Start Reading'
   },
   show: {
     unknown: 'unknown',
@@ -82,6 +90,8 @@ export default {
     tips: {
       pay: 'Currently paid chapter',
       first: 'Already the first page',
+      maxFont: 'Already the largest font',
+      minFont: 'Already the smallest font',
       last: 'Already the last page'
     }
   },
@@ -90,12 +100,14 @@ export default {
     feedback: 'Feedback',
     rCode: 'Referral Code',
     info: "Profile",
+    seemore: 'View after login',
     // tips: 'To be developed...'
     tips: {
       toLogin: 'Sign in for more features'
     }
   },
   login: {
+    logText: ['Sign in', 'Click to Login'],
     notAllowed: 'Not logged in',
     phone: 'Email address or phone',
     pass: 'enter your password',
@@ -116,8 +128,8 @@ export default {
   suggest: {
     txt: 'Feedback',
     head: 'Feedback content',
-    phone: 'phone',
-    email: 'email',
+    phone: 'Phone',
+    email: 'Email',
     tips: {
       content: 'Please enter what you want to feedback'
     },
@@ -132,7 +144,7 @@ export default {
     code: 'enter the verification code',
     pass: 'enter the password',
     btnTxt: "Complete",
-    gender: ['male', 'Female'],
+    gender: ['Male', 'Female'],
     genderTxt: 'gender',
     toRegister: 'Create an account',
     toLogin: 'Already have an account?',
@@ -154,8 +166,8 @@ export default {
       smsCode: 'Verification code',
       phoneErr: 'Please enter the correct phone number',
       emailErr: 'Please enter the correct email',
-      ecode: 'Email verification code',
-      ecodeEmpty: 'Please fill in the verification code in the email address',
+      ecode: 'verification code',
+      ecodeEmpty: 'Please fill in the verification code',
       pass: 'Password',
       age: 'Age',
       gender: 'Gender',
@@ -177,9 +189,9 @@ export default {
   },
   recharge: {
     loading: 'In the recharge,Please wait...',
-    recharge: 'top Up',
+    recharge: 'Top Up',
     rechargeMoney: 'Enter the amount',
-    tips: 'prompt',
+    tips: 'Prompt',
     payRate: 'coins ratio',
     info: {
       1: 'The balance cannot be withdrawn',
@@ -202,16 +214,17 @@ export default {
   },
   infoDetl: {
     title: 'Profile',
-    nick: 'nickName',
-    uname: "userName",
-    balance: 'balance',
+    nick: 'Nickname',
+    uname: "Username",
+    avatar: 'Avatar',
+    balance: 'Balance',
     code: 'Invitation code',
-    mail: 'email',
-    phone: 'phone',
-    gender: 'gender',
+    mail: 'Email',
+    phone: 'Phone',
+    gender: 'Gender',
     genderType: {
-      m: 'male',
-      w: 'female'
+      m: 'Male',
+      w: 'Female'
     },
     func: {
       autoBuy: 'Automatic purchase'
@@ -229,7 +242,7 @@ export default {
     }
   },
   post: {
-    txt: 'submit',
+    txt: 'Submit',
     success: 'Submitted successfully',
     err: 'Submission Failed'
   }

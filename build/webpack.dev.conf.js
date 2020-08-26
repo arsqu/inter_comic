@@ -12,7 +12,7 @@ const portfinder = require('portfinder')
 
 const HOST = process.env.HOST
 const PORT = process.env.PORT && Number(process.env.PORT)
-const env = require('../config/dev.' + process.env.ENV_CONFIG)
+const env = require('../config/dev.' + process.env.OUT_PUT)
 
 console.log('```````````````````````````````env```````````````````````````````')
 console.log(env)
@@ -62,9 +62,8 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       filename: 'index.html',
       // title: process.env.ENV_CONFIG,
       title: env.PRO_DIFF.title,
-      shareImg: process.env.ENV_CONFIG == 'manga' ? '/static/img/share.jpg' : '/static/img/def_share.jpg',
-      // shareImg: '/static/img/def_share.jpg',
-      template: 'index.html',
+      shareImg: '',
+      template: 'index.ejs',
       inject: true
     }),
     // copy custom static assets
@@ -79,7 +78,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 })
 
 module.exports = new Promise((resolve, reject) => {
-  portfinder.basePort = process.env.PORT || config.dev.port
+  portfinder.basePort = env.PORT || config.dev.port
   portfinder.getPort((err, port) => {
     if (err) {
       reject(err)

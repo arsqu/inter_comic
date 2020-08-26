@@ -1,7 +1,7 @@
 'use strict'
 require('./check-versions')()
 
-process.env.NODE_ENV = 'production'
+// process.env.NODE_ENV = 'production'
 
 const ora = require('ora')
 const rm = require('rimraf')
@@ -13,7 +13,7 @@ const webpackConfig = require('./webpack.prod.conf')
 
 // const spinner = ora('building for production...')
 // modify
-const spinner = ora('building for ' + process.env.NODE_ENV + ' of ' + process.env.ENV_CONFIG + ' mode... ')
+const spinner = ora('building for ' + process.env.NODE_ENV + ' of ' + process.env.OUT_PUT + ' mode... ')
 spinner.start()
 
 rm(path.join(config.build.assetsRoot, config.build.assetsSubDirectory), err => {

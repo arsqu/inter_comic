@@ -3,20 +3,30 @@
     <!-- 搜索框 -->
     <div class="s_group" @keyup.13="searchVal">
       <div class="s_inp">
-        <input class="s_key" type="text" :placeholder="$t('search.txt')" v-model="val" />
+        <!-- type="text" -->
+        <input
+          class="s_key"
+          type="search"
+          :placeholder="$t('search.txt')"
+          v-model="val"
+        />
       </div>
-      <span class="s_txt" @click="searchVal">{{txt}}</span>
+      <span class="s_txt btn_primary" @click="searchVal">{{ txt }}</span>
     </div>
+    <!-- <div>
+      <mt-search v-model="val"></mt-search>
+      <span class="s_txt" @click="searchVal">{{ txt }}</span>
+    </div> -->
     <!-- 搜索结果 -->
     <div class="s_total" v-show="isShow">
       <ul>
         <li>
-          {{txt}} :
-          <span class="active s_words">{{keyword}}</span>
+          {{ txt }} :
+          <span class="active s_words">{{ keyword }}</span>
         </li>
         <li>
-          {{$t('search.total')}} :
-          <span class="active s_num">{{page.countAll}}</span>
+          {{ $t("search.total") }} :
+          <span class="active s_num">{{ page.countAll }}</span>
         </li>
       </ul>
     </div>
@@ -29,22 +39,29 @@
         infinite-scroll-disabled="isScroll"
         infinite-scroll-distance="20"
       >
-        <template v-if="bookList.length>0">
-          <listModule :autoImg="this.$config.autoImg.list" :boxList="bookList" :rankState="false" />
+        <template v-if="bookList.length > 0">
+          <listModule
+            :autoImg="this.$config.autoImg.list"
+            :boxList="bookList"
+            :rankState="false"
+          />
         </template>
       </ul>
       <loading :loadState="loading" />
       <!-- 加载结束后小于9条 -->
-      <template v-if="!loading&&isShow">
-        <div v-if="bookList.length<9" class="prompt_week">{{$t('tips.nomore')}}</div>
-        <div class="prompt_week" v-else>{{$t('tips.end')}}</div>
+      <template v-if="!loading && isShow">
+        <div v-if="bookList.length < 9" class="prompt_week">
+          {{ $t("tips.nomore") }}
+        </div>
+        <div class="prompt_week" v-else>{{ $t("tips.end") }}</div>
       </template>
     </div>
   </div>
 </template>
 
 <script>
-const listModule = () => import("./module/listModule");
+// const listModule = () => import("./module/listModule");
+const listModule = () => import("x/components/module/listModule");
 export default {
   data() {
     return {
@@ -72,6 +89,11 @@ export default {
   },
   created() {},
   mounted() {
+    var key = this.$route.params.key;
+    if (key) {
+      this.val = key;
+      this.searchVal();
+    }
     this.txt = this.$t("search.search");
   },
   activated() {
@@ -175,27 +197,42 @@ export default {
   margin 10px 30px
   display flex
   .s_inp
-    border-radius 30px
+    border-radius 30px 0 0 30px
     height 70px
     flex 1
     line-height 70px
     background #f1f1f1
-    padding-left 35px
+    padding-left 60px
+    position relative
     color #666
+    &:after
+      content ''
+      display inline-block
+      position absolute
+      left 25px
+      top 50%
+      margin-top -22.5px
+      width 45px
+      height 45px
+      background url('~x/image/icon/search.png')no-repeat center
+      background-size contain
     .s_key
       border 0 none
       outline 0 none
       height 100%
       width 100%
+      padding-left 30px
       vertical-align top
       background transparent
   .s_txt
     font-size 30px
     height 70px
-    color #666
+    // color #666
+    border-radius 0 30px 30px 0
     line-height 70px
     text-align center
-    margin-left 20px
+    padding 0 10px
+    // margin-left 20px
 .s_total
   font-size 28px
   color #666
@@ -208,5 +245,3 @@ export default {
 .active
   color orange
 </style>
-
-

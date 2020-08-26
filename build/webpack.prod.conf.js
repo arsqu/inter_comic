@@ -11,7 +11,13 @@ const ExtractTextPlugin = require('extract-text-webpack-plugin')
 const OptimizeCSSPlugin = require('optimize-css-assets-webpack-plugin')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-const env = config.build[process.env.ENV_CONFIG + 'Env'] //根据不同环境打包
+const env = config.build[process.env.OUT_PUT + 'Env'] //根据环境打包
+const output = {
+  // path: config.build.assetsRoot,
+  path: path.resolve(__dirname, `../dist/${process.env.OUT_PUT}`)
+  // filename: utils.assetsPath(`js/[name].[chunkhash].js?version=${env.APP_VERSION}`),
+  // chunkFilename: utils.assetsPath(`js/[id].[chunkhash].js?version=${env.APP_VERSION}`)
+}
 
 const webpackConfig = merge(baseWebpackConfig, {
   externals: {
@@ -24,17 +30,11 @@ const webpackConfig = merge(baseWebpackConfig, {
     rules: utils.styleLoaders({
       sourceMap: config.build.productionSourceMap,
       extract: true,
-      extract: env.OUT_PUT == 'Xulinad' ? true : false,
       usePostCSS: true
     })
   },
   devtool: config.build.productionSourceMap ? config.build.devtool : false,
-  output: {
-    // path: config.build.assetsRoot,
-    path: path.resolve(__dirname, '../dist/' + process.env.OUT_PUT),
-    filename: utils.assetsPath('js/[name].[chunkhash].js?version=' + env.APP_VERSION),
-    chunkFilename: utils.assetsPath('js/[id].[chunkhash].js?version=' + env.APP_VERSION)
-  },
+  output,
   plugins: [
     // http://vuejs.github.io/vue-loader/en/workflow/production.html
     new webpack.DefinePlugin({
@@ -72,10 +72,10 @@ const webpackConfig = merge(baseWebpackConfig, {
     new HtmlWebpackPlugin({
       // filename: config.build.index,
       // index: path.resolve(__dirname, '../dist/index.html'),
-      filename: path.resolve(__dirname, '../dist/' + process.env.OUT_PUT + '/index.html'),
-      template: 'index.html',
+      filename: path.resolve(__dirname, `../dist/${process.env.OUT_PUT}/index.html`),
+      template: 'index.ejs',
       title: env.PRO_DIFF.title,
-      shareImg: process.env.ENV_CONFIG == 'manga' ? '/static/img/share.jpg' : '/static/img/def_share.jpg',
+      shareImg: `/static/image/share_${process.env.OUT_PUT}.jpg`,
       inject: true,
       minify: {
         removeComments: true,
@@ -132,23 +132,28 @@ const webpackConfig = merge(baseWebpackConfig, {
   ]
 })
 
-if (config.build.productionGzip) {
+// if (config.build.productionGzip) {
+if (env.productionGzip) {
   const CompressionWebpackPlugin = require('compression-webpack-plugin')
-
+  webpackConfig.output.filename = `js/[name].[chunkhash].js?version=${env.APP_VERSION}`
+  webpackConfig.output.chunkFilename = `js/[id].[chunkhash].js?version=${env.APP_VERSION}`
   webpackConfig.plugins.push(
     new CompressionWebpackPlugin({
-      asset: '[path].gz[query]',
+      asset: '[path].gz?[query]',
       algorithm: 'gzip',
-      test: new RegExp(
-        '\\.(' +
-        config.build.productionGzipExtensions.join('|') +
-        ')$'
-      ),
+      test: new RegExp('\\.(' + ['js', 'css'].join('|') + ')'),
+      // filename: '[path].gz[query]',
+      // test: new RegExp(
+      //   '\\.(' +
+      //   config.build.productionGzipExtensions.join('|') +
+      //   ')$'
+      // ),
       threshold: 10240,
       minRatio: 0.8
     })
   )
 }
+
 
 if (config.build.bundleAnalyzerReport) {
   const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin

@@ -1,16 +1,15 @@
 'use strict'
-const merge = require('webpack-merge')
-const prodEnv = require('./prod.env')
 
-module.exports = merge(prodEnv, {
+module.exports = {
   NODE_ENV: '"development"',
-  ENV_CONFIG: '"xulin"',
-  OUT_PUT: '"Xulinad"',
+  ENV_CONFIG: '"manga"',
+  OUT_PUT: '"xulin"',
   PRO_DIFF: {
     title: "Manga"
   },
+  PORT: 8069,
   APP_DOWN: false,
   API_BASE: '"/api"',
   SERVER_GO: '"/go"',
-  SERVER_JAVA: '"/java"'
-})
+  SERVER_JAVA: '"/manga"'
+}

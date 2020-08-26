@@ -5,11 +5,13 @@
     <div class="update_time">
       <ul>
         <li
-          v-for="(item,idx) in date"
+          v-for="(item, idx) in date"
           :key="idx"
-          :class="{active:isDay == (idx + 1)}"
+          :class="{ active: isDay == idx + 1 }"
           @click="updateTab(idx + 1)"
-        >{{item}}</li>
+        >
+          {{ item }}
+        </li>
       </ul>
     </div>
     <!-- 展示区 -->
@@ -18,10 +20,10 @@
         class="push_column scroll_tab"
         v-infinite-scroll="loadMore"
         infinite-scroll-disabled="isScroll"
-        infinite-scroll-distance="20"
+        infinite-scroll-distance="0"
       >
-        <div v-show="isDay == (idx+1)" v-for="(item,idx) in date" :key="idx">
-          <listMore :autoImg="autoImg" :boxList="boxT['d'+(idx+1)]" />
+        <div v-show="isDay == idx + 1" v-for="(item, idx) in date" :key="idx">
+          <listMore :autoImg="autoImg" :boxList="boxT['d' + (idx + 1)]" />
         </div>
       </div>
     </div>
@@ -30,10 +32,12 @@
       <loading :loadState="loading" />
       <template v-if="!loading">
         <div
-          v-if="boxT['d'+isDay]&&boxT['d'+isDay].length == 0"
+          v-if="boxT['d' + isDay] && boxT['d' + isDay].length == 0"
           class="prompt_week"
-        >{{$t('tips.notupdate')}}</div>
-        <div v-else class="prompt_week">{{$t('tips.end')}}</div>
+        >
+          {{ $t("tips.notupdate") }}
+        </div>
+        <div v-else class="prompt_week">{{ $t("tips.end") }}</div>
       </template>
     </div>
   </div>
@@ -69,11 +73,13 @@ export default {
   },
   activated() {
     console.log("activated");
+    // 启动滚动
     this.scrollState["d" + this.isDay] = false;
   },
   beforeRouteLeave(to, from, next) {
     // console.log(to, from);
-    this.scrollState["d" + this.isDay] = true; //离开时关闭滚动
+    //离开时关闭滚动
+    this.scrollState["d" + this.isDay] = true;
     next();
   },
   computed: {
@@ -146,11 +152,13 @@ export default {
             if (this.boxT[key].length == 0) {
               this.$set(this.boxT, [key], data.list);
             } else {
+              // 小于总条数追加
               if (this.boxT[key].length < data.total) {
                 this.boxT[key] = this.boxT[key].concat(data.list);
                 console.log("拼接");
               }
             }
+            // 小于12条时停止滚动事件
             if (data.list.length < 12) {
               this.loading = false;
               this.$set(this.scrollState, [key], true); //停止滚动
@@ -185,7 +193,7 @@ export default {
   padding 10px
 .update_time
   background #fff
-  width 100%
+  width calc(100% - 20px)
   position fixed
   top 100px
   z-index 10
@@ -193,7 +201,7 @@ export default {
     display flex
     font-size 30px
     color #999
-    padding 0 25px
+    padding 0 15px
     border-bottom 3px solid #f3f3f3
     li
       position relative
@@ -203,18 +211,17 @@ export default {
       height 80px
       line-height 80px
       &.active
-        background #f7f7f7
+        // background #f7f7f7
+        color #000
         font-size 32px
         &:after
           content ''
           display block
-          border-top-width 8px
+          border-top-width 6px
           border-top-style solid
           position absolute
-          bottom -8px
+          bottom 0px
           width 100%
 .update_box
-  padding-top 85px
+  padding-top 95px
 </style>
-
-

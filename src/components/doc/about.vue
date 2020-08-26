@@ -7,21 +7,21 @@
     </div>
     <div class="mt-0">
       <p>
-        FL NO 03,, AKANSHA APP,, PALLOD FARM, PHASE II,
-        BANER, Pune, Maharashtra, 411045
+        FL NO 03,, AKANSHA APP,, PALLOD FARM, PHASE II, BANER, Pune,
+        Maharashtra, 411045
       </p>
     </div>
     <div>
       <i class="icon icon_phone"></i>
-      <span class="phone_call">{{phone}}</span>
+      <span class="phone_call">{{ phone }}</span>
     </div>
     <div>
       <i class="icon icon_email"></i>
-      <span>customer service: cs@{{suffix}}</span>
+      <span>Service: {{ mail[0] }}</span>
     </div>
     <div>
       <i class="icon"></i>
-      <span>business: bd@{{suffix}}</span>
+      <span>Business: {{ mail[1] }}</span>
     </div>
   </div>
 </template>
@@ -30,15 +30,15 @@
 export default {
   data() {
     return {
-      phone: "",
-      suffix: "",
+      mail: [],
+      phone: ""
     };
   },
   mounted() {
     var siteDir = this.$project.siteDetl;
     this.phone = siteDir.phone;
-    this.suffix = siteDir.mail;
-  },
+    this.mail = siteDir.mail;
+  }
 };
 </script>
 
@@ -52,14 +52,12 @@ export default {
   background #363839
   .phone_call
     font-size 40px
-  .mt-0
-    margin-top 0
-    p
-      margin-left 79px
-      margin-top 30px
-      font-size 40px
-      width 75%
-      color #8C8989
+  p
+    margin-left 79px
+    margin-top 30px
+    font-size 40px
+    width 75%
+    color #8C8989
   div
     margin-top 50px
     &.fir
@@ -78,15 +76,15 @@ export default {
     border-radius 50%
     margin-right 15px
   .icon_earth
-    background url('/static/img/icon_new/earth.png')
+    background url('/static/image/icon/earth.png')
     background-size 100%
     background-color #fff
   .icon_phone
-    background url('/static/img/icon_new/phone.png')
+    background url('/static/image/icon/phone.png')
     background-size 100%
     background-color #fff
   .icon_email
-    background url('/static/img/icon_new/email1.png')
+    background url('/static/image/icon/email1.png')
     background-size 100%
     background-color #fff
   b
@@ -101,6 +99,6 @@ export default {
   p
     color #6e6e6e
     line-height 1.5
-    margin-left 64px
+    // margin-left 64px
     margin-bottom 20px
 </style>

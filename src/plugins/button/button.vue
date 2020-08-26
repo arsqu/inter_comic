@@ -75,7 +75,7 @@ export default {
 <style lang="stylus" scoped>
 .mint-button >>> .mint-button-text
   font-size 35px
-  vertical-align middle
+  // vertical-align middle
   display inline-block
   padding-left 10px
 </style>

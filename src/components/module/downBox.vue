@@ -1,6 +1,6 @@
 <template>
   <!-- 下载app -->
-  <div class="downloadApp" v-show="showApp && this.show">
+  <div class="downloadApp" v-if="showApp && this.show">
     <i class="close" @click="close"></i>
     <img src="/static/img/win-logo.png" alt />
     <div class="down_txt">

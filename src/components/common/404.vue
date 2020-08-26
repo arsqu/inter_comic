@@ -1,7 +1,7 @@
 <template>
   <div id="notFound">
     <div class="page_box">
-      <img src="/static/img/404.png" alt />
+      <img src="/static/image/404.png" alt />
       <button @click="reback">{{$t('tips.404')}}</button>
     </div>
   </div>

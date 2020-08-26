@@ -34,7 +34,7 @@ export default {
   right 0
   margin auto
   z-index 100
-  background-color rgba(0, 0, 0, .65)
+  background-color rgba(0, 0, 0, .5)
   &.topMask
     top 100px
 </style>

@@ -1,12 +1,6 @@
 
 var toast, i18n;
 
-// 渠道号 状态
-function statistics(ch, status) {
-  if (_hmt)
-    _hmt.push(["_trackEvent", ch, status]);
-}
-
 function closeToast() {
   if (toast)
     toast.close();
@@ -29,12 +23,13 @@ function getQueryString(name) {
 
 function Toast(txt, trans) {
   if (txt) {
-    i18n = i18n || window.vm.$i18n;
+    // i18n = i18n || window.vm.$i18n;
+    i18n = i18n || Vue.prototype.i18n;
     // console.log(trans, i18n.t(txt));
     txt = !trans ? i18n.t(txt) : txt
     if (toast)
       toast.close();
-    toast = window.Vue.$toast(txt);
+    toast = Vue.$toast(txt);
   }
 }
 
@@ -57,6 +52,5 @@ export default {
   replaceUrl,
   getQueryString,
   awaitReturn,
-  closeToast, Toast,
-  statistics
+  closeToast, Toast
 }
