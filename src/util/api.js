@@ -6,6 +6,7 @@ import fetch from './fetch'
 // var env = process.env
 var comUrl = process.env.SERVER_GO,
   nextUrl = process.env.SERVER_JAVA;
+// var base = (process.env.ENV_CONFIG == 'novel' || process.env.SERVER_TEST == true) ? '' : '/api/v1'
 var base = process.env.ENV_CONFIG == 'novel' ? '' : '/api/v1'
 
 const crossUrl = {
@@ -36,7 +37,11 @@ const crossUrl = {
   'flag': base + '/clickList',
   'isOver': base + '/overList',
   'payTyp': base + '/payTypList',
-  'Chapter': base + '/chapterDetail'
+  'Chapter': base + '/chapterDetail',
+  'withdraw': {
+    'payOut': '/pay/payOut',
+    'record': '/pay/findPayOut'
+  }
 }
 
 function getUrl(obj, key, val) {

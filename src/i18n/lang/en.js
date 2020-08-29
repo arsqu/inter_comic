@@ -31,7 +31,7 @@ export default {
     date: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saterday", "Sunday"],
     week: ['Mon', 'Tues', 'Wed', 'Thurs', 'Fri', 'Sat', 'Sun'],
     rank: 'Ranking',
-    free: 'Free',
+    free: 'Vip',
     category: 'Category',
     rankHead: 'Ranking List',
     rankList: {
@@ -68,6 +68,35 @@ export default {
     chapter: 'Chapter',
     footer: 'Start Reading'
   },
+  paidRecord: {
+    title: 'Withdrawals',
+    record: 'Withdrawals Record',
+    OutType: "Type",
+    outCoin: 'Coins',
+    money: 'Money',
+    time: 'Withdrawals time',
+    common: 'please enter',
+    status: 'Status',
+    oderId: 'oderId',
+    vpa: 'Vpa',
+    formList: {
+      phone: 'Phone',
+      account: 'Bank Account',
+      ifsc: 'IFSC',
+      money: 'gold coin'
+    },
+    response: {
+      err: 'Request failed',
+      1: 'Successful withdrawal',
+      2: 'Insufficient account balance',
+      3: "Can't withdraw cash temporarily"
+    },
+    tips: {
+      money: 'Please enter the amount',
+      phone: 'Please enter the phone',
+      empty: 'Please fill in the complete information'
+    }
+  },
   show: {
     unknown: 'unknown',
     update: '',
@@ -81,9 +110,9 @@ export default {
     notlogin: 'please sign in',
     tiplogin: 'Login to see more',
     loading: 'Loading',
-    notHave: 'No more cartoon for current column',
-    nomore: 'No more cartooons',
-    notupdate: 'No more updated cartoons today',
+    notHave: 'No more for current column',
+    nomore: 'No more',
+    notupdate: 'No more updated today',
     end: 'Already to the end'
   },
   view: {

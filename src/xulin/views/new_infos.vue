@@ -7,8 +7,6 @@
         @click="reBack"
       ></span>
       <template v-if="!isLogin">
-        <!-- btn_def -->
-        <!-- <button></button> -->
         <router-link
           tag="button"
           class="infoBtn btn_def btn_radius"
@@ -45,6 +43,21 @@
         <li class="icon_item recharge" tag="li" @click="recharge">
           <span>{{ $t("common.recharge") }}</span>
         </li>
+        <li
+          v-show="isLogin"
+          class="icon_item withdraw"
+          @click="showWithdrawBox"
+        >
+          <span>{{ $t("paidRecord.title") }}</span>
+        </li>
+        <router-link
+          class="icon_item withdraw_record"
+          tag="li"
+          :to="{ name: 'paid_record' }"
+          v-show="isLogin"
+        >
+          <span>{{ $t("paidRecord.record") }}</span>
+        </router-link>
         <router-link
           class="icon_item feedback"
           tag="li"
@@ -80,6 +93,69 @@
         </ul>
       </div>
     </mt-popup>
+
+    <mt-popup
+      v-model="withVisible"
+      class="cus_popup"
+      position="right"
+      popup-transition="popup-fade"
+    >
+      <div class="rateTxt">
+        {{ $t("recharge.payRate") }}
+        <span v-if="isLogin" class="unit link_span"
+          >1{{ currency }} : {{ exchangeRate
+          }}{{ $t("common.priceUnit") }}</span
+        >
+      </div>
+      <a href="javascript:;" class="mint-cell mint-field">
+        <div class="mint-cell-wrapper">
+          <div class="mint-cell-title">
+            <span class="mint-cell-text">{{ $t("paidRecord.OutType") }}</span>
+          </div>
+          <div class="mint-cell-value">
+            <mt-radio v-model="withOpt.OutType" :options="OutType"></mt-radio>
+          </div>
+        </div>
+      </a>
+      <mt-field
+        v-show="!showType"
+        :label="$t('paidRecord.formList.phone')"
+        :placeholder="$t('paidRecord.formList.phone')"
+        type="tel"
+        v-model="withOpt.phone"
+      ></mt-field>
+      <mt-field
+        v-show="showType"
+        :label="$t('paidRecord.formList.account')"
+        :placeholder="$t('paidRecord.formList.account')"
+        type="text"
+        v-model="withOpt.account"
+      ></mt-field>
+      <mt-field
+        v-show="showType"
+        :label="$t('paidRecord.formList.ifsc')"
+        :placeholder="$t('paidRecord.formList.ifsc')"
+        v-model="withOpt.ifsc"
+      ></mt-field>
+      <mt-field
+        :label="$t('paidRecord.formList.money')"
+        :placeholder="$t('paidRecord.formList.money')"
+        :state="outCoinError"
+        v-model="withOpt.outCoin"
+        type="number"
+      ></mt-field>
+      <div class="prompt_txt">{{ msg }}</div>
+      <div class="mt-5 mb-5">
+        <cs-button
+          round
+          :size="'large'"
+          :disabled="disabled"
+          :title="$t('post.txt')"
+          :isComplete="isComplete"
+          :func="postBtn"
+        />
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -88,10 +164,26 @@ import Qs from "qs";
 export default {
   data() {
     return {
+      msg: "",
+      OutType: ["bank", "wallet"],
+      isComplete: false,
+      disabled: false,
+      exchangeRate: "",
+      currency: "",
+      // 语言框
       popupVisible: false,
+      outCoinError: "",
+      withVisible: false,
       isCur: 1,
       isLogin: false,
       tabList: [],
+      withOpt: {
+        OutType: "bank",
+        phone: "",
+        account: "",
+        ifsc: "",
+        outCoin: ""
+      },
       uname: "",
       rcode: "",
       money: "",
@@ -107,10 +199,44 @@ export default {
   mounted() {
     console.log("update_mounted");
     this.loadData();
+    this.getCurrency();
     this.checkLogin(); //本地状态判断是否登录
   },
-  computed: {},
+  computed: {
+    showType() {
+      var opt = this.withOpt;
+      if (opt.OutType == "bank") {
+        opt.phone = "";
+        return true;
+      } else {
+        opt.ifsc = "";
+        opt.account = "";
+        return false;
+      }
+    }
+  },
   methods: {
+    // 货币比率
+    getCurrency() {
+      this.$api
+        .getDataN("currencyUnit")
+        .then(res => {
+          if (res.code == 1) {
+            var data = res.data;
+            this.exchangeRate = data.proportion;
+            this.currency = data.currency;
+          } else if (res.code == 401) {
+            this.isLogin = false;
+            localStorage.setItem("loginUrl", this.$route.fullPath);
+            this.$util.clearItem();
+          }
+          // console.log(res);
+        })
+        .catch(err => {
+          this.isLogin = false;
+          // console.log(err);
+        });
+    },
     selLang(lang) {
       if (lang) {
         this.$i18n.locale = lang;
@@ -122,6 +248,69 @@ export default {
     changeLang() {
       this.popupVisible = true;
       // this.$bus.$emit("isLangBox", true);
+    },
+    showWithdrawBox() {
+      if (this.isLogin) {
+        this.withVisible = true;
+        console.log("已登录");
+      } else {
+        this.withVisible = false;
+        console.log("未登录");
+      }
+    },
+    //提交表单
+    postBtn() {
+      var msg = "";
+      if (this.isComplete) {
+        this.msg = this.$t("login.tips.wait");
+        return;
+      }
+      var param = this.withOpt;
+      console.log(param.money);
+      if (!param.outCoin) {
+        this.msg = this.$t("paidRecord.tips.money");
+        this.outCoinError = "error";
+        return;
+      }
+      this.outCoinError = "";
+      if (param.OutType == "wallet") {
+        if (!param.phone) {
+          this.msg = this.$t("paidRecord.tips.phone");
+          return;
+        }
+      } else if (param.OutType == "bank") {
+        if (!param.ifsc || !param.account) {
+          this.msg = this.$t("paidRecord.tips.empty");
+          return;
+        }
+      } else {
+      }
+      this.msg = "";
+      this.getMoney(param);
+    },
+    // 提现
+    getMoney(d) {
+      if (d) {
+        this.isComplete = true;
+        this.$api
+          .postDataN("withdraw.payOut", Qs.stringify(d))
+          .then(res => {
+            this.isComplete = false;
+            if (res.code == 1) {
+              this.withVisible = false;
+              this.$util.Toast(this.$t("paidRecord.response")[res.code]);
+            } else if (res.code == 2 || res.code == 3) {
+              console.log("提示框");
+              this.$util.Toast(this.$t("paidRecord.response")[res.code]);
+            } else {
+              this.$util.Toast(this.$t("paidRecord.response")["err"]);
+            }
+          })
+          .catch(err => {
+            this.$util.Toast(this.$t("paidRecord.response")["err"]);
+            this.isComplete = false;
+          });
+      }
     },
     reBack() {
       this.$router.go(-1);
@@ -186,7 +375,6 @@ export default {
 </script>
 
 <style>
-
 .login_name {
   color: #333;
   font-weight: bold;
@@ -204,6 +392,27 @@ export default {
 </style>
 
 <style lang="stylus" scoped>
+// custom
+.prompt_txt
+  padding-top 20px
+  font-size 30px
+  text-align center
+  color #eb2727
+.rateTxt
+  font-size 35px
+  text-align center
+.cus_popup
+  width 100%
+  padding 25px
+  & >>> .mint-radiolist
+    &>.mint-radiolist-title
+      display none
+    display flex
+    & .mint-cell-wrapper
+      padding 0
+    & .mint-radiolist-label
+      padding 0
+
 .back
   position relative
   left 0
@@ -323,6 +532,12 @@ pad()
         background-size 100%
       &.recharge:before
         background url('~x/image/icon/recharge.png')
+        background-size 100%
+      &.withdraw:before
+        background url('~x/image/icon/withdraw.png')
+        background-size 100%
+      &.withdraw_record:before
+        background url('~x/image/icon/withdraw_record.png')
         background-size 100%
       &.feedback:before
         background url('~x/image/icon/feedback.png')

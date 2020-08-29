@@ -11,5 +11,6 @@ module.exports = {
   APP_DOWN: false,
   API_BASE: '"/api"',
   SERVER_GO: '"/go"',
-  SERVER_JAVA: '"/manga"'
+  SERVER_JAVA: '"/manga"',
+  // SERVER_TEST: false
 }

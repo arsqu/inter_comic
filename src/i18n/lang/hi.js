@@ -68,6 +68,38 @@ export default {
     case: 'har',
     more: 'adhik'
   },
+  // paidRecord: {
+  //   title: 'nikaasee',
+  //   record: 'naam vaapasee',
+  //   money: 'paise',
+  //   time: 'vaapasee ka samay',
+  // },
+  paidRecord: {
+    title: 'nikaasee',
+    record: 'nikaasee rikord',
+    OutType: "taip",
+    money: 'Money',
+    outCoins: 'sikke',
+    time: 'nikaasee samay',
+    common: 'krpaya darj karen',
+    formList: {
+      phone: 'fon',
+      account: 'baink khaata',
+      ifsc: 'IFSC',
+      money: 'Money'
+    },
+    response: {
+      err: 'anurodh viphal',
+      1: 'saphal vaapasee',
+      2: 'aparyaapt khaata shesh',
+      3: "nakadee ko asthaayee roop se vaapas nahin le sakate"
+    },
+    tips: {
+      money: 'krpaya raashi darj karen',
+      phone: 'krpaya fon darj karen',
+      empty: ' krpaya pooree jaanakaaree bharen'
+    }
+  },
   tips: {
     404: 'vaapas ghar aa gaya',
     lang: 'saphal svich karen',
@@ -75,8 +107,8 @@ export default {
     notlogin: 'krpaya login karen',
     tiplogin: 'adhik dekhane ke lie login karen',
     loading: 'lod ho raha hai',
-    notHave: 'vartamaan kolam ke lie koee kaartoon nahin',
-    nomore: 'abhee aur kaartoon nahin',
+    notHave: 'vartamaan kolam ke lie koee nahin',
+    nomore: 'abhee aur nahin',
     notupdate: 'aaj ke lie koee komik apadet nahin',
     end: 'aur koee saamagree nahin'
   },

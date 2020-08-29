@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   NODE_ENV: '"production"',
-  APP_VERSION: '0.1', //2020/8/22
+  APP_VERSION: '0.2', //2020/8/28
   ENV_CONFIG: '"novel"',
   OUT_PUT: "'novel'",
   productionGzip: true,

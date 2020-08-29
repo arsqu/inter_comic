@@ -1,10 +1,9 @@
 <template>
   <div class="rankingList">
-    <div class="ranking_type">
+    <!-- <div class="ranking_type">
       <div class="rank_item">
         <template v-for="(item, key) in group">
           <template v-for="(detl, i) in item">
-            <!-- <div :key="idx+i">{{key+i}}</div> -->
             <span
               :class="{ active: isHover[0] + isHover[1] == key + i }"
               v-if="detl"
@@ -15,7 +14,7 @@
           </template>
         </template>
       </div>
-    </div>
+    </div> -->
     <div class="ranking_detl">
       <div
         class="scroll_tab"
@@ -57,7 +56,7 @@
           >
             {{ $t("tips.notHave") }}
           </div>
-          <div v-else class="prompt_week">{{ $t("tips.end") }}</div>
+          <div v-else class="prompt_week">{{ $t("tips.nomore") }}</div>
         </template>
       </div>
     </div>
@@ -109,12 +108,12 @@ export default {
   },
   methods: {
     init() {
-      this.isHover = ["payTyp", "1"]; //默认选中
+      this.isHover = ["payTyp", "2"]; //默认选中
       //翻译后的文本数据
       this.group = {
         // flag: this.$t("index.rankList.flag"),
         // isOver: this.$t("index.rankList.isOver"),
-        payTyp: this.$t("index.rankList.payTyp")
+        payTyp: [this.$t("index.rankList.payTyp")[1]]
       };
       this.defData(); //数据初始化
     },
@@ -136,7 +135,7 @@ export default {
     },
     //选择标签
     rankBook(key, i) {
-      //console.log(item);
+      console.log(key, i);
       this.isHover = [key, i];
       this.getRank();
     },

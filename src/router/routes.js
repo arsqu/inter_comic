@@ -151,6 +151,14 @@ const routes = [
     }
   },
   {
+    path: '/paid_record.html',
+    name: "paid_record",
+    component: () => import(`x/views/paid_record`),
+    meta: {
+      title: i18n.t('paidRecord.title')
+    }
+  },
+  {
     path: "/404.html",
     name: "notFound",
     component: () => import('@/components/common/404')
@@ -165,26 +173,37 @@ const routes = [
     redirect: "/404.html"
   }
 ]
+// var mapConfig
+// // 小说新增的路由
+// if (process.env.ENV_CONFIG == 'novel') {
+//   mapConfig = [{
+//     path: '/paid_book.html',
+//     name: 'paid_book',
+//     component: () => import(`x/views/paid_book`),
+//     meta: {
+//       title: i18n.t("index.free")
+//     }
+//   }, {
+//     path: '/cate_book.html',
+//     name: 'cate_book',
+//     component: () => import(`x/views/cate_book`),
+//     meta: {
+//       title: i18n.t("index.category")
+//     }
+//   }]
+//   routes.push(...mapConfig)
+// } else if (process.env.OUT_PUT == 'xulin') {
+//   mapConfig = [{
+//     path: '/paid_record.html',
+//     name: "paid_record",
+//     component: () => import(`x/views/paid_record`),
+//     meta: {
+//       title: i18n.t('paidRecord.title')
+//     }
+//   }]
+//   routes.push(...mapConfig)
+// } else { }
 
-// 小说新增的路由
-if (process.env.ENV_CONFIG == 'novel') {
-  var mapConfig = [{
-    path: '/paid_book.html',
-    name: 'paid_book',
-    component: () => import(`x/views/paid_book`),
-    meta: {
-      title: i18n.t("index.free")
-    }
-  }, {
-    path: '/cate_book.html',
-    name: 'cate_book',
-    component: () => import(`x/views/cate_book`),
-    meta: {
-      title: i18n.t("index.category")
-    }
-  }]
-  routes.push(...mapConfig)
-}
 
 export default new VueRouter({
   routes,
