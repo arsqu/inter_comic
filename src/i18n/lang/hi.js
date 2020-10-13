@@ -83,7 +83,7 @@ export default {
     time: 'nikaasee samay',
     common: 'krpaya darj karen',
     formList: {
-      phone: 'fon',
+      phone: 'Paytm fon',
       account: 'baink khaata',
       ifsc: 'IFSC',
       money: 'Money'
@@ -95,6 +95,7 @@ export default {
       3: "nakadee ko asthaayee roop se vaapas nahin le sakate"
     },
     tips: {
+      notenough: 'kam se kam 1,000 sone ke sikke vaapas le len',
       money: 'krpaya raashi darj karen',
       phone: 'krpaya fon darj karen',
       empty: ' krpaya pooree jaanakaaree bharen'
@@ -121,11 +122,18 @@ export default {
       last: 'pahale se hee antim prshth'
     }
   },
+  shareLink: {
+    btn: 'sheyar',
+    link: 'nimantran',
+    title: 'link sheyar karen',
+    share: 'apane anany aamantran link kee pratilipi banaen. nimantran ke saphal hone ke baad, aamantrit richaarj ke baad, aap puraskaar praapt kar sakate hain aur nakadee nikaal sakate hain.'
+  },
   userInfo: {
     tabList: ['padhane ka rikord', 'mere pasandeeda'],
     feedback: 'pratipushti',
     rCode: 'repharal kod',
     info: 'profail',
+    view: 'aamantran inaam',
     seemore: 'login ke baad dekhen',
     // tips: 'lambit vikaas...',
     tips: {
@@ -267,5 +275,9 @@ export default {
     txt: 'prastut karana',
     success: 'saphalataapoorvak prastut kiya gaya',
     err: 'sabamishan phel ho gaya'
+  },
+  404: {
+    desc: "jis prshth ko aap dekh rahe hain vah maujood nahin hai",
+    pmanga: "kshama karen, aapake dvaara anurodhit prshth nahin mila"
   }
 }

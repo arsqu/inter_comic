@@ -11,6 +11,7 @@ import util from '@/util/util' //通用方法
 import router from '@/router'
 import plugin from '@/plugins' //自定义组件
 import App from './App'
+import clipboard from 'clipboard'
 import lazyload from 'vue-lazyload' // 懒加载
 Vue.use(lazyload, {
   attempt: 1,
@@ -26,13 +27,14 @@ Vue.use(lazyload, {
   }
 })
 
-Vue.prototype.i18n = i18n
 Vue.config.productionTip = false
+Vue.prototype.i18n = i18n
 Vue.prototype.$axios = instance
 Vue.prototype.$api = api //请求地址
 Vue.prototype.$config = config
 Vue.prototype.$project = project
 Vue.prototype.$util = util
+Vue.prototype.$clipboard = clipboard
 
 //全局通信
 Vue.prototype.$bus = new Vue();

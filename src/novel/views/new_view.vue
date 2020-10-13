@@ -9,6 +9,7 @@
             v-for="(item, idx) in chapterList"
             :key="idx"
             @click="viewDetl(item, idx)"
+            :class="{ active: currentIdx == idx }"
           >
             <span :class="{ payItem: item.is_free }">{{
               $t("column.chapter") + " " + item.order_no
@@ -25,7 +26,10 @@
             <span class="top_icon" @click="reBack">
               <img :src="require('x/image/icon/prev.png')" alt="prev" />
             </span>
-            <span class="chapter">{{ chapter }}</span>
+            <span class="chapter over_ellipsis">{{ chapter }}</span>
+            <span class="calc_chapter"
+              >{{ currentIdx + 1 }} / {{ chapterList.length }}</span
+            >
           </div>
         </div>
         <div class="top_tools">
@@ -427,6 +431,10 @@ export default {
 </style>
 
 <style lang="stylus" scoped>
+.calc_chapter
+  color #fff
+  padding-left 50px
+
 .translateBox,.imgBox
   background inherit
 .viewChapter
@@ -454,6 +462,7 @@ export default {
     width 200px
     display flex
     padding 0 15px
+    box-shadow: 0 0 8px 2px #40A9FF;
     &:before
       content: "";
       display: inline-block;
@@ -556,16 +565,23 @@ trans()
     opacity 1
     ul
       font-size 30px
-      // padding-left 15px
-      // text-align center
       li
         padding 25px
         color #333
         font-weight normal
         background inherit
-        // background #fff
+        &.active:before
+          content ''
+          width 30px
+          height 30px
+          vertical-align middle
+          padding-right 10px
+          display inline-block
+          background url('~x/image/icon/location.png')no-repeat
+          background-size contain
+        span
+          vertical-align middle
         .lock
-          // background #F5A739
           color #fff
           font-size 28px
           padding 3px 5px
@@ -678,4 +694,5 @@ trans()
   trans()
   .img_text
     padding 0 20px
+    line-height 1.7
 </style>

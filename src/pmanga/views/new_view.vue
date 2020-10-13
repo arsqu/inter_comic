@@ -9,6 +9,7 @@
             v-for="(item, idx) in chapterList"
             :key="idx"
             @click="viewDetl(item, idx)"
+            :class="{ active: currentIdx == idx }"
           >
             <span :class="{ payItem: item.is_free }">{{
               $t("column.chapter") + " " + item.order_no
@@ -26,7 +27,10 @@
               <!-- <img src="/static/img/icon_new/prev.png" alt="prev" /> -->
               <img :src="require('x/image/icon/prev.png')" alt="prev" />
             </span>
-            <span class="chapter">{{ chapter }}</span>
+            <span class="chapter over_ellipsis">{{ chapter }}</span>
+            <span class="calc_chapter"
+              >{{ nowChapter }} / {{ imgList.length }}</span
+            >
           </div>
         </div>
         <div class="top_tools">
@@ -43,11 +47,11 @@
     </div>
     <div class="bottom_bar">
       <div class="top_tools">
-        <a href="javascript:;" @click="toDetl">
-          <img :src="require('x/image/icon/list.png')" alt="home" />
-        </a>
         <a href="javascript:;" @click="viewPrev">
           <img :src="require('x/image/icon/prev.png')" alt="prev" />
+        </a>
+        <a href="javascript:;" @click="toDetl">
+          <img :src="require('x/image/icon/list.png')" alt="home" />
         </a>
         <a href="javascript:;" @click="viewNext">
           <img :src="require('x/image/icon/next.png')" alt="next" />
@@ -61,6 +65,7 @@
 export default {
   data() {
     return {
+      nowChapter: 1,
       id: null,
       bookId: null,
       autoImg: "",
@@ -96,12 +101,32 @@ export default {
     this.review();
   },
   mounted() {
-    // console.log("view_mounted");
     this.price = localStorage.getItem("price") || "";
+    window.addEventListener("scroll", this.showChapterIdx);
+  },
+  beforeDestroy() {
+    window.removeEventListener("scroll", this.showChapterIdx);
   },
   methods: {
-    // 切换模式
-    switchMode() {},
+    // 当前浏览下标
+    showChapterIdx() {
+      var sH = document.documentElement.clientHeight,
+        sT = document.documentElement.scrollTop || document.body.scrollTop;
+      var box = document.querySelector(".imgBox").children;
+      box = Array.prototype.slice.call(box);
+      box.forEach((res, idx) => {
+        // 当前图片和顶部的距离 < 已滚动距离 + 可视区 - 可视区一半
+        if (res.offsetTop < sH + sT - sH / 2) {
+          if (
+            res.children &&
+            res.children.length > 0 &&
+            res.children[0].getAttribute("lazy") == "loaded"
+          ) {
+            this.nowChapter = idx + 1;
+          }
+        }
+      });
+    },
     //选择章节
     viewDetl(item, idx) {
       //付费
@@ -333,6 +358,10 @@ modal()
   padding 20px 35px
 trans()
   transition all .3s ease
+
+.calc_chapter
+  color #fff
+  padding-left 50px
 .viewLayout
   font-family microsoft yahei,'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif
   overflow hidden
@@ -352,12 +381,20 @@ trans()
       li
         padding 25px
         color #333
-        // color #777
         font-weight normal
-        // background #f7f7f7
         background #fff
+        &.active:before
+          content ''
+          width 30px
+          height 30px
+          vertical-align middle
+          padding-right 10px
+          display inline-block
+          background url('~x/image/icon/location.png')no-repeat
+          background-size contain
+        span
+          vertical-align middle
         .lock
-          // background #F5A739
           color #fff
           font-size 28px
           padding 3px 5px
@@ -464,6 +501,7 @@ trans()
 /*漫画容器*/
 .imgBox
   position relative
+  padding-bottom 90px
   box-shadow 0 0 10px 10px rgba(0, 0, 0, .3)
   trans()
 .img_item

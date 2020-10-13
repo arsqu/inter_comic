@@ -10,7 +10,7 @@ module.exports = {
   PORT: 8060,
   APP_DOWN: false,
   API_BASE: '"/api"',
-  IMG_PATH: '"http://192.168.1.103:8060/novel"',
+  IMG_PATH: '"http://192.168.31.25:8060/novel"',
   SERVER_GO: '"/novel"',
   SERVER_JAVA: '"/novel"'
 }

@@ -38,6 +38,9 @@ function clearItem() {
   var l = localStorage;
   l.removeItem("isLogin");
   l.removeItem("bookId");
+  l.removeItem("rcode");
+  l.removeItem("userInfo");
+  l.removeItem("token");
   // l.removeItem("cache_chapter");
   l.removeItem("autoBuy");
   l.removeItem("loginTips");

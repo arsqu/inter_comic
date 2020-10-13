@@ -6,9 +6,8 @@ var local = localStorage;
 var loginView = config.loginView; // 登录后查看的页面
 router.beforeEach((to, from, next) => {
   console.log('路由跳转')
-  if (to.name != 'new_detl') {
-    Vue.prototype.$bus.$emit("loading", true);
-  }
+  console.log(to, from)
+  Vue.prototype.$bus.$emit("loading", true);
   var isLogin = local.getItem('isLogin');
   if (to.name == 'login' && to.name != 'register') {
     local.setItem('loginUrl', from.fullPath);

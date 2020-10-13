@@ -1,7 +1,7 @@
 <template>
   <div class="viewLayout">
     <!-- 工具栏头 -->
-    <div class="translateBox">
+    <div :class="[{ fixed: translate }, 'translateBox']">
       <div class="totalNum">Total {{ chapterList.length }} chapters</div>
       <div :class="['chapterBox', !translate ? 'offsetL' : '']">
         <ul class>
@@ -9,6 +9,7 @@
             v-for="(item, idx) in chapterList"
             :key="idx"
             @click="viewDetl(item, idx)"
+            :class="{ active: currentIdx == idx }"
           >
             <span :class="{ payItem: item.is_free }">{{
               $t("column.chapter") + " " + item.order_no
@@ -26,7 +27,10 @@
               <!-- <img src="/static/img/icon_new/prev.png" alt="prev" /> -->
               <img :src="require('x/image/icon/prev.png')" alt="prev" />
             </span>
-            <span class="chapter">{{ chapter }}</span>
+            <span class="chapter over_ellipsis">{{ chapter }}</span>
+            <span class="calc_chapter"
+              >{{ nowChapter }} / {{ imgList.length }}</span
+            >
           </div>
         </div>
         <div class="top_tools">
@@ -36,6 +40,7 @@
         </div>
       </div>
       <div :class="['imgBox', translate ? 'offset' : '']">
+        <div class="modal" :style="{ opacity }"></div>
         <div class="img_item" v-for="(item, idx) in imgList" :key="idx">
           <img v-lazy="item + '?' + autoImg" :key="item" />
         </div>
@@ -43,17 +48,84 @@
     </div>
     <div class="bottom_bar">
       <div class="top_tools">
+        <a href="javascript:;" @click="viewPrev">
+          <img :src="require('x/image/icon/prev.png')" alt="prev" />
+        </a>
+        <a href="javascript:;" @click="showMode">
+          <img :src="require('x/image/icon/daytime.png')" alt="mode" />
+        </a>
         <a href="javascript:;" @click="toDetl">
           <img :src="require('x/image/icon/list.png')" alt="home" />
         </a>
-        <a href="javascript:;" @click="viewPrev">
-          <img :src="require('x/image/icon/prev.png')" alt="prev" />
+        <a href="javascript:;" @click="switchAnimate" v-show="!isPlay">
+          <img :src="require('x/image/icon/play.png')" alt="next" />
+        </a>
+        <a href="javascript:;" @click="switchAnimate" v-show="isPlay">
+          <img :src="require('x/image/icon/pause.png')" alt="next" />
         </a>
         <a href="javascript:;" @click="viewNext">
           <img :src="require('x/image/icon/next.png')" alt="next" />
         </a>
       </div>
     </div>
+
+    <!-- 关闭弹窗 -->
+    <mt-popup
+      ref="brightBox"
+      class="cs_popup brightBox"
+      popup-transition="popup-fade"
+      :modal="false"
+      v-model="switchMode"
+    >
+      <div class="top_tools">
+        <a href="javascript:;" @click="viewPrev">
+          <img :src="require('x/image/icon/night.png')" alt="night" />
+        </a>
+        <mt-range
+          class="cus_range"
+          v-model="lightMode"
+          :min="2"
+          :max="10"
+          @change="changeMode"
+        ></mt-range>
+        <a href="javascript:;" @click="viewNext">
+          <img :src="require('x/image/icon/daytime.png')" alt="daytime" />
+        </a>
+      </div>
+      <div class="top_tools mode_option">
+        <mt-radio
+          v-model="selMode"
+          @change="changeVal"
+          :options="mode"
+        ></mt-radio>
+      </div>
+    </mt-popup>
+
+    <!-- 动画条 -->
+    <mt-popup
+      class="cs_popup animateBox"
+      v-model="switchPopup"
+      :modal="false"
+      popup-transition="popup-fade"
+    >
+      <div class="top_tools">
+        <!-- <a href="javascript:;" @click="viewPrev">
+          <img :src="require('x/image/icon/prev.png')" alt="prev" />
+        </a> -->
+        <!-- {{ rangeValue / 10 }} -->
+        <a href="javascript:;">Low</a>
+        <mt-range
+          class="cus_range"
+          v-model="rangeValue"
+          :step="step"
+          @change="changeSpeed"
+        ></mt-range>
+        <a href="javascript:;">Fast</a>
+        <!-- <a href="javascript:;" @click="viewNext">
+          <img :src="require('x/image/icon/next.png')" alt="next" />
+        </a> -->
+      </div>
+    </mt-popup>
   </div>
 </template>
 
@@ -61,10 +133,26 @@
 export default {
   data() {
     return {
+      /********* 亮度滑块 **********/
+      lightMode: 10,
+      mode: ["default", "light"],
+      opacity: null,
+      switchMode: false,
+      /********* 动画滑块 **********/
+      nowChapter: 1,
+      isPlay: false,
+      switchPopup: false,
+      rangeValue: 0,
+      step: 10,
+      offset: 5, // 递减值
+      animate: null,
+      /****************************/
       id: null,
       bookId: null,
       autoImg: "",
       body: null,
+      speed: 1,
+      max: 5,
       translate: false, //chapter列表
       prev: null, //id
       prevIdx: null, //下标
@@ -96,12 +184,98 @@ export default {
     this.review();
   },
   mounted() {
-    // console.log("view_mounted");
     this.price = localStorage.getItem("price") || "";
+    window.addEventListener("scroll", this.showChapterIdx);
+    window.addEventListener("click", this.closeBrightBox);
+  },
+  // 不使用 keep-alive 时离开销毁,否则使用 beforeRouteLeave
+  beforeDestroy() {
+    this.clearAnimate();
+    window.removeEventListener("scroll", this.showChapterIdx);
+    window.removeEventListener("click", this.closeBrightBox);
   },
   methods: {
-    // 切换模式
-    switchMode() {},
+    // 点击事件
+    changeVal(v) {
+      console.log(v);
+      if (v == "default") {
+        this.opacity = 0.5;
+        //start 2 end 10 (2 + (10 - 2)/2)
+        this.lightMode = 6;
+      } else {
+        this.opacity = 0;
+        this.lightMode = 10;
+      }
+    },
+    // 判断点击不为弹窗时关闭
+    closeBrightBox(e) {
+      e = event || window.event;
+      if (
+        this.$refs.brightBox &&
+        !this.$refs.brightBox.$el.contains(e.target)
+      ) {
+        this.switchMode = false;
+      }
+    },
+    // 改变亮度
+    changeMode(v) {
+      this.selMode = "";
+      this.opacity = 1 - v / 10;
+    },
+    // 切换亮度
+    showMode(e) {
+      this.switchMode = !this.switchMode;
+      e.stopPropagation();
+    },
+    // 当前浏览下标
+    showChapterIdx() {
+      var sH = document.documentElement.clientHeight,
+        sT = document.documentElement.scrollTop || document.body.scrollTop;
+      var box = document.querySelector(".imgBox").children;
+      box = Array.prototype.slice.call(box);
+      box.forEach((res, idx) => {
+        // 当前图片和顶部的距离 < 已滚动距离 + 可视区 - 可视区一半
+        if (res.offsetTop < sH + sT - sH / 2) {
+          if (
+            res.children &&
+            res.children.length > 0 &&
+            res.children[0].getAttribute("lazy") == "loaded"
+          ) {
+            this.nowChapter = idx;
+          }
+        }
+      });
+    },
+    changeSpeed(v) {
+      this.switchAnimate(1);
+    },
+    // 关闭自动滚动定时器
+    clearAnimate() {
+      if (this.animate) {
+        clearInterval(this.animate);
+        this.animate = null;
+      }
+    },
+    // 启动定时器
+    switchAnimate(ev) {
+      if (typeof ev != "number") {
+        this.isPlay = !this.isPlay;
+        this.switchPopup = !this.switchPopup;
+        if (!this.isPlay) {
+          this.clearAnimate();
+          return;
+        }
+      }
+      // this.speed = 1 - (1 * this.rangeValue) / 100;
+      this.speed = (this.rangeValue / this.step) * this.offset;
+      this.animate && this.clearAnimate();
+      this.animate = setInterval(this.scrollPage, 50 - this.speed);
+    },
+    // 滚动事件
+    scrollPage() {
+      var el = document.getElementsByTagName("html")[0];
+      el && (el.scrollTop += 1);
+    },
     //选择章节
     viewDetl(item, idx) {
       //付费
@@ -227,6 +401,7 @@ export default {
         this.$bus.$emit("recharge", 1);
       }
     },
+    viewChapter(opt) {},
     //查看上一章
     viewPrev() {
       var bookId = this.bookId,
@@ -275,11 +450,8 @@ export default {
     },
     //获取漫画图文
     getBookDetl() {
-      // console.log(this.id);
       if (this.id) {
         this.$api.getChapter({ id: this.id }).then(res => {
-          // console.log(res);
-          // console.log(this.prev, this.next);
           if (res.code == 1) {
             var data = res.data.detail;
             var imgList = data.content.split(",");
@@ -292,6 +464,8 @@ export default {
     },
     //返回章节页
     toDetl() {
+      this.clearAnimate();
+      this.isPlay = false;
       this.translate = !this.translate;
       // var params = this.$route.params;
       // this.$router.push({
@@ -317,13 +491,108 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.top_bar.bg, .bottom_bar
+  background rgba(0, 0, 0, .7)
+
+.translateBox.fixed
+  height: 100vh;
+  overflow: hidden;
+
+.modal
+  position: absolute;
+  width 100%
+  height 100%
+  z-index 0
+  margin: auto;
+  background-color: #000;
+  opacity:0;
+.calc_chapter
+  color #fff
+  padding-left 50px
+.fontBox
+  position relative
+  .cs_popup
+    position: absolute;
+    top: -75px;
+    transform translate3d(-100%,-50%,0)
+    border-radius 15px
+    width 100%
+    padding 0 15px
+    img
+      padding 20px 15px
+      width 85px
+.animateBox.cs_popup,.brightBox.cs_popup
+  position fixed
+  top auto
+  bottom 90px
+  left 0
+  z-index 100
+  padding 20px 20px
+  width 100%
+  transform none
+  background: rgba(0,0,0,.7);
+  .top_tools
+    display flex
+    flex 1
+    justify-content space-around
+    height 100%
+    align-items center
+    a
+      font-size 28px
+      color #fff
+    img
+      width 28px
+      height 28px
+  .cus_range
+    flex 1
+    padding 0 10px
+  & >>> .mt-range-runway
+    right -15px
+  & >>> .mt-range-content
+    margin-right 35px
+  & >>> .mt-range-thumb
+    width 35px
+    height 35px
+    border: 5px solid #fff;
+    background: #F16066;
+    top 50%
+    margin-top -17.5px
+  & >>> .mt-range-progress
+    background #F16066
+
+.mode_option
+  justify-items center
+
+.brightBox.cs_popup
+  top 50%
+  bottom auto
+  width 80%
+  left 50%
+  border-radius 20px
+  margin-left -40%
+  .cus_range
+    margin 0 30px
+  .top_tools img
+    width 60px
+    height 60px
+  & >>> .mt-range-runway
+    right -35px
+  & >>> .mint-radiolist
+    display flex
+    &>.mint-cell
+      background transparent
+    &>.mint-radiolist-title
+      display none
+    & .mint-radiolist-label
+      padding 0
+      color #ccc
+
 modal()
   position fixed
   z-index 20
   width 100%
   left 0
   right 0
-  // background rgba(11, 11, 11, .85)
   font-size 30px
   padding 0 25px
   align-items center
@@ -343,21 +612,29 @@ trans()
     transform: translate3d(0%, 0, 0);
     padding-bottom 180px
     overflow-y scroll
+    z-index 10
     transition all .3s ease
     opacity 1
     ul
       font-size 30px
       padding-left 15px
-      // text-align center
       li
         padding 25px
         color #333
-        // color #777
         font-weight normal
-        // background #f7f7f7
         background #fff
+        &.active:before
+          content ''
+          width 30px
+          height 30px
+          vertical-align middle
+          padding-right 10px
+          display inline-block
+          background url('~x/image/icon/location.png')no-repeat
+          background-size contain
+        span
+          vertical-align middle
         .lock
-          // background #F5A739
           color #fff
           font-size 28px
           padding 3px 5px
@@ -378,7 +655,7 @@ trans()
     overflow hidden
     opacity 0
 .offset
-  position fixed!important
+  // position fixed!important
   transform translate3d(60%, 0, 0)
 .top_bar
   height 95px
@@ -413,11 +690,9 @@ trans()
 .top_title
   width 90%
 .top_tools
-  width 10%
   a
     margin 0 10px
     width 50px
-    //height 100%
     display flex
     align-items center
   img
@@ -464,6 +739,7 @@ trans()
 /*漫画容器*/
 .imgBox
   position relative
+  padding-bottom 90px
   box-shadow 0 0 10px 10px rgba(0, 0, 0, .3)
   trans()
 .img_item

@@ -2,7 +2,7 @@ import util from './util'
 
 const instance = axios.create({
   withCredentials: true,
-  timeout: 10 * 1000
+  timeout: 0 * 1000
 });
 
 var idx = 0;

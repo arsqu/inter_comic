@@ -24,10 +24,18 @@
           <span>{{ $t("detl.hasMoney") }}：</span>
           <div class="balance">{{ money }} {{ $t("common.priceUnit") }}</div>
         </div>
-        <div class="infoTop">
-          <span>{{ $t("userInfo.rCode") }}：</span>
-          <div class="balance">{{ rcode }}</div>
-        </div>
+        <router-link
+          tag="div"
+          class="infoTop showMore"
+          :to="{ name: 'share_link' }"
+        >
+          <span>{{ $t("userInfo.rCode") }}</span>
+          <div class="balance link_span">{{ $t("userInfo.view") }}</div>
+          <!-- <span>{{ $t("userInfo.rCode") }}：</span> -->
+          <!-- <div class="balance">{{ rcode }}</div> -->
+        </router-link>
+        <!-- <div class="infoTop showMore">
+        </div> -->
       </div>
     </div>
     <div class="infoList">
@@ -165,7 +173,7 @@ export default {
   data() {
     return {
       msg: "",
-      OutType: ["bank", "wallet"],
+      OutType: ["Bank", "Paytm"],
       isComplete: false,
       disabled: false,
       exchangeRate: "",
@@ -178,7 +186,7 @@ export default {
       isLogin: false,
       tabList: [],
       withOpt: {
-        OutType: "bank",
+        OutType: "Bank",
         phone: "",
         account: "",
         ifsc: "",
@@ -205,7 +213,7 @@ export default {
   computed: {
     showType() {
       var opt = this.withOpt;
-      if (opt.OutType == "bank") {
+      if (opt.OutType == "Bank") {
         opt.phone = "";
         return true;
       } else {
@@ -266,26 +274,37 @@ export default {
         return;
       }
       var param = this.withOpt;
-      console.log(param.money);
-      if (!param.outCoin) {
-        this.msg = this.$t("paidRecord.tips.money");
-        this.outCoinError = "error";
-        return;
-      }
-      this.outCoinError = "";
-      if (param.OutType == "wallet") {
+      if (param.OutType == "Paytm") {
         if (!param.phone) {
           this.msg = this.$t("paidRecord.tips.phone");
           return;
         }
-      } else if (param.OutType == "bank") {
+      } else if (param.OutType == "Bank") {
         if (!param.ifsc || !param.account) {
           this.msg = this.$t("paidRecord.tips.empty");
           return;
         }
       } else {
       }
+      var reg = /^\d+(?:.?)/;
+      if (!param.outCoin || !reg.test(param.outCoin)) {
+        this.msg = this.$t("paidRecord.tips.money");
+        this.outCoinError = "error";
+        return;
+      }
+      this.outCoinError = "";
+      if (param.outCoin < 1000) {
+        this.msg = this.$t("paidRecord.tips.notenough");
+        this.outCoinError = "error";
+        return;
+      }
       this.msg = "";
+      param.OutType =
+        param.OutType == "Paytm"
+          ? "wallet"
+          : param.OutType == "Bank"
+          ? "bank"
+          : param.OutType;
       this.getMoney(param);
     },
     // 提现
@@ -394,7 +413,7 @@ export default {
 <style lang="stylus" scoped>
 // custom
 .prompt_txt
-  padding-top 20px
+  padding-top 10px
   font-size 30px
   text-align center
   color #eb2727
@@ -417,14 +436,31 @@ export default {
   position relative
   left 0
   top 0
+arrowRight()
+  content ''
+  width 40px
+  height 40px
+  display inline-block
+  position absolute
+  top 50%
+  right 0
+  margin-top -20px
+  margin-left 20px
+  background url('~x/image/icon/arrow_right.png')
+  background-size 100%
 pad()
   padding 50px
+.showMore
+  position relative
+  &:after
+    arrowRight()
 .label_box
-  position absolute
+  position fixed
   bottom 0
   background #fff
   padding 12px
   font-size 0
+  z-index 101
   text-align center
   a
     padding 0 15px
@@ -437,15 +473,16 @@ pad()
 .userList
   position absolute
   background #f9f9f9
-  top 0
+  padding-bottom 100px
   left 0
   right 0
-  bottom 0
+  // top 0
+  // bottom 0
 .balance
   display inline-block
   font-size 35px
-  color #333
-  padding 15px 25px
+  // color #333
+  padding 15px 50px
 .infoBtn
   font-size 35px
   margin 0 auto
@@ -456,14 +493,16 @@ pad()
   cursor pointer
   background #ef6a6a
   color #fff
-  position fixed
-  bottom calc(110px + 30px)
+  // position fixed
+  position relative
+  // bottom calc(110px + 30px)
   height 80px
   line-height 80px
   width 100%
+  margin 40px 0
   text-align center
 .info_bg
-  padding 5% 40px 2%
+  padding 5% 30px 2%
   background #fff
   .info_box
     display flex
@@ -491,7 +530,7 @@ pad()
   //pad()
   padding-top 30px
   //padding-bottom calc(220px + 30px) //110+30+80
-  padding-bottom calc(220px) //110+30+80
+  // padding-bottom 50px //110+30+80
   //padding-bottom calc(130px + 30px) //110+30+80
   .icon_info
     background #fff
@@ -516,17 +555,7 @@ pad()
         margin-top -20px
         margin-left 20px
       &:not(.disabled):after
-        content ''
-        width 40px
-        height 40px
-        display inline-block
-        position absolute
-        top 50%
-        right 0
-        margin-top -20px
-        margin-left 20px
-        background url('~x/image/icon/arrow_right.png')
-        background-size 100%
+        arrowRight()
       &.profile:before
         background url('~x/image/icon/profile.png')
         background-size 100%

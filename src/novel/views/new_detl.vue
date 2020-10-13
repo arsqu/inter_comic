@@ -154,7 +154,7 @@ export default {
       popupVisible: false,
       isCur: 1,
       id: null,
-      totalNum: "",
+      totalNum: 0,
       bookName: "",
       from: "", //路由来源
       bookId: null,

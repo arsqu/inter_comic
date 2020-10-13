@@ -7,7 +7,7 @@ const env = process.env.ENV_CONFIG
 
 const proxyTable = {
   '/go': {
-    target: 'http://192.168.1.103:86',//后端接口地址
+    target: 'http://192.168.31.25:86',//后端接口地址
     changeOrigin: true,//是否允许跨越
     pathRewrite: {
       '^/go': ''

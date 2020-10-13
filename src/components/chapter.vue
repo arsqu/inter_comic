@@ -2,12 +2,12 @@
   <div class="bookCate">
     <!-- 目录 -->
     <div class="cont_book_list">
-      <category :catalogue="chapterList" :id="id" />
+      <!-- <category :catalogue="chapterList" :id="id" /> -->
     </div>
   </div>
 </template>
 <script>
-const category = () => import("./module/category");
+// const category = () => import("./module/category");
 export default {
   data() {
     return {

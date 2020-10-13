@@ -211,7 +211,8 @@ export default {
     showBtn() {
       // console.log(this.$route.name);
       // 浏览漫画时不显示
-      if (this.$route.name == "new_view") {
+      var notShow = ["new_detl", "new_view"];
+      if (notShow.indexOf(this.$route.name) != -1) {
         this.btn.className = this.btn.className.replace(/(^| )show/g, "");
         return;
       }

@@ -80,7 +80,7 @@ export default {
     oderId: 'oderId',
     vpa: 'Vpa',
     formList: {
-      phone: 'Phone',
+      phone: 'Paytm number',
       account: 'Bank Account',
       ifsc: 'IFSC',
       money: 'gold coin'
@@ -92,6 +92,7 @@ export default {
       3: "Can't withdraw cash temporarily"
     },
     tips: {
+      notenough: 'Withdraw at least 1,000 gold coins',
       money: 'Please enter the amount',
       phone: 'Please enter the phone',
       empty: 'Please fill in the complete information'
@@ -104,7 +105,8 @@ export default {
     more: 'more'
   },
   tips: {
-    404: 'back to the homepage',
+    // 404: 'back to the homepage',
+    404: 'Home page',
     lang: 'switch successful',
     toLogin: 'please log in first',
     notlogin: 'please sign in',
@@ -124,11 +126,18 @@ export default {
       last: 'Already the last page'
     }
   },
+  shareLink: {
+    btn: 'Share',
+    link: 'Invitation',
+    title: 'Share Link',
+    share: 'Copy your exclusive invitation link, after the successful invitation, the invitee recharge, you can get the reward and cash.'
+  },
   userInfo: {
     tabList: ['Reading record', 'My Favorites'],
     feedback: 'Feedback',
     rCode: 'Referral Code',
     info: "Profile",
+    view: 'Invitation Reward',
     seemore: 'View after login',
     // tips: 'To be developed...'
     tips: {
@@ -221,7 +230,7 @@ export default {
     recharge: 'Top Up',
     rechargeMoney: 'Enter the amount',
     tips: 'Prompt',
-    payRate: 'coins ratio',
+    payRate: 'Coins ratio',
     info: {
       1: 'The balance cannot be withdrawn',
       2: 'Please contact us if you have any recharge issues',
@@ -274,5 +283,9 @@ export default {
     txt: 'Submit',
     success: 'Submitted successfully',
     err: 'Submission Failed'
+  },
+  404: {
+    desc: "The page you are looking for doesn't exist",
+    pmanga: "Sorry, the page you requested was not found"
   }
 }
