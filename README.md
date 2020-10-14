@@ -42,6 +42,18 @@
 └─static
 ```
 
+#### 运行、打包
+
+```
+npm run dev:xulin  启动旧漫画
+npm run dev:pmanga ~~ 新漫画
+npm run dev:novel  ~~ 小说
+
+npm run build:xulin  打包旧漫画
+npm run build:pmanga ~~ 新漫画
+npm run build:novel  ~~ 小说
+```
+
 #### 更新
 
 🔥 将 Mangaline (印度推广) 代码去除,并将剩余项目拆分成多个模块,且模块各自独立运行、编译、打包
