@@ -35,8 +35,9 @@
     <p>
       If after you opt-in, you change your mind, you may withdraw your consent
       for us to contact you, for the continued collection, use or disclosure of
-      your information, at any time, by contacting us at or mailing us at
-      <b>conversations@venusparks.in</b> .
+      your information, at any time, by contacting us at or mailing us 
+      <!-- at
+      <b>conversations@venusparks.in</b> . -->
     </p>
     <p class="sec_txt">SECTION 3 - DISCLOSURE</p>
     <p>
@@ -102,8 +103,9 @@
     <p>
       If you would like to: access, correct, amend or delete any personal
       information we have about you, register a complaint, or simply want more
-      information contact our Privacy Compliance Officer at
-      <b>grievances@venusparks.in</b> .
+      information contact our Privacy Compliance Officer 
+      <!-- at
+      <b>grievances@venusparks.in</b> . -->
     </p>
     <p>[Re: Privacy Compliance Officer]</p>
     <p>[FL 06 Aakansha Apartment Pollad Farm Pune.]</p>

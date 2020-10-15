@@ -3,7 +3,8 @@
     <div class="head_img">
       <img :src="require('x/image/share_code.png')" alt="" />
       <div class="content_box">
-        <div class="text_head">Lets's Share</div>
+        <!-- <div class="text_head">Lets's Share</div> -->
+        <div class="text_head">Please share this in whatsApp</div>
         <div class="reffer_code">
           <template v-if="isLogin">
             <span>{{ $t("userInfo.rCode") }}:</span> {{ code }}</template
@@ -138,6 +139,7 @@ export default {
 .text_head
   color #333
   text-align center
+  font-size 38px
   font-weight bold
   margin-bottom 25px
 .btn_copy

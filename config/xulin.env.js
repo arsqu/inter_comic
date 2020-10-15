@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   NODE_ENV: '"production"',
-  APP_VERSION: '1.47', // 2020/10/09
+  APP_VERSION: '1.48', // 2020/10/15
   ENV_CONFIG: '"manga"',
   OUT_PUT: "'xulin'",
   productionGzip: true,

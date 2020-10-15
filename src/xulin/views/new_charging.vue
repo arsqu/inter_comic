@@ -16,7 +16,7 @@
         <span v-if="isLogin" class="currency">{{ currency }}</span>
       </div>
       <!-- topUp -->
-      <div class="topUpBox pb-5">
+      <div class="topUpBox">
         <ul class="topUpList">
           <li
             :class="{ active: isCur == idx }"
@@ -47,6 +47,12 @@
         :func="askRecharge"
       />
       <!-- tipsBox -->
+      <div class="recharge_txt">
+        <div class="prompt_txt">
+          We are sincerely sorry for the delay in payment, we apologise for any
+          inconvenience caused you
+        </div>
+      </div>
       <div class="recharge_txt">
         <span>{{ $t("recharge.tips") }}:</span>
         <br />
@@ -367,6 +373,8 @@ export default {
 };
 </script>
 <style lang="stylus" scoped>
+.prompt_txt
+  color #f16066
 topUpH = 80px
 .paybox >>> .special
   color #f46b71

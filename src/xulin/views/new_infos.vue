@@ -102,6 +102,7 @@
       </div>
     </mt-popup>
 
+    <!-- 提现框 -->
     <mt-popup
       v-model="withVisible"
       class="cus_popup"
@@ -153,7 +154,12 @@
         type="number"
       ></mt-field>
       <div class="prompt_txt">{{ msg }}</div>
-      <div class="mt-5 mb-5">
+      <div class="divider"></div>
+      <div class="prompt_txt tips">
+        Msg: We are sincerely sorry for the delay in payment, we apologise for
+        any inconvenience caused you
+      </div>
+      <div class="mt-5 mb-3">
         <cs-button
           round
           :size="'large'"
@@ -173,7 +179,8 @@ export default {
   data() {
     return {
       msg: "",
-      OutType: ["Bank", "Paytm"],
+      // OutType: ["Bank", "Paytm"],
+      OutType: ["Paytm"],
       isComplete: false,
       disabled: false,
       exchangeRate: "",
@@ -186,7 +193,8 @@ export default {
       isLogin: false,
       tabList: [],
       withOpt: {
-        OutType: "Bank",
+        // OutType: "Bank",
+        OutType: "Paytm",
         phone: "",
         account: "",
         ifsc: "",
@@ -293,12 +301,13 @@ export default {
         return;
       }
       this.outCoinError = "";
-      if (param.outCoin < 1000) {
-        this.msg = this.$t("paidRecord.tips.notenough");
-        this.outCoinError = "error";
-        return;
-      }
+      // if (param.outCoin < 1000) {
+      //   this.msg = this.$t("paidRecord.tips.notenough");
+      //   this.outCoinError = "error";
+      //   return;
+      // }
       this.msg = "";
+      param = Object.assign({}, param);
       param.OutType =
         param.OutType == "Paytm"
           ? "wallet"
@@ -412,11 +421,17 @@ export default {
 
 <style lang="stylus" scoped>
 // custom
+.divider
+  border 2px solid #eee
+  margin-bottom 10px
 .prompt_txt
   padding-top 10px
   font-size 30px
   text-align center
   color #eb2727
+  &.tips
+    text-align left
+    padding 0 10px
 .rateTxt
   font-size 35px
   text-align center
